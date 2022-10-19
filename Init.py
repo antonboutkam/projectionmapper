@@ -15,6 +15,7 @@ class Init:
             projector.white()
             self._white_frame = cam.picture()
         elif running_time < 8:
+            projector.black()
             self._black_frame = cam.picture()
         else:
             white = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
