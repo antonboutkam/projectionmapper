@@ -45,6 +45,22 @@ class Init:
             # cv2.imshow("Black", black_small)
             cv2.imshow("Difference", difference_small)
 
+            # Create mask where white is what we want, black otherwise
+            mask = np.zeros_like(main_white_frame)
+
+            # Extract out the object and place into output image
+            out = np.zeros_like(main_white_frame)
+            out[mask == 255] = main_white_frame[mask == 255]
+
+            # Now crop
+            (y, x) = np.where(mask == 255)
+            (top_y, top_x) = (np.min(y), np.min(x))
+            (bottom_y, bottom_x) = (np.max(y), np.max(x))
+            out = out[top_y:bottom_y + 1, top_x:bottom_x + 1]
+
+            # Show the output image
+            cv2.imshow('Cam area', out)
+
 
 
 
