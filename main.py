@@ -17,6 +17,9 @@ while (True):
 
     if not init.initialized:
         init.run(runningTime)
+    else:
+        frame = init.canvas.capture()
+        cv2.imshow("Frame", frame)
 
 
     # the 'q' button is set as the
