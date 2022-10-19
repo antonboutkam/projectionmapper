@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 # define a video capture object
-vid = cv2.VideoCapture(2)
+vid = cv2.VideoCapture(0)
 vid.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
 vid.set(cv2.CAP_PROP_FRAME_WIDTH, 2048)
 vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 2048)
@@ -15,7 +15,7 @@ def projectionSurfaceWindow():
     whiteImage.fill(255)
     cv2.startWindowThread()
     cv2.namedWindow(whiteWinName, flags=cv2.WINDOW_GUI_NORMAL)
-    cv2.moveWindow(whiteWinName, 2500, 0)
+    cv2.moveWindow(whiteWinName, 3841, 0)
 
     cv2.imshow(whiteWinName, whiteImage)
     cv2.setWindowProperty(whiteWinName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
