@@ -39,13 +39,14 @@ class Init:
             mask = np.zeros_like(white_bgr)
 
             cv2.drawContours(mask, [contours[0]], -1, 255, -1)
+            cv2.drawContours(white_fullcolor, [contours[0]], -1, (255, 0, 0), 3)
 
             # cv2.drawContours(self._black_frame, contours, -1, (128, 255, 0), cv2.LINE_4)
-            white_small = cv2.resize(white_fullcolor, (800, 800), interpolation=cv2.INTER_AREA)
+            # white_small = cv2.resize(white_fullcolor, (800, 800), interpolation=cv2.INTER_AREA)
             # black_small = cv2.resize(self._black_frame, (800, 800), interpolation=cv2.INTER_AREA)
             # difference_small = cv2.resize(difference, (800, 800), interpolation=cv2.INTER_AREA)
 
-            cv2.imshow("White", white_small)
+
             # cv2.imshow("Black", black_small)
             # cv2.imshow("Difference", difference_small)
 
@@ -62,6 +63,7 @@ class Init:
             out = out[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
             # Show the output image
+            cv2.imshow("White", white_fullcolor)
             cv2.imshow('Cam area', out)
 
 
