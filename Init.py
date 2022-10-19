@@ -21,36 +21,39 @@ class Init:
             projector.black()
             self._black_frame = cam.picture()
         else:
-            main_white_frame = np.copy(self._white_frame);
-            white = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
-            black = cv2.cvtColor(self._black_frame, cv2.COLOR_BGR2GRAY)
+            white_fullcolor = np.copy(self._white_frame);
+            white_bgr = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
+            black_bgr = cv2.cvtColor(self._black_frame, cv2.COLOR_BGR2GRAY)
 
             # compute difference
-            difference = cv2.subtract(white, black)
+            difference = cv2.subtract(white_bgr, black_bgr)
 
             print('tracing contours')
             ret, thresh = cv2.threshold(difference, 127, 255, 0)
+
+
             contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
             print(len(contours))
-            cv2.drawContours(main_white_frame, [contours[0]], -1, (128, 255, 0), 1)
+            # Create mask where white is what we want, black otherwise
+            mask = np.zeros_like(white_bgr)
 
+            cv2.drawContours(mask, [contours[0]], -1, 255, -1)
 
             # cv2.drawContours(self._black_frame, contours, -1, (128, 255, 0), cv2.LINE_4)
-            white_small = cv2.resize(main_white_frame, (800, 800), interpolation=cv2.INTER_AREA)
+            white_small = cv2.resize(white_fullcolor, (800, 800), interpolation=cv2.INTER_AREA)
             # black_small = cv2.resize(self._black_frame, (800, 800), interpolation=cv2.INTER_AREA)
-            difference_small = cv2.resize(difference, (800, 800), interpolation=cv2.INTER_AREA)
+            # difference_small = cv2.resize(difference, (800, 800), interpolation=cv2.INTER_AREA)
 
             cv2.imshow("White", white_small)
             # cv2.imshow("Black", black_small)
-            cv2.imshow("Difference", difference_small)
+            # cv2.imshow("Difference", difference_small)
 
-            # Create mask where white is what we want, black otherwise
-            mask = np.zeros_like(main_white_frame)
+
 
             # Extract out the object and place into output image
-            out = np.zeros_like(main_white_frame)
-            out[mask == 255] = main_white_frame[mask == 255]
+            out = np.zeros_like(white_bgr)
+            out[mask == 255] = white_bgr[mask == 255]
 
             # Now crop
             (y, x) = np.where(mask == 255)
