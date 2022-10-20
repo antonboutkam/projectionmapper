@@ -69,9 +69,14 @@ class Canvas:
         frame4 = current_frame
         ret, current_tresh = cv2.threshold(current_bgr, 127, 255, 0)
         curr_contours, hierarchy = cv2.findContours(current_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        out = np.zeros_like(current_bgr)
+        out.fill(255)
+        cv2.drawContours(out, curr_contours, -1, (0, 255, 0), -1)
         cv2.drawContours(frame4, curr_contours, -1, (0, 255, 0), -1)
         self.show_large("Diff contours 1", frame4)
 
         self.show_large("Frame 4", frame4)
-        projector.draw(frame4)
+        self.show_large("Out", out)
+        projector.draw(out)
 
