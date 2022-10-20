@@ -69,8 +69,8 @@ class Canvas:
         out = np.zeros_like(current_frame)
         out.fill(255)
 
-
         contour_count = len(curr_contours)
+        frame4 = current_frame
 
         if contour_count > 0 :
             sorted_contours = sorted(curr_contours, key=cv2.contourArea, reverse=True)
@@ -78,8 +78,7 @@ class Canvas:
             cv2.drawContours(out, largest_contour, -1, (0, 0, 255), 2)
             cv2.drawContours(frame4, largest_contour, -1, (0, 0, 255), 2)
 
-        self.show_large("Diff contours 1", frame4)
-        self.show_large("Frame 4", cv2.flip(frame4, 0))
+        self.show_large("Frame 4", cv2.flip(current_frame, 0))
         self.show_large("Out", cv2.flip(out, 0))
         projector.draw(out)
 
