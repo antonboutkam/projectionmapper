@@ -19,16 +19,9 @@ while (True):
     if not init.initialized:
         init.run(runningTime)
     else:
-        frame = init.canvas.capture()
-        width, height = frame.shape[:2]
-        print("Width ", width, ", height ", height)
-        newWidth= (width * 4)
-        newHeight = (height * 4)
-        print("New Width ", newWidth, ", new height ", newHeight)
-        frame2 = cv2.resize(frame, (newWidth, newHeight))
-        cv2.imshow("New frame 1", frame2)
+        canvas = init.canvas
+        canvas.play()
 
-        cv2.imshow("New frame 2", frame)
 
 
     # the 'q' button is set as the
