@@ -1,4 +1,5 @@
 from Cam import Cam
+from Projector import Projector
 import cv2
 
 class Canvas:
@@ -31,25 +32,26 @@ class Canvas:
         cv2.imshow(frame_name, large)
 
     def play(self):
+        projector = Projector()
         current_frame = self.capture()
 
         current_bgr = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
         initial_bgr = self.initial_frame # is al bgr
 
-        ret, current_thresh = cv2.threshold(current_bgr, 127, 255, 0)
-        ret, initial_tresh = cv2.threshold(initial_bgr, 127, 255, 0)
+        # vret, current_thresh = cv2.threshold(current_bgr, 127, 255, 0)
+        # ret, initial_tresh = cv2.threshold(initial_bgr, 127, 255, 0)
 
-        difference_tresh = cv2.subtract(current_thresh, initial_tresh)
-        difference_tresh_reverse = cv2.subtract(current_thresh, initial_tresh)
-        contours, hierarchy = cv2.findContours(difference_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        difference_bgr = cv2.subtract(initial_bgr, current_bgr)
 
-        self.show_large("Current tresh", current_thresh)
-        self.show_large("Initial tresh", initial_tresh)
-        self.show_large("Diff tresh", difference_tresh)
-        self.show_large("Reverse diff tresh", difference_tresh_reverse)
+        # self.show_large("Current tresh", current_thresh)
+        # self.show_large("Initial tresh", initial_tresh)
         self.show_large("Original new frame", current_frame)
+        self.show_large("Diff bgr", difference_bgr)
 
-        frame3 = current_frame
-        cv2.drawContours(frame3, contours, -1, (255, 0, 0), 3)
-        self.show_large("Drawn contours", frame3)
+        frame4 = current_frame
+        ret, difference_tresh = cv2.threshold(difference_bgr, 127, 255, 0)
+        diff_contours, hierarchy = cv2.findContours(difference_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(frame4, diff_contours, -1, (255, 0, 0), 3)
+        self.show_large("Diff contours 1", frame4)
+        projector.draw(frame4)
 

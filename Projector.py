@@ -25,7 +25,11 @@ class Projector(object):
         cv2.imshow(self.name, black_image)
 
     def red(self):
-        print('black')
-        red = np.zeros([768, 1024, 1], dtype=np.uint8)
-        image[:] = (0, 0, 125)
+        print('red')
+        red = np.zeros([768, 1024, 3], dtype=np.uint8)
+        red[:] = (0, 0, 125)
         cv2.imshow(self.name, red)
+
+    def draw(self, frame):
+        projector_frame = cv2.resize(frame, (1024, 768))
+        cv2.imshow(self.name, projector_frame)
