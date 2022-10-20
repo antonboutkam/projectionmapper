@@ -67,12 +67,17 @@ class Canvas:
         ret, current_tresh = cv2.threshold(current_bgr, 127, 255, 0)
         curr_contours, hierarchy = cv2.findContours(current_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+        sorted_contours = sorted(curr_contours, key=cv2.contourArea, reverse=True)
+        largest_contour = sorted_contours[0]
+
         out = np.zeros_like(current_frame)
         out.fill(255)
-        cv2.drawContours(out, curr_contours, -1, (100, 0, 0), 1)
-        cv2.drawContours(current_frame, curr_contours, -1, (100, 0, 0), 1)
 
-        self.show_large("Frame 4", cv2.flip(current_frame, 0))
+        cv2.drawContours(out, largest_contour, -1, (0, 0, 255), 2)
+        cv2.drawContours(frame4, largest_contour, -1, (0, 0, 255), 2)
+
+        self.show_large("Diff contours 1", frame4)
+        self.show_large("Frame 4", cv2.flip(frame4, 0))
         self.show_large("Out", cv2.flip(out, 0))
         projector.draw(out)
 
