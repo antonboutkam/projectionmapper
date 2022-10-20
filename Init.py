@@ -40,11 +40,14 @@ class Init:
             mask = np.zeros_like(white_bgr)
 
 
-            c = max(contours, key=cv2.contourArea)
-            x, y, w, h = cv2.boundingRect(c)
-            cv2.rectangle(mask, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            # cv2.drawContours(mask, [contours[c]], -1, 255, -1)
-            cv2.drawContours(white_fullcolor, [contours[0]], -1, (255, 0, 0), 5)
+            # -----------------
+            sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+            largest_contour = sorted_contours[0]
+
+            # ------------
+            cv2.drawContours(mask, largest_contour, -1, 255, -1)
+            cv2.drawContours(white_fullcolor, largest_contour, -1, (255, 0, 0), 5)
 
             # cv2.drawContours(self._black_frame, contours, -1, (128, 255, 0), cv2.LINE_4)
             # white_small = cv2.resize(white_fullcolor, (800, 800), interpolation=cv2.INTER_AREA)
