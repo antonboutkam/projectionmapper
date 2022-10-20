@@ -1,5 +1,5 @@
 from Cam import Cam
-
+import cv2
 
 class Canvas:
     top_y = None
@@ -23,28 +23,36 @@ class Canvas:
         return out
 
     def play(self):
-        current_frame = init.canvas.capture()
+        current_frame = self.capture()
 
         current_bgr = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
-        initial_bgr = cv2.cvtColor(self.initial_frame, cv2.COLOR_BGR2GRAY)
+        initial_bgr = self.initial_frame # is al bgr
 
         ret, current_thresh = cv2.threshold(current_bgr, 127, 255, 0)
         ret, initial_tresh = cv2.threshold(initial_bgr, 127, 255, 0)
 
-        difference_tresh = cv2.subtract(current_thresh, current_thresh)
+        cv2.imshow("Current tresh", current_thresh)
+        cv2.imshow("Initial tresh", initial_tresh)
+
+        difference_tresh = cv2.subtract(current_thresh, initial_tresh)
+        difference_tresh_reverse = cv2.subtract(current_thresh, initial_tresh)
         contours, hierarchy = cv2.findContours(difference_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        cv2.imshow("New frame 1", frame)
+        cv2.imshow("Difference tresh", difference_tresh)
+        cv2.imshow("Difference tresh reverse", difference_tresh_reverse)
 
-        width, height = frame.shape[:2]
-        print("Width ", width, ", height ", height, "New Width ", new_width, ", new height ", new_height)
+        cv2.imshow("New frame 1", current_frame)
+
+        width, height = current_frame.shape[:2]
         new_width = (width * 4)
         new_height = (height * 4)
 
-        frame2 = cv2.resize(frame, (new_width, new_height))
-        frame3 = frame
-        cv2.drawContours(frame3, [contours[0]], -1, (255, 0, 0), 3)
-        frame3 = cv2.resize(frame, (new_width, new_height))
+        print("Width ", width, ", height ", height, "New Width ", new_width, ", new height ", new_height)
+
+        frame2 = cv2.resize(current_frame, (new_width, new_height))
+        frame3 = current_frame
+        cv2.drawContours(frame3, contours, -1, (255, 0, 0), 3)
+        frame3 = cv2.resize(current_frame, (new_width, new_height))
 
         cv2.imshow("New frame 2", frame2)
         cv2.imshow("New frame 3", frame3)
