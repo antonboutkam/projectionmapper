@@ -39,7 +39,10 @@ class Init:
             # Create mask where white is what we want, black otherwise
             mask = np.zeros_like(white_bgr)
 
-            cv2.drawContours(mask, [contours[0]], -1, 255, -1)
+            c = max(contours, key=cv2.contourArea)
+            # x, y, w, h = cv2.boundingRect(c)
+            # cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.drawContours(mask, [contours[c]], -1, 255, -1)
             cv2.drawContours(white_fullcolor, [contours[0]], -1, (255, 0, 0), 3)
 
             # cv2.drawContours(self._black_frame, contours, -1, (128, 255, 0), cv2.LINE_4)
