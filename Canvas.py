@@ -51,7 +51,8 @@ class Canvas:
         frame4 = current_frame
         ret, difference_tresh = cv2.threshold(difference_bgr, 127, 255, 0)
         diff_contours, hierarchy = cv2.findContours(difference_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        cv2.drawContours(frame4, diff_contours, -1, (255, 0, 0), 3)
+        cv2.drawContours(frame4, diff_contours, -1, (0, 255, 0), 3)
         self.show_large("Diff contours 1", frame4)
+
         projector.draw(frame4)
 
