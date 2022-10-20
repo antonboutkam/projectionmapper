@@ -19,7 +19,7 @@ while (True):
         init.run(runningTime)
     else:
         frame = init.canvas.capture()
-        cv2.imshow("Frame", frame)
+        cv2.imshow("New frame", frame)
 
 
     # the 'q' button is set as the

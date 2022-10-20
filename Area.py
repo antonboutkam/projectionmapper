@@ -18,4 +18,4 @@ class Area:
     def capture(self):
         picture = self.cam.picture()
         out = picture[self.top_y:self.bottom_y + 1, self.top_x:self.bottom_x + 1]
-        return picture
+        return out
