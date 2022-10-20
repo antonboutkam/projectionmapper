@@ -19,13 +19,15 @@ while (True):
     if not init.initialized:
         init.run(runningTime)
     else:
-        projector = Projector()
-        projector.white()
+
 
         frame = init.canvas.capture()
         width, height = frame.shape[:2]
-        print("Width " + width + ", height " + height)
-        frame2 = cv2.resize(frame, int(width * 2), int(height * 2));
+        print("Width ", width, ", height ", height)
+        newWidth= (width * 2)
+        newHeight = (height * 2)
+        print("New Width ", newWidth, ", new height ", newHeight)
+        frame2 = cv2.resize((newWidth, newHeight))
         cv2.imshow("New frame 1", frame2)
 
         cv2.imshow("New frame 2", frame)
