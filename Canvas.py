@@ -1,6 +1,7 @@
 from Cam import Cam
 from Projector import Projector
 import cv2
+import numpy as np
 
 class Canvas:
     top_y = None
@@ -36,34 +37,41 @@ class Canvas:
         current_frame = self.capture()
 
 
-        low_blue = np.array([100, 150, 0])
-        high_blue = np.array([130, 255, 255])
+        low_blue = np.array([90, 150, 0])
+        high_blue = np.array([150, 255, 255])
 
         # convert BGR to HSV
         current_frame_hsv = cv2.cvtColor(current_frame, cv2.COLOR_BGR2HSV)
         color_mask = 255 - cv2.inRange(current_frame_hsv, low_blue, high_blue)
         current_frame_without_blue = cv2.bitwise_and(current_frame, current_frame, mask=color_mask)
 
-        current_bgr = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
-        initial_bgr = cv2.cvtColor(self.initial_frame, cv2.COLOR_BGR2GRAY)
+
 
         # vret, current_thresh = cv2.threshold(current_bgr, 127, 255, 0)
         # ret, initial_tresh = cv2.threshold(initial_bgr, 127, 255, 0)
 
-        difference_bgr = cv2.subtract(initial_bgr, current_bgr)
+        difference = cv2.subtract(self.initial_frame, current_frame)
+        difference_reverse = cv2.subtract(current_frame, self.initial_frame)
+
+        current_bgr = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
+        initial_bgr = cv2.cvtColor(self.initial_frame, cv2.COLOR_BGR2GRAY)
+        difference_bgr = cv2.cvtColor(difference, cv2.COLOR_BGR2GRAY)
 
         # self.show_large("Current tresh", current_thresh)
         # self.show_large("Initial tresh", initial_tresh)
-        self.show_large("Current blue mask", color_mask)
+        self.show_large("Current bgr", current_bgr)
         self.show_large("Current frame no blue", current_frame_without_blue)
         self.show_large("Original new frame", current_frame)
-        self.show_large("Diff bgr", difference_bgr)
+        self.show_large("Diff", difference)
+        self.show_large("Diff reverse", difference)
+
 
         frame4 = current_frame
-        ret, difference_tresh = cv2.threshold(difference_bgr, 127, 255, 0)
-        diff_contours, hierarchy = cv2.findContours(difference_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        cv2.drawContours(frame4, diff_contours, -1, (255, 0, 0), 3)
+        ret, current_tresh = cv2.threshold(current_bgr, 127, 255, 0)
+        curr_contours, hierarchy = cv2.findContours(current_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(frame4, curr_contours, -1, (0, 255, 0), -1)
         self.show_large("Diff contours 1", frame4)
 
+        self.show_large("Frame 4", frame4)
         projector.draw(frame4)
 
