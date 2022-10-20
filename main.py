@@ -23,7 +23,7 @@ while (True):
         projector.white()
 
         frame = init.canvas.capture()
-        width, height = frame.size
+        width, height = frame.shape[:2]
         frame2 = frame.resize(width*3, height * 3)
         cv2.imshow("New frame 1", frame2)
 
