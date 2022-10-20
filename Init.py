@@ -16,10 +16,10 @@ class Init:
         projector = Projector()
         cam = Cam()
 
-        if running_time < 3:
+        if running_time < 5:
             projector.white()
             self._white_frame = cam.picture()
-        elif running_time < 6:
+        elif running_time < 9:
             projector.black()
             self._black_frame = cam.picture()
         else:
@@ -40,7 +40,7 @@ class Init:
             mask = np.zeros_like(white_bgr)
 
             cv2.drawContours(mask, [contours[0]], -1, 255, -1)
-            cv2.drawContours(white_fullcolor, [contours[0]], -1, (255, 0, 0), 3)
+            cv2.drawContours(white_fullcolor, [contours[0]], -1, (255, 0, 0), 5)
 
             # cv2.drawContours(self._black_frame, contours, -1, (128, 255, 0), cv2.LINE_4)
             # white_small = cv2.resize(white_fullcolor, (800, 800), interpolation=cv2.INTER_AREA)
@@ -62,7 +62,7 @@ class Init:
             out = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
             # Show the output image
-            # cv2.imshow("White", white_fullcolor)
+            cv2.imshow("White", white_fullcolor)
             # cv2.imshow('Cam area', out)
             projector = Projector()
             projector.white()
