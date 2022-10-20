@@ -18,8 +18,11 @@ while (True):
     if not init.initialized:
         init.run(runningTime)
     else:
+        print('new frame')
         frame = init.canvas.capture()
-        cv2.imshow("New frame", frame)
+        width, height = im.size
+        frame2 = frame.resize(width*3, height * 3)
+        cv2.imshow("New frame", frame2)
 
 
     # the 'q' button is set as the
