@@ -1,5 +1,5 @@
 from Projector import Projector
-from Canvas import Canvas
+from Area import Area
 from Cam import Cam
 import cv2
 import numpy as np
@@ -10,7 +10,7 @@ class Init:
     _white_frame = None
     _black_frame = None
     contours_ = None
-    canvas = None
+    area = None
 
     def run(self, running_time):
         projector = Projector()
@@ -23,7 +23,7 @@ class Init:
             projector.black()
             self._black_frame = cam.picture()
         else:
-            white_fullcolor = np.copy(self._white_frame);
+            white_fullcolor = np.copy(self._white_frame)
             white_bgr = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
             black_bgr = cv2.cvtColor(self._black_frame, cv2.COLOR_BGR2GRAY)
 
@@ -52,8 +52,6 @@ class Init:
             # cv2.imshow("Black", black_small)
             # cv2.imshow("Difference", difference_small)
 
-
-
             # Extract out the object and place into output image
             out = np.zeros_like(white_bgr)
             out[mask == 255] = white_bgr[mask == 255]
@@ -67,7 +65,10 @@ class Init:
             # Show the output image
             cv2.imshow("White", white_fullcolor)
             cv2.imshow('Cam area', out)
-            self.canvas = Canvas(top_y, bottom_y, top_x, bottom_x);
+            self.area = Area()
+            self.area.init(top_y, bottom_y, top_x, bottom_x)
+
+
 
 
 
