@@ -59,10 +59,10 @@ class Init:
             (y, x) = np.where(mask == 255)
             (top_y, top_x) = (np.min(y), np.min(x))
             (bottom_y, bottom_x) = (np.max(y), np.max(x))
-            out = out[top_y:bottom_y + 1, top_x:bottom_x + 1]
+            out = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
             # Show the output image
-            cv2.imshow("White", white_fullcolor)
+            # cv2.imshow("White", white_fullcolor)
             # cv2.imshow('Cam area', out)
             projector = Projector()
             projector.red()

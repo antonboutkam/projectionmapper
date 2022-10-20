@@ -36,7 +36,7 @@ class Canvas:
         current_frame = self.capture()
 
         current_bgr = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
-        initial_bgr = self.initial_frame # is al bgr
+        initial_bgr = cv2.cvtColor(self.initial_frame, cv2.COLOR_BGR2GRAY)
 
         # vret, current_thresh = cv2.threshold(current_bgr, 127, 255, 0)
         # ret, initial_tresh = cv2.threshold(initial_bgr, 127, 255, 0)
