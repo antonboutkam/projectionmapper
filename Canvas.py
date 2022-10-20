@@ -1,7 +1,7 @@
 from Cam import Cam
 
 
-class Area:
+class Canvas:
     top_y = None
     top_x = None
     bottom_y = None

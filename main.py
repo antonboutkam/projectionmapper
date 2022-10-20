@@ -2,6 +2,7 @@
 import numpy as np
 import time
 from Init import Init
+from Projector import Projector
 import cv2
 
 
@@ -18,11 +19,15 @@ while (True):
     if not init.initialized:
         init.run(runningTime)
     else:
-        print('new frame')
+        projector = Projector()
+        projector.white()
+
         frame = init.canvas.capture()
-        width, height = im.size
+        width, height = frame.size
         frame2 = frame.resize(width*3, height * 3)
-        cv2.imshow("New frame", frame2)
+        cv2.imshow("New frame 1", frame2)
+
+        cv2.imshow("New frame 2", frame)
 
 
     # the 'q' button is set as the
