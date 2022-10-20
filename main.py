@@ -2,6 +2,7 @@
 import numpy as np
 import time
 from Init import Init
+from Projector import Projector
 import cv2
 
 
@@ -19,6 +20,8 @@ while (True):
         init.run(runningTime)
     else:
         frame = init.canvas.capture()
+        projector = Projector()
+        projector.white();
         cv2.imshow("New frame", frame)
 
 

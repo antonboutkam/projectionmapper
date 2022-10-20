@@ -1,5 +1,5 @@
 from Projector import Projector
-from Area import Area
+from Canvas import Canvas
 from Cam import Cam
 import cv2
 import numpy as np
@@ -10,7 +10,7 @@ class Init:
     _white_frame = None
     _black_frame = None
     contours_ = None
-    area = None
+    canvas = None
 
     def run(self, running_time):
         projector = Projector()
@@ -65,8 +65,9 @@ class Init:
             # Show the output image
             cv2.imshow("White", white_fullcolor)
             cv2.imshow('Cam area', out)
-            self.area = Area()
-            self.area.init(top_y, bottom_y, top_x, bottom_x)
+            self.canvas = Canvas()
+            self.canvas.init(top_y, bottom_y, top_x, bottom_x)
+            self.initialized = True
 
 
 
