@@ -41,9 +41,9 @@ class Canvas:
         high_blue = np.array([150, 255, 255])
 
         # convert BGR to HSV
-        current_frame_hsv = cv2.cvtColor(current_frame, cv2.COLOR_BGR2HSV)
-        color_mask = 255 - cv2.inRange(current_frame_hsv, low_blue, high_blue)
-        current_frame_without_blue = cv2.bitwise_and(current_frame, current_frame, mask=color_mask)
+        # current_frame_hsv = cv2.cvtColor(current_frame, cv2.COLOR_BGR2HSV)
+        # color_mask = 255 - cv2.inRange(current_frame_hsv, low_blue, high_blue)
+        # current_frame_without_blue = cv2.bitwise_and(current_frame, current_frame, mask=color_mask)
 
 
 
@@ -59,24 +59,20 @@ class Canvas:
 
         # self.show_large("Current tresh", current_thresh)
         # self.show_large("Initial tresh", initial_tresh)
-        self.show_large("Current bgr", current_bgr)
-        self.show_large("Current frame no blue", current_frame_without_blue)
-        self.show_large("Original new frame", current_frame)
-        self.show_large("Diff", difference)
-        self.show_large("Diff reverse", difference)
+        # self.show_large("Current bgr", current_bgr)
+        # self.show_large("Current frame no blue", current_frame_without_blue)
+        # self.show_large("Original new frame", current_frame)
+        # self.show_large("Diff reverse", difference)
 
-
-        frame4 = current_frame
         ret, current_tresh = cv2.threshold(current_bgr, 127, 255, 0)
         curr_contours, hierarchy = cv2.findContours(current_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         out = np.zeros_like(current_frame)
         out.fill(255)
-        cv2.drawContours(out, curr_contours, -1, (0, 0, 255), 2)
-        cv2.drawContours(cv2.flip(frame4, 0), curr_contours, -1, (0, 0, 255), 2)
-        self.show_large("Diff contours 1", frame4)
+        cv2.drawContours(out, curr_contours, -1, (100, 0, 0), 1)
+        cv2.drawContours(current_frame, curr_contours, -1, (100, 0, 0), 1)
 
-        self.show_large("Frame 4", frame4)
+        self.show_large("Frame 4", cv2.flip(current_frame, 0))
         self.show_large("Out", cv2.flip(out, 0))
         projector.draw(out)
 
