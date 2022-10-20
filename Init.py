@@ -65,7 +65,7 @@ class Init:
             cv2.imshow("White", white_fullcolor)
             # cv2.imshow('Cam area', out)
             projector = Projector()
-            projector.white()
+            projector.red()
             self.canvas = Canvas()
             self.canvas.init(top_y, bottom_y, top_x, bottom_x, out)
             self.initialized = True

@@ -23,3 +23,9 @@ class Projector(object):
         black_image = np.zeros([768, 1024, 1], dtype=np.uint8)
         black_image.fill(1)
         cv2.imshow(self.name, black_image)
+
+    def red(self):
+        print('black')
+        black_image = np.zeros([768, 1024, 1], dtype=np.uint8)
+        black_image.fill(1)
+        cv2.imshow(self.name, black_image)

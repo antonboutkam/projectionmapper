@@ -27,7 +27,8 @@ class Canvas:
         new_width = (width * 4)
         new_height = (height * 4)
         print("Width ", width, ", height ", height, "New Width ", new_width, ", new height ", new_height)
-        cv2.imshow(frame_name, frame)
+        large = cv2.resize(frame, (new_width, new_height))
+        cv2.imshow(frame_name, large)
 
     def play(self):
         current_frame = self.capture()
@@ -38,22 +39,17 @@ class Canvas:
         ret, current_thresh = cv2.threshold(current_bgr, 127, 255, 0)
         ret, initial_tresh = cv2.threshold(initial_bgr, 127, 255, 0)
 
-
-
         difference_tresh = cv2.subtract(current_thresh, initial_tresh)
         difference_tresh_reverse = cv2.subtract(current_thresh, initial_tresh)
         contours, hierarchy = cv2.findContours(difference_tresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        cv2.imshow("Current tresh", current_thresh)
-        cv2.imshow("Initial tresh", initial_tresh)
-        cv2.imshow("Diff tresh", difference_tresh)
-        cv2.imshow("Reverse diff tresh", difference_tresh_reverse)
-        cv2.imshow("Original new frame", current_frame)
-
+        self.show_large("Current tresh", current_thresh)
+        self.show_large("Initial tresh", initial_tresh)
+        self.show_large("Diff tresh", difference_tresh)
+        self.show_large("Reverse diff tresh", difference_tresh_reverse)
+        self.show_large("Original new frame", current_frame)
 
         frame3 = current_frame
         cv2.drawContours(frame3, contours, -1, (255, 0, 0), 3)
-
-
-        cv2.imshow("Drawn contours", frame3)
+        self.show_large("Drawn contours", frame3)
 
