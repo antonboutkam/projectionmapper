@@ -9,8 +9,14 @@ class Monitor:
     desired_size = (300, 200)
     desired_ratio = 300 / 200  # 1,3
     column_count = 3
+    gui = False
+
+    def start(self, gui):
+        self.gui = gui
 
     def add(self, title, frame):
+        if not self.gui.main_show_monitor:
+            return None
         # print("Start shape", frame.shape)
         curr_w = frame.shape[0]
         curr_h = frame.shape[1]
@@ -43,10 +49,10 @@ class Monitor:
 
         # cv2.imwrite("preview.jpg", resized_frame)
 
-        resized_frame = self.add_text(title, resized_frame)
+        resized_frame = self.add_text(title, resized_frame, curr_w, curr_h, curr_r)
         self.frames.append(resized_frame)
 
-    def add_text(self, text, resized_frame):
+    def add_text(self, text, resized_frame, curr_w, curr_h, curr_r):
         # return False
         font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -62,9 +68,19 @@ class Monitor:
                     fontColor,
                     thickness,
                     lineType)
+
+        cv2.putText(resized_frame, "w:" + curr_w + ", h:" + curr_h + ", r" + curr_r
+                    (36, 20),
+                    font,
+                    .8,
+                    fontColor,
+                    thickness,
+                    lineType)
         return resized_frame
 
     def display(self):
+        if not self.gui.main_show_monitor:
+            return None
         # return False
         x = 0
         y = 0

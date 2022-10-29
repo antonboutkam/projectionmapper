@@ -19,17 +19,16 @@ class Canvas:
     monitor = None
     source = None
 
-    def init(self, top_y, bottom_y, top_x, bottom_x, initial_frame, gui):
+    def init(self, top_y, bottom_y, top_x, bottom_x, initial_frame, gui, cam, monitor):
         self.top_y = top_y
         self.bottom_y = bottom_y
         self.top_x = top_x
         self.bottom_x = bottom_x
-        self.cam = Cam()
-        self.cam.start()
+        self.cam = cam
         self.initial_frame = initial_frame
         self.gui = gui
         self.pre_processor = PreProcessor()
-        self.monitor = Monitor()
+        self.monitor = monitor
         self.source = Source()
         self.source.start(gui)
 
@@ -62,8 +61,11 @@ class Canvas:
     def play(self, projector):
 
         current_frame = self.capture()
-        input_source = self._get_input(current_frame)
-        mask = self.pre_processor.process(input_source.copy(), self.gui, self.monitor)
+        projection_area_cam_perspective = self._get_input(current_frame)
+        self.monitor.add("Cam perspective", projection_area_cam_perspective)
+        #projection_area_cam_perspective = cv2.resize(projection_area_cam_perspective, (projector.screen_res[0], projector.screen_res[1]))
+        mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
+        self.monitor.add("Mask", projection_area_cam_perspective)
 
         self.monitor.display()
         video_source = self.source.frame()
@@ -74,15 +76,16 @@ class Canvas:
             video_source = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
         video_source_mask_size = cv2.resize(video_source, (mask.shape[1], mask.shape[0]))
         mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_source_mask_size)
+        self.monitor.add("Mask applied", projection_area_cam_perspective)
 
-        full_canvas = np.zeros([projector.screen_res[1], projector.screen_res[0], 3], dtype=np.uint8)
-
+        full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
-        # print('offsetx', offset_x)
-        # print('offsety', offset_y)
-
-        full_canvas[self.top_y+offset_y:self.bottom_y+offset_y + 1, self.top_x+offset_x:self.bottom_x+offset_x + 1] = mask_applied
+        top_y = self.top_y+offset_y
+        bottom_y = self.bottom_y+offset_y + 1
+        top_x = self.top_x+offset_x
+        bottom_x = self.bottom_x+offset_x + 1
+        full_canvas[top_y:bottom_y, top_x:bottom_x] = mask_applied
 
         if self.gui.replace_black:
             # Find all black pixels
@@ -98,8 +101,9 @@ class Canvas:
         # mask_resized = cv2.resize(mask, (768, 1024))
         # mask_resized_color = cv2.cvtColor(mask_resized, cv2.COLOR_GRAY2RGB)
 
-        self.monitor.add("Mask applied", mask_applied)
         self.monitor.add("Result", full_canvas)
+        full_canvas = cv2.resize(full_canvas, (self.projector.screen_res[0], self.projector.screen_res[1]))
+        self.monitor.add("Result resized", full_canvas)
 #        out = np.where(input_source_rect[:, :] == [0, 0, 0], input_source_rect, mask)
         # out = np.where(mask_resized_color[:, :] == [0, 0, 0], mask_resized_color, input_source_rect)
         # self.monitor.add("Out", out)

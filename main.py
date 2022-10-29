@@ -1,6 +1,8 @@
 import numpy as np
 import time
 from Init import Init
+from Cam import Cam
+from Monitor import Monitor
 from Gui import Gui
 from Projector import Projector
 import cv2
@@ -8,13 +10,18 @@ import cv2
 # # Print('black projector')
 # noProjectionSurfaceWindow()
 startTime = time.time()
-init = Init()
-gui = Gui()
-gui.show()
-current_calibration_threshold = gui.calibration_threshold
-current_calibration_luminosity = gui.calibration_luminosity
 projector = Projector()
 restart_init = False
+cam = Cam()
+cam.start()
+gui = Gui()
+gui.init(cam)
+gui.show()
+init = Init()
+monitor = Monitor()
+monitor.start(gui)
+current_calibration_threshold = gui.calibration_threshold
+current_calibration_luminosity = gui.calibration_luminosity
 
 while (True):
     runningTime = int(time.time() - startTime)
@@ -28,7 +35,7 @@ while (True):
         startTime = time.time()
 
     if not init.initialized:
-        init.run(runningTime, gui, projector)
+        init.run(runningTime, gui, projector, cam, monitor)
     else:
         canvas = init.canvas
         canvas.play(projector)
