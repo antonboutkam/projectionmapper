@@ -9,8 +9,14 @@ class Monitor:
     desired_size = (300, 200)
     desired_ratio = 300 / 200  # 1,3
     column_count = 3
+    gui = False
+
+    def start(self, gui):
+        self.gui = gui
 
     def add(self, title, frame):
+        if not self.gui.main_show_monitor:
+            return None
         # print("Start shape", frame.shape)
         curr_w = frame.shape[0]
         curr_h = frame.shape[1]
@@ -65,6 +71,8 @@ class Monitor:
         return resized_frame
 
     def display(self):
+        if not self.gui.main_show_monitor:
+            return None
         # return False
         x = 0
         y = 0

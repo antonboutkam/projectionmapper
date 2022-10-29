@@ -30,6 +30,7 @@ class Canvas:
         self.gui = gui
         self.pre_processor = PreProcessor()
         self.monitor = Monitor()
+        self.monitor.start(gui)
         self.source = Source()
         self.source.start(gui)
 
