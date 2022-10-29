@@ -11,25 +11,22 @@ class PreProcessor:
             # Completely remove {color_to_remove} from the source image
             output[..., [gui.color_to_remove]] = 0
             monitor.add("PreProc Color removed", output)
-        # OR
+
         output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
         monitor.add("PreProc GRAY", output)
-        # OR
 
         if gui.canny_enable:
             output = cv2.Canny(output, gui.canny1, gui.canny2)
             monitor.add("PreProc Canny", output)
-        #
-        # input_preprocessed = cv2.dilate(input_preprocessed, None)
-        output = cv2.erode(output, None)
-        kernel = np.ones((9, 9), np.uint8)
 
         if gui.enable_dilate:
-            output = cv2.erode(output, kernel, iterations=2)
+            dilate_kernel = np.ones((gui.dilate_kernel_y, gui.dilate_kernel_x), np.uint8)
+            output = cv2.erode(output, dilate_kernel, iterations=2)
             monitor.add("PreProc Erode", output)
 
         if gui.enable_erode:
-            output = cv2.dilate(output, kernel, iterations=2)
+            erode_kernel = np.ones((gui.erode_kernel_y, gui.erode_kernel_x), np.uint8)
+            output = cv2.dilate(output, erode_kernel, iterations=2)
             monitor.add("PreProc Dilate", output)
 
         if gui.blur_enable:

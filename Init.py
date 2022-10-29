@@ -53,12 +53,12 @@ class Init:
             # ------------
             cv2.drawContours(mask, largest_contour, -1, 255, -1)
 
-            if False:
+            if gui.calibration_show_found_contours:
                 cv2.drawContours(white_fullcolor, largest_contour, -1, (255, 255, 255), 3)
                 for contour in contours:
                     cv2.drawContours(white_fullcolor, contour, -1, (randrange(255), randrange(255), randrange(255)), 3)
 
-            if False:
+            if gui.calibration_convex_hull:
                 for contour in contours[0:10]:
                     hull = cv2.convexHull(contour)
                     cv2.fillConvexPoly(white_fullcolor, hull, 255)
@@ -75,12 +75,15 @@ class Init:
             out = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
             # Show the output image
-            cv2.imshow("White", white_fullcolor)
+            if gui.calibration_show_input_source:
+                cv2.imshow("Input source", white_fullcolor)
+
             # cv2.imshow("WhiteBGR", white_bgr)
-            # cv2.imshow("Tresh", thresh)
-            # cv2.imshow("Source", self._white_frame)
-            # cv2.imshow("Contour demo", white_fullcolor)
-            cv2.imshow('Project cutout', out)
+            if gui.calibration_show_threshold:
+                cv2.imshow('Threshold', out)
+
+            if gui.calibration_show_project_cutout:
+                cv2.imshow('Project cutout', out)
 
             self.canvas = Canvas()
             # print("INit canvas")

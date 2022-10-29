@@ -69,11 +69,9 @@ class Canvas:
         input_source = self._get_input(current_frame)
         mask = self.pre_processor.process(input_source.copy(), self.gui, self.monitor)
 
-        print('mask shape', mask.shape)
-
         self.monitor.display()
         video_source = self.source.frame()
-        print('video shape', video_source.shape)
+
         mask_color = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
         # input_source_rect = input_source[0:1024, 0:768]
         if video_source.shape[2] == 1:
@@ -85,8 +83,8 @@ class Canvas:
 
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
-        print('offsetx', offset_x)
-        print('offsety', offset_y)
+        # print('offsetx', offset_x)
+        # print('offsety', offset_y)
 
         full_canvas[self.top_y+offset_y:self.bottom_y+offset_y + 1, self.top_x+offset_x:self.bottom_x+offset_x + 1] = mask_applied
         # out = picture[self.top_y:self.bottom_y + 1, self.top_x:self.bottom_x + 1]

@@ -12,22 +12,23 @@ init = Init()
 gui = Gui()
 gui.show()
 current_calibration_threshold = gui.calibration_threshold
+current_calibration_luminosity = gui.calibration_luminosity
 projector = Projector()
+restart_init = False
 
 while (True):
     runningTime = int(time.time() - startTime)
     gui.update()
     # Print("running")
-    if current_calibration_threshold != gui.calibration_threshold:
+    if gui.calibration_recalibrate:
+        print('Restart initialization')
         init.initialized = False
         current_calibration_threshold = gui.calibration_threshold
         startTime = time.time()
 
     if not init.initialized:
-        # Print("init")
         init.run(runningTime, gui, projector)
     else:
-        # Print("canvas")
         canvas = init.canvas
         canvas.play(projector)
 
