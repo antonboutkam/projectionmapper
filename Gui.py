@@ -26,6 +26,9 @@ class Gui:
 
     offset_x = 400
     offset_y = 400
+
+    replace_black = 0
+
     max_offset_x = 800
     max_offset_y = 800
     draw_contour_min = 1
@@ -116,6 +119,7 @@ class Gui:
 
             cv2.createTrackbar("Offset X", self.window_preprocessing, self.offset_x, self.max_offset_x, self.trackbar_change)
             cv2.createTrackbar("Offset Y", self.window_preprocessing, self.offset_y, self.max_offset_y, self.trackbar_change)
+            cv2.createTrackbar("Replace black", self.window_preprocessing, self.replace_black, 255,self.trackbar_change)
 
     def trackbar_change(x):
         pass
@@ -210,3 +214,6 @@ class Gui:
 
             self.offset_x = cv2.getTrackbarPos("Offset X", self.window_preprocessing)
             self.offset_y = cv2.getTrackbarPos("Offset Y", self.window_preprocessing)
+
+            self.replace_black = cv2.getTrackbarPos("Replace black", self.window_preprocessing)
+

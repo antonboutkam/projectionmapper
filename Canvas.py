@@ -1,14 +1,10 @@
 from Cam import Cam
-from Projector import Projector
 from Source import Source
 from PreProcessor import PreProcessor
 from Monitor import Monitor
-from Gui import Gui
 import cv2
 import numpy as np
 import math
-
-
 
 class Canvas:
     top_y = None
@@ -87,6 +83,17 @@ class Canvas:
         # print('offsety', offset_y)
 
         full_canvas[self.top_y+offset_y:self.bottom_y+offset_y + 1, self.top_x+offset_x:self.bottom_x+offset_x + 1] = mask_applied
+
+        if self.gui.replace_black:
+            # Find all black pixels
+            black_pixels = np.where(
+                (full_canvas[:, :, 0] == 0) &
+                (full_canvas[:, :, 1] == 0) &
+                (full_canvas[:, :, 2] == 0)
+            )
+            # set those pixels to whatever value is configured
+            full_canvas[black_pixels] = [self.gui.replace_black, self.gui.replace_black, self.gui.replace_black]
+
         # out = picture[self.top_y:self.bottom_y + 1, self.top_x:self.bottom_x + 1]
         # mask_resized = cv2.resize(mask, (768, 1024))
         # mask_resized_color = cv2.cvtColor(mask_resized, cv2.COLOR_GRAY2RGB)
