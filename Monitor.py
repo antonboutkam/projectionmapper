@@ -6,13 +6,11 @@ import math
 
 class Monitor:
     frames = []
-    desired_size = (400, 300)
-    desired_ratio = 400 / 300  # 1,3
-    frame_count = 1
-    column_count = 4
+    desired_size = (300, 200)
+    desired_ratio = 300 / 200  # 1,3
+    column_count = 3
 
     def add(self, title, frame):
-        self.frame_count = self.frame_count + 1
         # print("Start shape", frame.shape)
         curr_w = frame.shape[0]
         curr_h = frame.shape[1]
@@ -49,15 +47,16 @@ class Monitor:
         self.frames.append(resized_frame)
 
     def add_text(self, text, resized_frame):
+        # return False
         font = cv2.FONT_HERSHEY_SIMPLEX
-        bottomLeftCornerOfText = (10, 500)
+
         fontScale = 1
         fontColor = (255, 255, 255)
         thickness = 1
         lineType = 2
 
         cv2.putText(resized_frame, text,
-                    bottomLeftCornerOfText,
+                    (20, 20),
                     font,
                     fontScale,
                     fontColor,
@@ -66,17 +65,19 @@ class Monitor:
         return resized_frame
 
     def display(self):
+        # return False
         x = 0
         y = 0
         total_width = self.desired_size[0] * self.column_count
         total_height = self.desired_size[1]
-
-        if self.frame_count > self.column_count:
-            row_count = math.ceil(self.frame_count / self.column_count)
+        frame_count = len(self.frames)
+        # print("Frame count ", len(self.frames), "Column count", self.column_count)
+        if frame_count > self.column_count:
+            row_count = math.ceil(frame_count / self.column_count)
             total_height = self.desired_size[1] * row_count
 
         shape = [total_height, total_width]
-       # print("Preview container shape ", shape)
+        # print("Preview container shape ", shape)
         preview_container = np.zeros(shape, np.uint8)
         preview_container = cv2.cvtColor(preview_container, cv2.COLOR_GRAY2BGR)
         # print(preview_container)
@@ -85,25 +86,29 @@ class Monitor:
         vertical_move = 0
         index = 0
         for frame in self.frames:
-            # # Print(frame)
+            # # print(frame)
             h = frame.shape[0]
             w = frame.shape[1]
 
             if len(frame.shape) == 2:
                 frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
-            # Print("Add ", index, "cc", self.column_count, " image ", y, ":", h, ",", x, ":", w)
+            # print("Add ", index, "cc", self.column_count, " image ", y, ":", h, ",", x, ":", w)
 
             if (index % self.column_count) == 0 and index != 0:
                 horizontal_move = 0
                 vertical_move = vertical_move + h
-            # Print("Index:", index, "Horizontal", (w + horizontal_move), "vertical: ", (h + vertical_move))
-            preview_container[y + vertical_move: h + vertical_move, x + horizontal_move: w + horizontal_move] = frame
+            # print("Index:", index, "Horizontal", (w + horizontal_move), "vertical: ", (h + vertical_move))
+            # print("Frame shape", frame.shape)
+            # print((y + vertical_move), ':', (h + vertical_move), ',', (x + horizontal_move), ':', (w + horizontal_move))
+
+            # l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
+            preview_container[vertical_move: vertical_move + h, horizontal_move: horizontal_move + w] = frame
             horizontal_move = horizontal_move + w
             index = index + 1
 
         cv2.imshow("Monitpr", preview_container)
-        self.frame_count = 0
+        frame_count = 0
         self.frames = []
 
 if __name__ == "__main__":

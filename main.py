@@ -2,6 +2,7 @@ import numpy as np
 import time
 from Init import Init
 from Gui import Gui
+from Projector import Projector
 import cv2
 
 # # Print('black projector')
@@ -11,6 +12,7 @@ init = Init()
 gui = Gui()
 gui.show()
 current_calibration_threshold = gui.calibration_threshold
+projector = Projector()
 
 while (True):
     runningTime = int(time.time() - startTime)
@@ -23,11 +25,11 @@ while (True):
 
     if not init.initialized:
         # Print("init")
-        init.run(runningTime, gui)
+        init.run(runningTime, gui, projector)
     else:
         # Print("canvas")
         canvas = init.canvas
-        canvas.play()
+        canvas.play(projector)
 
     # the 'q' button is set as the
     # quitting button you may use any

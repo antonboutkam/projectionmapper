@@ -1,9 +1,12 @@
+import math
+
 from Projector import Projector
 from Canvas import Canvas
 from Cam import Cam
 from Gui import Gui
 import cv2
 import numpy as np
+from random import randrange
 
 
 class Init:
@@ -13,52 +16,52 @@ class Init:
     contours_ = None
     canvas = None
 
-    def run(self, running_time, gui):
-        print("init.run")
-        projector = Projector()
+    def run(self, running_time, gui, projector):
+
         cam = Cam()
+        cam.start()
         print("runnning time", running_time)
-        if running_time < 5:
-            print("whitee")
-            projector.white()
+        if running_time < 2:
+            # Moves the window in position
+            projector.light(gui.calibration_luminosity)
+
             print("picture")
             self._white_frame = cam.picture()
-            print("bla")
-            white_bgr = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
-            ret, thresh = cv2.threshold(white_bgr, gui.calibration_threshold, 255, 0)
-
-            cv2.imshow("WhiteBGR", white_bgr)
-            cv2.imshow("Tresh", thresh)
-            cv2.imshow("White", self._white_frame)
+        elif running_time < 3:
+            projector.black()
         else:
             # cv2.imshow("White", self._white_frame)
             white_fullcolor = np.copy(self._white_frame)
             white_bgr = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
 
-            ret, thresh = cv2.threshold(white_bgr, 30, 255, 0)
-            # cv2.imshow("Tresh", thresh)
-
+#            white_bgr = cv2.GaussianBlur(white_bgr, (5, 5), 0)
+            ret, thresh = cv2.threshold(white_bgr, gui.calibration_threshold, 255, cv2.THRESH_BINARY)
             contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            contour_count = len(contours)
+            print("Found ", contour_count, "  during init state")
 
-            print("Found ", len(contours), "  during init state")
+            if contour_count == 0:
+                gui.calibration_threshold = gui.calibration_threshold +1
+                return None
 
             # Create mask where white is what we want, black otherwise
             mask = np.zeros_like(white_bgr)
             # -----------------
-            # sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-            # largest_contour = sorted_contours[0]
+            sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
+            largest_contour = sorted_contours[0]
 
             # ------------
-            cv2.drawContours(mask, contours, -1, 255, -1)
-            cv2.drawContours(white_fullcolor, contours, -1, (255, 0, 0), 1)
+            cv2.drawContours(mask, largest_contour, -1, 255, -1)
 
-            # cv2.drawContours(self._black_frame, contours, -1, (128, 255, 0), cv2.LINE_4)
-            # white_small = cv2.resize(white_fullcolor, (800, 800), interpolation=cv2.INTER_AREA)
-            # black_small = cv2.resize(self._black_frame, (800, 800), interpolation=cv2.INTER_AREA)
-            # difference_small = cv2.resize(difference, (800, 800), interpolation=cv2.INTER_AREA)
+            if False:
+                cv2.drawContours(white_fullcolor, largest_contour, -1, (255, 255, 255), 3)
+                for contour in contours:
+                    cv2.drawContours(white_fullcolor, contour, -1, (randrange(255), randrange(255), randrange(255)), 3)
 
-            # cv2.imshow("Black", black_small)
-            # cv2.imshow("Difference", difference_small)
+            if False:
+                for contour in contours[0:10]:
+                    hull = cv2.convexHull(contour)
+                    cv2.fillConvexPoly(white_fullcolor, hull, 255)
 
             # Extract out the object and place into output image
             out = np.zeros_like(white_bgr)
@@ -68,15 +71,17 @@ class Init:
             (y, x) = np.where(mask == 255)
             (top_y, top_x) = (np.min(y), np.min(x))
             (bottom_y, bottom_x) = (np.max(y), np.max(x))
+            # print(top_y, ':', (bottom_y + 1), ', ', top_x, ':', (bottom_x + 1))
             out = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
             # Show the output image
-            # cv2.imshow("White", white_fullcolor)
+            cv2.imshow("White", white_fullcolor)
+            # cv2.imshow("WhiteBGR", white_bgr)
+            # cv2.imshow("Tresh", thresh)
+            # cv2.imshow("Source", self._white_frame)
+            # cv2.imshow("Contour demo", white_fullcolor)
+            cv2.imshow('Project cutout', out)
 
-            cv2.imshow('Cam area', out)
-            projector = Projector()
-            # print("Show white")
-            projector.white()
             self.canvas = Canvas()
             # print("INit canvas")
             self.canvas.init(top_y, bottom_y, top_x, bottom_x, out, gui)
