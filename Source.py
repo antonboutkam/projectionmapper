@@ -8,6 +8,9 @@ class Source:
         # 'littleboxes.mp4',
         # 'network.mp4',
         'spinning.mp4',
+        'glytchghost.mov',
+        'twisted hall.mov',
+        'twirlers.mov'
         # 'plugs slower.mov'
     ]
     current_clip = 0

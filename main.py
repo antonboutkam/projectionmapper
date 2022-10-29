@@ -22,6 +22,7 @@ while (True):
     # Print("running")
     if gui.calibration_recalibrate:
         print('Restart initialization')
+        gui.calibration_recalibrate = False
         init.initialized = False
         current_calibration_threshold = gui.calibration_threshold
         startTime = time.time()

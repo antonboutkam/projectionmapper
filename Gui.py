@@ -14,7 +14,8 @@ class Gui:
     threshold_enable = 1
     threshold = 193
     threshold_mode = 0
-    calibration_recalibrate = 0
+    calibration_recalibrate = False
+    calibration_threshold = 90
     calibration_threshold = 90
     calibration_luminosity = 127
     calibration_show_project_cutout = 1
@@ -121,7 +122,7 @@ class Gui:
             cv2.createTrackbar("Offset Y", self.window_preprocessing, self.offset_y, self.max_offset_y, self.trackbar_change)
             cv2.createTrackbar("Replace black", self.window_preprocessing, self.replace_black, 255,self.trackbar_change)
 
-    def trackbar_change(x):
+    def trackbar_change(self, x):
         pass
 
     def show(self):
@@ -143,52 +144,60 @@ class Gui:
             tmp = cv2.getTrackbarPos("Calibration threshold", self.window_calibration)
             if tmp != self.calibration_threshold:
                 self.calibration_recalibrate = True
+                print('11')
             self.calibration_threshold = tmp
 
             tmp = cv2.getTrackbarPos("Calibration luminosity", self.window_calibration)
             if tmp != self.calibration_luminosity:
                 self.calibration_recalibrate = True
+                print('22')
             self.calibration_luminosity = tmp
 
             tmp = cv2.getTrackbarPos("Calibration convex hull", self.window_calibration)
             if tmp != self.calibration_convex_hull:
+                print('33')
                 self.calibration_recalibrate = True
             self.calibration_convex_hull = tmp
 
             tmp = cv2.getTrackbarPos("Input source", self.window_calibration)
             if tmp != self.input_source:
+                print('44')
                 self.calibration_recalibrate = True
             self.input_source = tmp
 
             tmp = cv2.getTrackbarPos("Show input source", self.window_calibration)
             if tmp != self.calibration_show_input_source:
+                print('55')
                 self.calibration_recalibrate = True
             self.calibration_show_input_source = tmp
 
             tmp = cv2.getTrackbarPos("Show cutout", self.window_calibration)
             if tmp != self.calibration_show_project_cutout:
+                print('66')
                 self.calibration_recalibrate = True
             self.calibration_show_project_cutout = tmp
 
             tmp = cv2.getTrackbarPos("Show threshold", self.window_calibration)
             if tmp != self.calibration_show_threshold:
+                print('77')
                 self.calibration_recalibrate = True
             self.calibration_show_threshold = tmp
 
             tmp = cv2.getTrackbarPos("Show found contours", self.window_calibration)
             if tmp != self.calibration_show_found_contours:
+                print('88')
                 self.calibration_recalibrate = True
             self.calibration_show_found_contours = tmp
 
             tmp = cv2.getTrackbarPos("Preview contour thickness", self.window_calibration)
             if tmp != self.contour_thickness:
+                print('99')
                 self.calibration_recalibrate = True
             self.contour_thickness = tmp
 
         if cv2.getWindowProperty(self.window_preprocessing, cv2.WND_PROP_VISIBLE):
             self.video_source = cv2.getTrackbarPos("Video source", self.window_preprocessing)
             self.video_source_brightness = cv2.getTrackbarPos("Video brightness", self.window_preprocessing)
-
             self.threshold_enable = cv2.getTrackbarPos("Threshold enable", self.window_preprocessing)
             self.threshold = cv2.getTrackbarPos("Threshold", self.window_preprocessing)
             self.threshold_mode = cv2.getTrackbarPos("Threshold mode", self.window_preprocessing)
