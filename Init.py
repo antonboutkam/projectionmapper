@@ -24,7 +24,6 @@ class Init:
             projector.light(gui.calibration_luminosity)
             print("picture")
             self._white_frame = cam.picture()
-            monitor.add(self._white_frame)
         elif running_time < 3:
             print("wait black")
             projector.black()
