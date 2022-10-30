@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import math
 
+
 class Canvas:
     top_y = None
     top_x = None
@@ -63,7 +64,7 @@ class Canvas:
         current_frame = self.capture()
         projection_area_cam_perspective = self._get_input(current_frame)
         self.monitor.add("Canvas cam perspective", projection_area_cam_perspective)
-        #projection_area_cam_perspective = cv2.resize(projection_area_cam_perspective, (projector.screen_res[0], projector.screen_res[1]))
+        # projection_area_cam_perspective = cv2.resize(projection_area_cam_perspective, (projector.screen_res[0], projector.screen_res[1]))
         mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
         self.monitor.add("Canvas mask", projection_area_cam_perspective)
 
@@ -83,8 +84,8 @@ class Canvas:
         self.monitor.add("Canvas mask applied", projection_area_cam_perspective)
 
         # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
-        # offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
-        # offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
+        offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
+        offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
         # top_y = self.top_y+offset_y
         # bottom_y = self.bottom_y+offset_y + 1
         # top_x = self.top_x+offset_x
@@ -96,7 +97,37 @@ class Canvas:
         # print('bottomx', bottom_x)
         # print('mask shape', mask_applied)
         full_canvas = np.zeros_like(current_frame)
-        full_canvas = mask_applied
+        # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
+        h, w, c = mask_applied.shape()
+        dest_top_y = 0
+        dest_bottom_y = h
+        dest_top_x = 0
+        dest_bottom_x = w
+
+        if offset_y > 0:
+            src_top_y = 0
+            src_bottom_y = h - offset_y
+            dest_top_y = offset_y
+            dest_bottom_y = h
+        else:
+            src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewl plus 20
+            src_bottom_y = h
+            dest_top_y = 0
+            dest_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
+
+        if offset_x > 0:
+            src_top_x = 0
+            src_bottom_x = w - offset_x
+            dest_top_x = offset_x
+            dest_bottom_x = w
+        else:
+            src_top_x = 0 + offset_x
+            src_bottom_x = w
+            dest_top_x = 0
+            dest_bottom_x = w + offset_x
+
+        full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
+                                                                          src_top_x:src_bottom_x]
         # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
         # full_canvas[-10:300, 0:400] = mask_applied[0:290, 0:400]
 
@@ -117,7 +148,7 @@ class Canvas:
         self.monitor.add("Result", full_canvas)
         full_canvas = cv2.resize(full_canvas, (projector.screen_res[0], projector.screen_res[1]))
         self.monitor.add("Result resized", full_canvas)
-#        out = np.where(input_source_rect[:, :] == [0, 0, 0], input_source_rect, mask)
+        #        out = np.where(input_source_rect[:, :] == [0, 0, 0], input_source_rect, mask)
         # out = np.where(mask_resized_color[:, :] == [0, 0, 0], mask_resized_color, input_source_rect)
         # self.monitor.add("Out", out)
         projector.draw(full_canvas)
