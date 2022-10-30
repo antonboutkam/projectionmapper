@@ -87,12 +87,12 @@ class Init:
 
             # cv2.imshow("WhiteBGR", white_bgr)
             if gui.calibration_show_threshold:
-                monitor.add("Calibration threshold", white_fullcolor)
-                cv2.imshow('Calibration threshold', white_fullcolor)
+                monitor.add("Calibration threshold", thresh)
+                cv2.imshow('Calibration threshold', thresh)
 
             if gui.calibration_show_project_cutout:
-                monitor.add("Calibration  cutout", white_fullcolor)
-                cv2.imshow('Calibration  cutout', white_fullcolor)
+                monitor.add("Calibration  cutout", mask_cutout)
+                cv2.imshow('Calibration  cutout', mask_cutout)
 
             self.canvas = Canvas()
             # print("INit canvas")
