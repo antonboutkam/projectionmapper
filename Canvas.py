@@ -116,7 +116,7 @@ class Canvas:
         # mask_resized_color = cv2.cvtColor(mask_resized, cv2.COLOR_GRAY2RGB)
 
         self.monitor.add("Result", full_canvas)
-        full_canvas = cv2.resize(full_canvas, (self.projector.screen_res[0], self.projector.screen_res[1]))
+        full_canvas = cv2.resize(full_canvas, (projector.screen_res[0], projector.screen_res[1]))
         self.monitor.add("Result resized", full_canvas)
 #        out = np.where(input_source_rect[:, :] == [0, 0, 0], input_source_rect, mask)
         # out = np.where(mask_resized_color[:, :] == [0, 0, 0], mask_resized_color, input_source_rect)
