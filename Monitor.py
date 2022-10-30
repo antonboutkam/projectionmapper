@@ -8,7 +8,7 @@ class Monitor:
     frames = []
     desired_size = (300, 200)
     desired_ratio = 300 / 200  # 1,3
-    column_count = 3
+    column_count = 4
     gui = False
 
     def start(self, gui):
@@ -72,9 +72,9 @@ class Monitor:
         w = str(curr_w)
         h = str(curr_h)
         r = str(curr_r)
-        cv2.putText(resized_frame, "w:" + w + ", h:" + h + ", r" + r, (36, 20),
+        cv2.putText(resized_frame, "w:" + w + ", h:" + h + ", r" + r, (20, 40),
                     font,
-                    .8,
+                    .6,
                     fontColor,
                     thickness,
                     lineType)
