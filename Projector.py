@@ -4,7 +4,7 @@ import cv2
 
 class Projector(object):
     name = 'canvas_window'
-    screen_res = (1440, 900)
+    screen_res = (1024, 768)
 
     def __int__(self):
         # Print("Projector init")
@@ -55,5 +55,5 @@ class Projector(object):
         cv2.imshow(self.name, red)
 
     def draw(self, frame):
-        projector_frame = cv2.resize(frame, (self.screen_res[0], self.screen_res[1]))
-        cv2.imshow(self.name, projector_frame)
+        # frame = cv2.resize(frame, (self.screen_res[0], self.screen_res[1]))
+        cv2.imshow(self.name, frame)

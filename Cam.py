@@ -2,15 +2,18 @@ import numpy as np
 import cv2
 
 class Cam(object):
+    width = 1280
+    height = 720
     # gphoto2 - -stdout - -capture - movie | gst - launch - 0.10 fdsrc ! decodebin2 name = dec ! queue ! ffmpegcolorspace ! v4l2sink device = /dev/video2
     vid = cv2.VideoCapture(1)
     last_frame = None
     # vid = cv2.VideoCapture(2)
 
     def start(self):
+        print('x')
         # self.vid = cv2.VideoCapture(3)
-        self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
+        self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         # fourcc = cv2.VideoWriter_fourcc(*'XVID')
         # codec = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
         # self.vid.set(6, codec)
@@ -35,8 +38,10 @@ class Cam(object):
         while True:
             ret, frame = self.vid.read()
             if not ret and self.last_frame is None:
+                print('wait cam')
                 continue
             elif not ret:
+                print('cam fail')
                 return self.last_frame
             else:
                 self.last_frame = cv2.flip(frame, 1)

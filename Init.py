@@ -28,14 +28,19 @@ class Init:
             print("picture")
             self._white_frame = cam.picture()
         elif running_time < 3:
+            print("wait black")
             projector.black()
         else:
+            print("calibrate 1")
             # cv2.imshow("White", self._white_frame)
             white_fullcolor = np.copy(self._white_frame)
+            print("source shape: ", white_fullcolor.shape)
             white_bgr = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
-
+            print("calibrate 2")
 #            white_bgr = cv2.GaussianBlur(white_bgr, (5, 5), 0)
+            print("start thresh")
             ret, thresh = cv2.threshold(white_bgr, gui.calibration_threshold, 255, cv2.THRESH_BINARY)
+            print("start comt")
             contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             contour_count = len(contours)
             print("Found ", contour_count, "  during init state")
@@ -47,18 +52,22 @@ class Init:
             # Create mask where white is what we want, black otherwise
             mask = np.zeros_like(white_bgr)
             # -----------------
+            print("sort")
             sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
             largest_contour = sorted_contours[0]
 
             # ------------
+            print("draw largest")
             cv2.drawContours(mask, largest_contour, -1, 255, -1)
 
             if gui.calibration_show_found_contours:
-                cv2.drawContours(white_fullcolor, largest_contour, -1, (255, 255, 255), 3)
-                for contour in contours:
-                    cv2.drawContours(white_fullcolor, contour, -1, (randrange(255), randrange(255), randrange(255)), 3)
+                print("show found")
+                cv2.drawContours(white_fullcolor, largest_contour, -1, (255, 0, 0), 3)
+                # for contour in contours:
+                #    cv2.drawContours(white_fullcolor, contour, -1, (randrange(255), randrange(255), randrange(255)), 3)
 
             if gui.calibration_convex_hull:
+                print("show convex 10")
                 for contour in contours[0:10]:
                     hull = cv2.convexHull(contour)
                     cv2.fillConvexPoly(white_fullcolor, hull, 255)
@@ -87,5 +96,6 @@ class Init:
 
             self.canvas = Canvas()
             # print("INit canvas")
+            print("init canvas")
             self.canvas.init(top_y, bottom_y, top_x, bottom_x, out, gui)
             self.initialized = True

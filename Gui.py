@@ -77,7 +77,7 @@ class Gui:
             cv2.namedWindow(self.window_calibration)
             cv2.createTrackbar("Calibration threshold", self.window_calibration, self.calibration_threshold, 255, self.trackbar_change)
             cv2.createTrackbar("Calibration luminosity", self.window_calibration, self.calibration_luminosity, 255, self.trackbar_change)
-            cv2.createTrackbar("Calibration convex hull", self.window_calibration, self.calibration_luminosity, 1,self.trackbar_change)
+            cv2.createTrackbar("Calibration convex hull", self.window_calibration, self.calibration_convex_hull, 1,self.trackbar_change)
             cv2.createTrackbar("Input source", self.window_calibration, self.input_source, 2, self.trackbar_change)
 
             cv2.createTrackbar("Show cutout", self.window_calibration, self.calibration_show_project_cutout, 1, self.trackbar_change)
