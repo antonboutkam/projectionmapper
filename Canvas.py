@@ -98,11 +98,7 @@ class Canvas:
         # print('mask shape', mask_applied)
         full_canvas = np.zeros_like(current_frame)
         # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
-        h, w, c = mask_applied.shape()
-        dest_top_y = 0
-        dest_bottom_y = h
-        dest_top_x = 0
-        dest_bottom_x = w
+        h, w, c = mask_applied.shape
 
         if offset_y > 0:
             src_top_y = 0
