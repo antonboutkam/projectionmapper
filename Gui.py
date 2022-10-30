@@ -183,7 +183,7 @@ class Gui:
                 self.calibration_recalibrate = True
             self.calibration_luminosity = tmp
 
-            tmp = cv2.getTrackbarPos("Manual mode", self.window_calibration)
+            tmp = cv2.getTrackbarPos("Calibration manual mode", self.window_calibration)
             if tmp != self.calibration_manual_mode:
                 self.calibration_recalibrate = True
             self.calibration_manual_mode = tmp
