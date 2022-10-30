@@ -62,44 +62,43 @@ class Canvas:
 
         current_frame = self.capture()
         projection_area_cam_perspective = self._get_input(current_frame)
-        self.monitor.add("Cam perspective", projection_area_cam_perspective)
+        self.monitor.add("Canvas cam perspective", projection_area_cam_perspective)
         #projection_area_cam_perspective = cv2.resize(projection_area_cam_perspective, (projector.screen_res[0], projector.screen_res[1]))
         mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
-        self.monitor.add("Mask", projection_area_cam_perspective)
+        self.monitor.add("Canvas mask", projection_area_cam_perspective)
 
         self.monitor.display()
         video_source = self.source.frame()
 
         mask_color = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
-        print('mask color shape', mask_color.shape)
+        # print('mask color shape', mask_color.shape)
         # input_source_rect = input_source[0:1024, 0:768]
         if video_source.shape[2] == 1:
             video_source = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
         video_source_mask_size = cv2.resize(video_source, (mask.shape[1], mask.shape[0]))
-        print('mask color shape', mask_color.shape)
-        print('video source mask size shape', video_source_mask_size.shape)
+        # print('mask color shape', mask_color.shape)
+        # print('video source mask size shape', video_source_mask_size.shape)
         mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_source_mask_size)
-        print('mask applied shape', mask_applied.shape)
-        self.monitor.add("Mask applied", projection_area_cam_perspective)
+        # print('mask applied shape', mask_applied.shape)
+        self.monitor.add("Canvas mask applied", projection_area_cam_perspective)
 
-        full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
-        offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
-        offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
-        top_y = self.top_y+offset_y
-        bottom_y = self.bottom_y+offset_y + 1
-        top_x = self.top_x+offset_x
-        bottom_x = self.bottom_x+offset_x + 1
+        # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
+        # offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
+        # offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
+        # top_y = self.top_y+offset_y
+        # bottom_y = self.bottom_y+offset_y + 1
+        # top_x = self.top_x+offset_x
+        # bottom_x = self.bottom_x+offset_x + 1
 
-        print('topy', top_y)
-        print('bottomy', bottom_y)
-        print('topx', top_x)
-        print('bottomx', bottom_x)
-        print('mask shape', mask_applied)
+        # print('topy', top_y)
+        # print('bottomy', bottom_y)
+        # print('topx', top_x)
+        # print('bottomx', bottom_x)
+        # print('mask shape', mask_applied)
         full_canvas = np.zeros_like(current_frame)
         full_canvas = mask_applied
         # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
         # full_canvas[-10:300, 0:400] = mask_applied[0:290, 0:400]
-
 
         if self.gui.replace_black:
             # Find all black pixels
