@@ -49,10 +49,10 @@ class Monitor:
 
         # cv2.imwrite("preview.jpg", resized_frame)
 
-        resized_frame = self.add_text(title, resized_frame)
+        resized_frame = self.add_text(title, resized_frame, curr_w, curr_h, curr_r)
         self.frames.append(resized_frame)
 
-    def add_text(self, text, resized_frame):
+    def add_text(self, text, resized_frame, curr_w, curr_h, curr_r):
         # return False
         font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -65,6 +65,14 @@ class Monitor:
                     (20, 20),
                     font,
                     fontScale,
+                    fontColor,
+                    thickness,
+                    lineType)
+
+        cv2.putText(resized_frame, "w:" + curr_w + ", h:" + curr_h + ", r" + curr_r
+                    (36, 20),
+                    font,
+                    .8,
                     fontColor,
                     thickness,
                     lineType)

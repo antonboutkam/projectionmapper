@@ -16,6 +16,12 @@ class Gui:
     threshold_enable = 1
     threshold = 193
     threshold_mode = 0
+
+    calibration_manual_min_x = 0
+    calibration_manual_max_x = 100
+    calibration_manual_min_y = 0
+    calibration_manual_max_y = 100
+
     calibration_recalibrate = False
     calibration_threshold = 90
     calibration_threshold = 90
@@ -65,6 +71,10 @@ class Gui:
     video_source = 0
     video_source_brightness = 127
 
+    def init(self, cam):
+        self.calibration_manual_max_x = cam.width
+        self.calibration_manual_max_y = cam.height
+
     def main_config(self):
         cv2.namedWindow(self.window_main)
         cv2.createTrackbar("Show calibration", self.window_main, self.main_show_calibration, 1, self.trackbar_change)
@@ -77,7 +87,13 @@ class Gui:
             cv2.namedWindow(self.window_calibration)
             cv2.createTrackbar("Calibration threshold", self.window_calibration, self.calibration_threshold, 255, self.trackbar_change)
             cv2.createTrackbar("Calibration luminosity", self.window_calibration, self.calibration_luminosity, 255, self.trackbar_change)
-            cv2.createTrackbar("Calibration convex hull", self.window_calibration, self.calibration_convex_hull, 1,self.trackbar_change)
+            cv2.createTrackbar("Calibration convex hull", self.window_calibration, self.calibration_convex_hull, 1, self.trackbar_change)
+
+            cv2.createTrackbar("Cam cut min X", self.window_calibration, self.calibration_manual_min_x, 1, self.trackbar_change)
+            cv2.createTrackbar("Cam cut max X", self.window_calibration, self.calibration_manual_max_x, 1, self.trackbar_change)
+            cv2.createTrackbar("Cam cut min Y", self.window_calibration, self.calibration_manual_min_y, 1, self.trackbar_change)
+            cv2.createTrackbar("Cam cut max Y", self.window_calibration, self.calibration_manual_max_y, 1, self.trackbar_change)
+
             cv2.createTrackbar("Input source", self.window_calibration, self.input_source, 2, self.trackbar_change)
 
             cv2.createTrackbar("Show cutout", self.window_calibration, self.calibration_show_project_cutout, 1, self.trackbar_change)
@@ -165,6 +181,31 @@ class Gui:
                 self.calibration_recalibrate = True
             self.calibration_luminosity = tmp
 
+            tmp = cv2.getTrackbarPos("Manual mode", self.window_calibration)
+            if tmp != self.calibration_manual_mode:
+                self.calibration_recalibrate = True
+            self.calibration_manual_mode = tmp
+
+            tmp = cv2.getTrackbarPos("Cam cut min X", self.window_calibration)
+            if tmp != self.calibration_manual_min_x:
+                self.calibration_recalibrate = True
+            self.calibration_manual_min_x = tmp
+
+            tmp = cv2.getTrackbarPos("Cam cut max X", self.window_calibration)
+            if tmp != self.calibration_manual_max_x:
+                self.calibration_recalibrate = True
+            self.calibration_manual_max_x = tmp
+
+            tmp = cv2.getTrackbarPos("Cam cut min Y", self.window_calibration)
+            if tmp != self.calibration_manual_min_y:
+                self.calibration_recalibrate = True
+            self.calibration_manual_min_y = tmp
+
+            tmp = cv2.getTrackbarPos("Cam cut max Y", self.window_calibration)
+            if tmp != self.calibration_manual_max_y:
+                self.calibration_recalibrate = True
+            self.calibration_manual_max_y = tmp
+
             tmp = cv2.getTrackbarPos("Calibration convex hull", self.window_calibration)
             if tmp != self.calibration_convex_hull:
                 self.calibration_recalibrate = True
@@ -226,6 +267,10 @@ class Gui:
             self.video_source = cv2.getTrackbarPos("Video source", self.window_output)
             self.video_source_brightness = cv2.getTrackbarPos("Video brightness", self.window_output)
             self.mask_scale = cv2.getTrackbarPos("Mask scale", self.window_output)
+            tmp =  cv2.getTrackbarPos("Offset X", self.window_output)
+            if self.offset_x != tmp:
+                self.offset_x = tmp
+                print('Offset X', tmp)
             self.offset_x = cv2.getTrackbarPos("Offset X", self.window_output)
             self.offset_y = cv2.getTrackbarPos("Offset Y", self.window_output)
             self.replace_black = cv2.getTrackbarPos("Replace black", self.window_output)
