@@ -69,7 +69,7 @@ class Monitor:
                     thickness,
                     lineType)
 
-        cv2.putText(resized_frame, "w:" + curr_w + ", h:" + curr_h + ", r" + curr_r
+        cv2.putText(resized_frame, "w:" + str(curr_w) + ", h:" + str(curr_h) + ", r" + str(curr_r)
                     (36, 20),
                     font,
                     .8,
