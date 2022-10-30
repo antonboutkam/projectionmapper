@@ -117,7 +117,7 @@ class Canvas:
             dest_top_x = offset_x
             dest_bottom_x = w
         else:
-            src_top_x = 0 + offset_x
+            src_top_x = 0 - offset_x
             src_bottom_x = w
             dest_top_x = 0
             dest_bottom_x = w + offset_x
