@@ -81,9 +81,9 @@ class Canvas:
         gpu_video_source_mask_size = cv2.cuda.resize(gpu_video_source, (mask.shape[1], mask.shape[0]))
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
-        mask_applied = cp.where(gpu_mask_color[:, :] == [0, 0, 0], gpu_mask_color.download(), gpu_video_source_mask_size.download())
+        gpu_mask_applied = cp.where(gpu_mask_color[:, :] == [0, 0, 0], gpu_mask_color, gpu_video_source_mask_size)
         # print('mask applied shape', mask_applied.shape)
-        self.monitor.add("Canvas mask applied", mask_applied)
+        self.monitor.add_gpu("Canvas mask applied", gpu_mask_applied)
 
         # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
@@ -126,6 +126,7 @@ class Canvas:
             dest_top_x = 0
             dest_bottom_x = w + offset_x
 
+        mask_applied = gpu_mask_applied.download()
         full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
                                                                           src_top_x:src_bottom_x]
         # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
