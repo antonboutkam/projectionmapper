@@ -67,6 +67,7 @@ class Canvas:
         self.monitor.add("Canvas cam perspective", projection_area_cam_perspective)
 
         gpu_mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
+        mask = gpu_mask.download()
         self.monitor.add_gpu("Canvas mask", gpu_mask)
         gpu_mask_color = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
 
@@ -77,7 +78,7 @@ class Canvas:
         if video_source.shape[2] == 1:
             gpu_video_source = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
 
-        gpu_video_source_mask_size = cv2.cuda.resize(gpu_video_source, (gpu_mask.shape[1], gpu_mask.shape[0]))
+        gpu_video_source_mask_size = cv2.cuda.resize(gpu_video_source, (mask.shape[1], mask.shape[0]))
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
         gpu_mask_applied = cp.where(gpu_mask_color[:, :] == [0, 0, 0], gpu_mask_color, gpu_video_source_mask_size)
@@ -99,7 +100,9 @@ class Canvas:
         # print('mask shape', mask_applied)
         gpu_full_canvas = cp.zeros_like(current_frame)
         # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
-        h, w, c = gpu_mask_applied.shape
+
+        h = mask.shape[0]
+        w = mask.shape[1]
 
         if offset_y > 0:
             src_top_y = 0
@@ -107,8 +110,8 @@ class Canvas:
             dest_top_y = offset_y
             dest_bottom_y = h
         else:
-            src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewl plus 20
-            src_bottom_y = h
+            src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewel plus 20
+            src_bottom_y = h    
             dest_top_y = 0
             dest_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
 
