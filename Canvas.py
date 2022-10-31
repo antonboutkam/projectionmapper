@@ -81,9 +81,9 @@ class Canvas:
         gpu_video_source_mask_size = cv2.cuda.resize(gpu_video_source, (mask.shape[1], mask.shape[0]))
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
-        gpu_mask_applied = cp.where(gpu_mask_color[:, :] == [0, 0, 0], gpu_mask_color, gpu_video_source_mask_size)
+        mask_applied = np.where(gpu_mask_color.download()[:, :] == [0, 0, 0], gpu_mask_color.download(), gpu_video_source_mask_size.download())
         # print('mask applied shape', mask_applied.shape)
-        self.monitor.add_gpu("Canvas mask applied", gpu_mask_applied)
+        self.monitor.add("Canvas mask applied", mask_applied)
 
         # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
@@ -126,7 +126,7 @@ class Canvas:
             dest_top_x = 0
             dest_bottom_x = w + offset_x
 
-        mask_applied = gpu_mask_applied.download()
+
         full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
                                                                           src_top_x:src_bottom_x]
         # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
@@ -134,13 +134,13 @@ class Canvas:
 
         if self.gui.replace_black:
             # Find all black pixels
-            gpu_black_pixels = cp.where(
+            black_pixels = np.where(
                 (full_canvas[:, :, 0] == 0) &
                 (full_canvas[:, :, 1] == 0) &
                 (full_canvas[:, :, 2] == 0)
             )
             # set those pixels to whatever value is configured
-            full_canvas[gpu_black_pixels] = [self.gui.replace_black, self.gui.replace_black, self.gui.replace_black]
+            full_canvas[black_pixels] = [self.gui.replace_black, self.gui.replace_black, self.gui.replace_black]
 
         # out = picture[self.top_y:self.bottom_y + 1, self.top_x:self.bottom_x + 1]
         # mask_resized = cv2.resize(mask, (768, 1024))
