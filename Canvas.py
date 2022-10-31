@@ -78,10 +78,27 @@ class Canvas:
         if video_source.shape[2] == 1:
             gpu_video_source = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
 
-        gpu_video_source_mask_size = cv2.cuda.resize(gpu_video_source, (mask.shape[1], mask.shape[0]))
+        if self.gui.video_size_mode == 0:
+            mask_color = gpu_mask_color.download()
+            gpu_video_mask_size = cv2.cuda.resize(gpu_video_source, (mask.shape[1], mask.shape[0]))
+            mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, gpu_video_mask_size.download())
+        elif self.gui.video_size_mode == 1:
+            im, contours, hierarchy = cv2.cuda.findContours(gpu_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            # Calculate image moments of the detected contour
+            M = cv2.moments(contours[0])
+            cont_center_x = round(M['m10'] / M['m00'])
+            cont_center_y = round(M['m01'] / M['m00'])
+            (y, x) = np.where(mask == 255)
+            (top_y, top_x) = (np.min(y), np.min(x))
+            (bottom_y, bottom_x) = (np.max(y), np.max(x))
+            gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (bottom_y-top_y, bottom_x - top_x))
+            video_scale_fit = gpu_video_scale_fit.download()
+            gpu_video_mask_size = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
+            gpu_video_mask_size[top_y:bottom_y,top_x:bottom_x] = video_scale_fit
+
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
-        mask_applied = np.where(gpu_mask_color.download()[:, :] == [0, 0, 0], gpu_mask_color.download(), gpu_video_source_mask_size.download())
+
         # print('mask applied shape', mask_applied.shape)
         self.monitor.add("Canvas mask applied", mask_applied)
 

@@ -25,12 +25,12 @@ class Source:
 
     def frame(self):
         if self.gui.video_source == 0:
-            white_image = np.zeros([1024, 1024, 1], dtype=np.uint8)
+            white_image = np.zeros([768, 1024, 1], dtype=np.uint8)
             white_image.fill(self.gui.video_source_brightness)
             return white_image
 
         success = False
-        self.try_count = 0;
+        self.try_count = 0
         while not success:
             success, image = self.vidcap.read()
             self.try_count = self.try_count + 1
