@@ -18,11 +18,11 @@ class PreProcessor:
         gpu_output.upload(output)
 
         gpu_output = cv2.cuda.cvtColor(gpu_output, cv2.COLOR_BGR2GRAY)
-        monitor.add("PreProc GRAY", gpu_output.download())
+        monitor.add_gpu("PreProc GRAY", gpu_output)
 
         if gui.canny_enable:
             gpu_output = cv2.cuda.Canny(gpu_output, gui.canny1, gui.canny2)
-            monitor.add("PreProc Canny", gpu_output.download())
+            monitor.add_gpu("PreProc Canny", gpu_output)
 
         if gui.enable_dilate:
             dilate_kernel = np.ones((gui.dilate_kernel_y, gui.dilate_kernel_x), np.uint8)
@@ -37,17 +37,18 @@ class PreProcessor:
             monitor.add("PreProc Dilate", eroded)
 
         if gui.blur_enable:
-            gpu_output = cv2.cuda.blur(gpu_output, (gui.blur1, gui.blur2))
-            monitor.add("PreProc Blur", gpu_output.download())
+            blurred = cv2.cuda.blur(gpu_output.download(), (gui.blur1, gui.blur2))
+            gpu_output.upload(blurred)
+            monitor.add("PreProc Blur", blurred)
 
         if gui.threshold_enable:
             # ret, output = cv2.threshold(output, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             ret, gpu_output = cv2.cuda.threshold(gpu_output, gui.threshold, 255, cv2.THRESH_BINARY)
-            monitor.add("PreProc Threshold", gpu_output.download())
+            monitor.add_gpu("PreProc Threshold", gpu_output)
             #
             # monitor.add("Threshold", output.download())
 
-        monitor.add("PreProc Result", gpu_output.download())
+        monitor.add_gpu("PreProc Result", gpu_output)
 
         if False:
             # resize and center
@@ -81,4 +82,4 @@ class PreProcessor:
         # output = cv2.warpAffine(output, M, (output.shape[1], output.shape[0]))
         # monitor.add("PreProc Resized", output)
 
-        return gpu_output.download()
+        return gpu_output

@@ -8,7 +8,6 @@ class Gui:
     window_preprocessing = 'Preprocessing config'
     window_output = 'Output config'
 
-    cuda_enabled = 1
     main_show_calibration = 1
     main_show_preprocessing = 1
     main_show_monitor = 1

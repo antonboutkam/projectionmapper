@@ -14,6 +14,11 @@ class Monitor:
     def start(self, gui):
         self.gui = gui
 
+    def add_gpu(self, title, frame):
+        if not self.gui.main_show_monitor:
+            return None
+        self.add(title, frame.download())
+
     def add(self, title, frame):
         if not self.gui.main_show_monitor:
             return None

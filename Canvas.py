@@ -4,6 +4,7 @@ from PreProcessor import PreProcessor
 from Monitor import Monitor
 import cv2
 import numpy as np
+import cupy as cp
 import math
 
 
@@ -64,24 +65,24 @@ class Canvas:
         current_frame = self.capture()
         projection_area_cam_perspective = self._get_input(current_frame)
         self.monitor.add("Canvas cam perspective", projection_area_cam_perspective)
-        # projection_area_cam_perspective = cv2.resize(projection_area_cam_perspective, (projector.screen_res[0], projector.screen_res[1]))
-        mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
-        self.monitor.add("Canvas mask", projection_area_cam_perspective)
 
-        self.monitor.display()
+        gpu_mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
+        self.monitor.add_gpu("Canvas mask", gpu_mask)
+        gpu_mask_color = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
+
         video_source = self.source.frame()
+        gpu_video_source = cv2.cuda_GpuMat()
+        gpu_video_source.upload(video_source)
 
-        mask_color = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
-        # print('mask color shape', mask_color.shape)
-        # input_source_rect = input_source[0:1024, 0:768]
         if video_source.shape[2] == 1:
-            video_source = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
-        video_source_mask_size = cv2.resize(video_source, (mask.shape[1], mask.shape[0]))
+            gpu_video_source = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
+
+        gpu_video_source_mask_size = cv2.cuda.resize(gpu_video_source, (gpu_mask.shape[1], gpu_mask.shape[0]))
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
-        mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_source_mask_size)
+        gpu_mask_applied = cp.where(gpu_mask_color[:, :] == [0, 0, 0], gpu_mask_color, gpu_video_source_mask_size)
         # print('mask applied shape', mask_applied.shape)
-        self.monitor.add("Canvas mask applied", projection_area_cam_perspective)
+        self.monitor.add_gpu("Canvas mask applied", gpu_mask_applied)
 
         # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
@@ -96,9 +97,9 @@ class Canvas:
         # print('topx', top_x)
         # print('bottomx', bottom_x)
         # print('mask shape', mask_applied)
-        full_canvas = np.zeros_like(current_frame)
+        gpu_full_canvas = cp.zeros_like(current_frame)
         # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
-        h, w, c = mask_applied.shape
+        h, w, c = gpu_mask_applied.shape
 
         if offset_y > 0:
             src_top_y = 0
@@ -122,29 +123,30 @@ class Canvas:
             dest_top_x = 0
             dest_bottom_x = w + offset_x
 
-        full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
+        gpu_full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = gpu_mask_applied[src_top_y:src_bottom_y,
                                                                           src_top_x:src_bottom_x]
         # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
         # full_canvas[-10:300, 0:400] = mask_applied[0:290, 0:400]
 
         if self.gui.replace_black:
             # Find all black pixels
-            black_pixels = np.where(
-                (full_canvas[:, :, 0] == 0) &
-                (full_canvas[:, :, 1] == 0) &
-                (full_canvas[:, :, 2] == 0)
+            gpu_black_pixels = cp.where(
+                (gpu_full_canvas[:, :, 0] == 0) &
+                (gpu_full_canvas[:, :, 1] == 0) &
+                (gpu_full_canvas[:, :, 2] == 0)
             )
             # set those pixels to whatever value is configured
-            full_canvas[black_pixels] = [self.gui.replace_black, self.gui.replace_black, self.gui.replace_black]
+            gpu_full_canvas[gpu_black_pixels] = [self.gui.replace_black, self.gui.replace_black, self.gui.replace_black]
 
         # out = picture[self.top_y:self.bottom_y + 1, self.top_x:self.bottom_x + 1]
         # mask_resized = cv2.resize(mask, (768, 1024))
         # mask_resized_color = cv2.cvtColor(mask_resized, cv2.COLOR_GRAY2RGB)
 
-        self.monitor.add("Result", full_canvas)
-        full_canvas = cv2.resize(full_canvas, (projector.screen_res[0], projector.screen_res[1]))
-        self.monitor.add("Result resized", full_canvas)
+        self.monitor.add_gpu("Result", gpu_full_canvas)
+        full_canvas = cv2.resize(gpu_full_canvas, (projector.screen_res[0], projector.screen_res[1]))
+        self.monitor.add_gpu("Result resized", gpu_full_canvas)
         #        out = np.where(input_source_rect[:, :] == [0, 0, 0], input_source_rect, mask)
         # out = np.where(mask_resized_color[:, :] == [0, 0, 0], mask_resized_color, input_source_rect)
         # self.monitor.add("Out", out)
+        self.monitor.display()
         projector.draw(full_canvas)
