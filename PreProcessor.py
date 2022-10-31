@@ -17,7 +17,7 @@ class PreProcessor:
         gpu_output = cv2.cuda_GpuMat()
         gpu_output.upload(frame)
 
-        output = cv2.cura.cvtColor(output, cv2.COLOR_BGR2GRAY)
+        output = cv2.cuda.cvtColor(output, cv2.COLOR_BGR2GRAY)
         monitor.add("PreProc GRAY", output.download())
 
         if gui.canny_enable:
