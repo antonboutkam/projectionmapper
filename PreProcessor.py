@@ -3,44 +3,49 @@ import math
 import cv2
 import numpy as np
 
+
 class PreProcessor:
     def process(self, frame, gui, monitor):
         output = frame.copy()
+
         monitor.add("PreProc input", frame)
         if gui.enable_remove_color:
             # Completely remove {color_to_remove} from the source image
             output[..., [gui.color_to_remove]] = 0
             monitor.add("PreProc Color removed", output)
 
-        output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-        monitor.add("PreProc GRAY", output)
+        gpu_output = cv2.cuda_GpuMat()
+        gpu_output.upload(frame)
+
+        output = cv2.cura.cvtColor(output, cv2.COLOR_BGR2GRAY)
+        monitor.add("PreProc GRAY", output.download())
 
         if gui.canny_enable:
-            output = cv2.Canny(output, gui.canny1, gui.canny2)
-            monitor.add("PreProc Canny", output)
+            output = cv2.cuda.Canny(output, gui.canny1, gui.canny2)
+            monitor.add("PreProc Canny", output.download())
 
         if gui.enable_dilate:
             dilate_kernel = np.ones((gui.dilate_kernel_y, gui.dilate_kernel_x), np.uint8)
-            output = cv2.erode(output, dilate_kernel, iterations=2)
-            monitor.add("PreProc Erode", output)
+            output = cv2.cuda.erode(output, dilate_kernel, iterations=2)
+            monitor.add("PreProc Erode", output.download())
 
         if gui.enable_erode:
             erode_kernel = np.ones((gui.erode_kernel_y, gui.erode_kernel_x), np.uint8)
-            output = cv2.dilate(output, erode_kernel, iterations=2)
-            monitor.add("PreProc Dilate", output)
+            output = cv2.cuda.dilate(output, erode_kernel, iterations=2)
+            monitor.add("PreProc Dilate", output.download())
 
         if gui.blur_enable:
-            output = cv2.blur(output, (gui.blur1, gui.blur2))
-            monitor.add("PreProc Blur", output)
+            output = cv2.cuda.blur(output, (gui.blur1, gui.blur2))
+            monitor.add("PreProc Blur", output.download())
 
         if gui.threshold_enable:
             # ret, output = cv2.threshold(output, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            ret, output = cv2.threshold(output, gui.threshold, 255, cv2.THRESH_BINARY)
-            monitor.add("PreProc Threshold", output)
+            ret, output = cv2.cuda.threshold(output, gui.threshold, 255, cv2.THRESH_BINARY)
+            monitor.add("PreProc Threshold", output.download())
             #
-            # monitor.add("Threshold", output)
+            # monitor.add("Threshold", output.download())
 
-        monitor.add("PreProc Result", output)
+        monitor.add("PreProc Result", output.download())
 
         if False:
             # resize and center
@@ -61,7 +66,8 @@ class PreProcessor:
 
                 output_underlay = np.zeros_like(output)
                 print(output.shape)
-                output_underlay[resize_offset_y:resize_offset_y + new_height, resize_offset_x:resize_offset_x  + new_width] = output_resized
+                output_underlay[resize_offset_y:resize_offset_y + new_height,
+                resize_offset_x:resize_offset_x + new_width] = output_resized
             output = output_underlay
             monitor.add("PreProc Resized", output)
 
@@ -73,4 +79,4 @@ class PreProcessor:
         # output = cv2.warpAffine(output, M, (output.shape[1], output.shape[0]))
         # monitor.add("PreProc Resized", output)
 
-        return output
+        return output.download()
