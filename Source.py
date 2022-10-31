@@ -7,6 +7,8 @@ class Source:
     clips = [
         # 'littleboxes.mp4',
         # 'network.mp4',
+        'mocircshii.mov',
+        'twirlers.mov',
         'spinning.mp4',
         'glytchghost.mov',
         'twisted hall.mov',

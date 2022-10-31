@@ -1,12 +1,6 @@
-import math
-
-from Projector import Projector
-from Canvas import Canvas
-from Cam import Cam
-from Gui import Gui
 import cv2
 import numpy as np
-from random import randrange
+from Canvas import Canvas
 
 
 class Init:
