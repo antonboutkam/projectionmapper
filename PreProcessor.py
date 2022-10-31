@@ -26,13 +26,13 @@ class PreProcessor:
 
         if gui.enable_dilate:
             dilate_kernel = np.ones((gui.dilate_kernel_y, gui.dilate_kernel_x), np.uint8)
-            dilated = cv2.cuda.dilate(gpu_output.download(), dilate_kernel, iterations=2)
+            dilated = cv2.dilate(gpu_output.download(), dilate_kernel, iterations=2)
             gpu_output.upload(dilated)
             monitor.add("PreProc Erode", dilated)
 
         if gui.enable_erode:
             erode_kernel = np.ones((gui.erode_kernel_y, gui.erode_kernel_x), np.uint8)
-            eroded = cv2.cuda.erode(gpu_output.download(), erode_kernel, iterations=2)
+            eroded = cv2.erode(gpu_output.download(), erode_kernel, iterations=2)
             gpu_output.upload(eroded)
             monitor.add("PreProc Dilate", eroded)
 
