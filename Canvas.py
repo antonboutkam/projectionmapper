@@ -69,7 +69,10 @@ class Canvas:
         gpu_mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
         mask = gpu_mask.download()
         self.monitor.add_gpu("Canvas mask", gpu_mask)
-        gpu_mask_color = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
+        if mask.shape[2] == 1:
+            gpu_mask_color = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
+        else:
+            gpu_mask_color = gpu_mask
 
         video_source = self.source.frame()
         gpu_video_source = cv2.cuda_GpuMat()
