@@ -50,7 +50,7 @@ class PreProcessor:
 
 
         if gui.find_contour_enable:
-            im, contours, hierarchy = cv2.findContours(gpu_output.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            contours, hierarchy = cv2.findContours(gpu_output.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             hull_list = []
             for contour in contours[gui.draw_contour_min:gui.draw_contour_min]:
                 hull = cv2.convexHull(contour)
