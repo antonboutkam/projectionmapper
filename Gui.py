@@ -41,6 +41,7 @@ class Gui:
 
     max_offset_x = 800
     max_offset_y = 800
+    find_contour_enable = 0
     draw_contour_min = 1
     draw_contour_max = 20
 
@@ -48,7 +49,7 @@ class Gui:
     contour_g = 0
     contour_b = 0
 
-    find_contour_enable = 0
+
     blur_enable = 0
     blur1 = 5
     blur2 = 5
@@ -131,6 +132,8 @@ class Gui:
         cv2.createTrackbar("Canny enable", self.window_object_tracing, self.canny_enable, 1, self.trackbar_change)
         cv2.createTrackbar("Canny 1", self.window_object_tracing, self.canny1, 255, self.trackbar_change)
         cv2.createTrackbar("Canny 2", self.window_object_tracing, self.canny2, 255, self.trackbar_change)
+
+        cv2.createTrackbar("Contour enable", self.window_object_tracing, self.find_contour_enable, 1, self.trackbar_change)
         cv2.createTrackbar("Draw contour min", self.window_object_tracing, self.draw_contour_min, 40,self.trackbar_change)
         cv2.createTrackbar("Draw contour max", self.window_object_tracing, self.draw_contour_max, 40,self.trackbar_change)
 
@@ -247,6 +250,7 @@ class Gui:
             self.threshold_enable = cv2.getTrackbarPos("Threshold enable", self.window_object_tracing)
             self.threshold = cv2.getTrackbarPos("Threshold", self.window_object_tracing)
             self.threshold_mode = cv2.getTrackbarPos("Threshold mode", self.window_object_tracing)
+            self.find_contour_enable = cv2.getTrackbarPos("Contour enable", self.window_object_tracing)
             self.draw_contour_min = cv2.getTrackbarPos("Draw contour min", self.window_object_tracing)
             self.draw_contour_max = cv2.getTrackbarPos("Draw contour max", self.window_object_tracing)
             self.canny_enable = cv2.getTrackbarPos("Canny enable", self.window_object_tracing)
