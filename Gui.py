@@ -124,6 +124,7 @@ class Gui:
             cv2.destroyWindow(self.window_output)
 
     def object_tracing_config(self):
+        cv2.namedWindow(self.window_object_tracing)
         cv2.createTrackbar("Threshold enable", self.window_object_tracing, self.threshold_enable, 1,self.trackbar_change)
         cv2.createTrackbar("Threshold", self.window_object_tracing, self.threshold, 255, self.trackbar_change)
         cv2.createTrackbar("Threshold mode", self.window_object_tracing, self.threshold_mode, 1, self.trackbar_change)
