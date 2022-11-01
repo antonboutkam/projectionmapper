@@ -21,7 +21,8 @@ class PreProcessor:
         monitor.add_gpu("PreProc GRAY", gpu_output)
 
         if gui.canny_enable:
-            gpu_output = cv2.cuda.Canny(gpu_output, gui.canny1, gui.canny2)
+            detector = cv2.cuda.createCannyEdgeDetector(gui.canny1, gui.canny2)
+            gpu_output = detector.detect(gpu_output)
             monitor.add_gpu("PreProc Canny", gpu_output)
 
         if gui.enable_dilate:
