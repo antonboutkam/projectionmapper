@@ -147,7 +147,7 @@ class Gui:
                 cv2.createTrackbar("Erode kernel y", self.window_preprocessing, self.erode_kernel_y, 15, self.trackbar_change)
 
             cv2.createTrackbar("Blur enable", self.window_preprocessing, self.blur_enable, 1, self.trackbar_change)
-            if self.self.blur_enable:
+            if self.blur_enable:
                 cv2.createTrackbar("Blur 1", self.window_preprocessing, self.blur1, 10, self.trackbar_change)
                 cv2.createTrackbar("Blur 2", self.window_preprocessing, self.blur2, 10, self.trackbar_change)
 
@@ -156,7 +156,7 @@ class Gui:
                 cv2.createTrackbar("RGB (0,1,2) to remove", self.window_preprocessing, self.color_to_remove, 2, self.trackbar_change)
 
             cv2.createTrackbar("Canny enable", self.window_preprocessing, self.canny_enable, 1, self.trackbar_change)
-            if self.self.canny_enable:
+            if self.canny_enable:
                 cv2.createTrackbar("Canny 1", self.window_preprocessing, self.canny1, 255, self.trackbar_change)
                 cv2.createTrackbar("Canny 2", self.window_preprocessing, self.canny2, 255, self.trackbar_change)
         else:
