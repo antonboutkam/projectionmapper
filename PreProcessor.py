@@ -2,6 +2,7 @@ import math
 
 import cv2
 import numpy as np
+import random as rng
 
 
 class PreProcessor:
@@ -47,16 +48,22 @@ class PreProcessor:
             ret, gpu_output = cv2.cuda.threshold(gpu_output, gui.threshold, 255, cv2.THRESH_BINARY)
             monitor.add_gpu("PreProc Threshold", gpu_output)
 
+
         if gui.find_contour_enable:
-            im, gpu_contours, hierarchy = cv2.cuda.findContours(gpu_output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-            contour_output = np.zeros_like(output)
-            gpu_contour_output = cv2.cuda_GpuMat()
-            gpu_contour_output.upload(contour_output)
-            for gpu_contour in gpu_contours[gui.draw_contour_min:gui.draw_contour_min]:
-                gpu_hull = cv2.cuda.convexHull(gpu_contour)
-                cv2.cuda.fillConvexPoly(gpu_contour_output, gpu_hull, 255)
-            gpu_output = gpu_contour_output
-            monitor.add_gpu("Contours traced", gpu_output)
+            im, contours, hierarchy = cv2.findContours(gpu_output.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            hull_list = []
+            for contour in contours[gui.draw_contour_min:gui.draw_contour_min]:
+                hull = cv2.convexHull(contour)
+                hull_list.append(hull)
+
+            drawing = np.zeros((output.shape[0], output.shape[1], 3), dtype=np.uint8)
+            for i in range(len(hull_list)):
+                color = (rng.randint(0, 256), rng.randint(0, 256), rng.randint(0, 256))
+                cv2.drawContours(drawing, hull_list[i], i, color)
+
+            monitor.add("Hulls", drawing)
+            gpu_output = cv2.cuda_GpuMat()
+            gpu_output.upload(drawing)
 
         monitor.add_gpu("PreProc Result", gpu_output)
 
