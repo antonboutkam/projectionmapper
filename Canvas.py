@@ -76,7 +76,7 @@ class Canvas:
         gpu_video_source.upload(video_source)
 
         if video_source.shape[2] == 1:
-            gpu_video_source = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
+            gpu_video_source = cv2.cuda.cvtColor(gpu_video_source, cv2.COLOR_GRAY2RGB)
 
         if self.gui.video_size_mode == 0:
             mask_color = gpu_mask_color.download()

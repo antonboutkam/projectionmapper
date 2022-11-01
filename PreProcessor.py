@@ -48,7 +48,6 @@ class PreProcessor:
             ret, gpu_output = cv2.cuda.threshold(gpu_output, gui.threshold, 255, cv2.THRESH_BINARY)
             monitor.add_gpu("PreProc Threshold", gpu_output)
 
-
         if gui.find_contour_enable:
             contours, hierarchy = cv2.findContours(gpu_output.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             hull_list = []
