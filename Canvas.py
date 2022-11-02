@@ -196,14 +196,17 @@ class Canvas:
 
     def extract_mask_list(self, gpu_mask):
         mask_list = []
-        if self.gui.find_contour_enable:
+        if self.gui.find_contour_enable == 1:
             gpu_mask_bgr = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_RGB2GRAY)
+            self.monitor.add_gpu("GPU mask BGR", gpu_mask_bgr)
+
             base_mask_bgr = gpu_mask_bgr.download()
             contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             blank_mask = np.zeros_like(base_mask_bgr)
 
-            for contour in contours[self.gui.draw_contour_min:self.gui.draw_contour_min]:
+            for index, contour in enumerate(contours[self.gui.draw_contour_min:self.gui.draw_contour_min]):
                 drawn_mask = cv2.drawContours(blank_mask, contour, -1, 255, -1)
+                self.monitor.add("Drawn contour " + str(index), drawn_mask)
                 gpu_drawn_mask = cv2.cuda_GpuMat()
                 gpu_drawn_mask.upload(drawn_mask)
                 mask_list.append(gpu_drawn_mask)
