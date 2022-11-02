@@ -100,7 +100,7 @@ class Canvas:
                 # cont_center_x = round(M['m10'] / M['m00'])
                 # cont_center_y = round(M['m01'] / M['m00'])
                 current_mask = gpu_mask.download()
-                (y, x) = np.where(current_mask == 255)
+                (y, x, c) = np.where(current_mask == 255)
                 (top_y, top_x) = (np.min(y), np.min(x))
                 (bottom_y, bottom_x) = (np.max(y), np.max(x))
                 width = bottom_x - top_x
