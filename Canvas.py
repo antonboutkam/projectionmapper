@@ -75,6 +75,8 @@ class Canvas:
             gpu_mask_color = gpu_mask
 
         video_source = self.source.frame()
+        self.monitor.add("Video source", video_source)
+
         gpu_video_source = cv2.cuda_GpuMat()
         gpu_video_source.upload(video_source)
 
@@ -98,6 +100,7 @@ class Canvas:
             height = bottom_y - top_y
             gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
             video_scale_fit = gpu_video_scale_fit.download()
+            self.monitor.add("video scaled to fit", video_scale_fit)
             video_positioning = np.zeros([mask.shape[0], mask.shape[1], 3], dtype=np.uint8)
             print("mask shape", mask.shape)
             print("video positioning shape", video_positioning.shape)
@@ -105,6 +108,7 @@ class Canvas:
             print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
             print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ', video_scale_fit.shape, ')')
             video_positioning[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
+            self.monitor.add("Video positioned", video_positioning)
             mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioning)
 
         # print('mask color shape', mask_color.shape)
