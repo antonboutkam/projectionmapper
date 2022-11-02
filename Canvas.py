@@ -105,7 +105,7 @@ class Canvas:
             print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
             print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ', video_scale_fit.shape, ')')
             video_positioning[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-            mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioning.)
+            mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioning)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
