@@ -119,55 +119,55 @@ class Canvas:
                 self.monitor.add("Video positioned", video_positioned)
                 mask_applied = np.where(current_mask[:, :] == [0, 0, 0], mask_applied, video_positioned)
 
-            # print('mask color shape', mask_color.shape)
-            # print('video source mask size shape', video_source_mask_size.shape)
+        # print('mask color shape', mask_color.shape)
+        # print('video source mask size shape', video_source_mask_size.shape)
 
-            # print('mask applied shape', mask_applied.shape)
-            self.monitor.add("Canvas mask applied", mask_applied)
+        # print('mask applied shape', mask_applied.shape)
+        self.monitor.add("Canvas mask applied", mask_applied)
 
-            # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)222s
-            offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
-            offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
-            # top_y = self.top_y+offset_y
-            # bottom_y = self.bottom_y+offset_y + 1
-            # top_x = self.top_x+offset_x
-            # bottom_x = self.bottom_x+offset_x + 1
+        # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)222s
+        offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
+        offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
+        # top_y = self.top_y+offset_y
+        # bottom_y = self.bottom_y+offset_y + 1
+        # top_x = self.top_x+offset_x
+        # bottom_x = self.bottom_x+offset_x + 1
 
-            # print('topy', top_y)
-            # print('bottomy', bottom_y)
-            # print('topx', top_x)
-            # print('bottomx', bottom_x)
-            # print('mask shape', mask_applied)
-            full_canvas = np.zeros_like(current_frame)
-            # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
+        # print('topy', top_y)
+        # print('bottomy', bottom_y)
+        # print('topx', top_x)
+        # print('bottomx', bottom_x)
+        # print('mask shape', mask_applied)
+        full_canvas = np.zeros_like(current_frame)
+        # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
-            h = pre_processed_mask.shape[0]
-            w = pre_processed_mask.shape[1]
+        h = pre_processed_mask.shape[0]
+        w = pre_processed_mask.shape[1]
 
-            if offset_y > 0:
-                src_top_y = 0
-                src_bottom_y = h - offset_y
-                dest_top_y = offset_y
-                dest_bottom_y = h
-            else:
-                src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewel plus 20
-                src_bottom_y = h
-                dest_top_y = 0
-                dest_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
+        if offset_y > 0:
+            src_top_y = 0
+            src_bottom_y = h - offset_y
+            dest_top_y = offset_y
+            dest_bottom_y = h
+        else:
+            src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewel plus 20
+            src_bottom_y = h
+            dest_top_y = 0
+            dest_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
 
-            if offset_x > 0:
-                src_top_x = 0
-                src_bottom_x = w - offset_x
-                dest_top_x = offset_x
-                dest_bottom_x = w
-            else:
-                src_top_x = 0 - offset_x
-                src_bottom_x = w
-                dest_top_x = 0
-                dest_bottom_x = w + offset_x
+        if offset_x > 0:
+            src_top_x = 0
+            src_bottom_x = w - offset_x
+            dest_top_x = offset_x
+            dest_bottom_x = w
+        else:
+            src_top_x = 0 - offset_x
+            src_bottom_x = w
+            dest_top_x = 0
+            dest_bottom_x = w + offset_x
 
-            full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
-                                                                              src_top_x:src_bottom_x]
+        full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
+                                                                          src_top_x:src_bottom_x]
         # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
         # full_canvas[-10:300, 0:400] = mask_applied[0:290, 0:400]
 
