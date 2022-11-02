@@ -16,7 +16,6 @@ class Source:
         self.try_count = 0
         self.vidcap = cv2.VideoCapture('../loops/' + self.clips[self.current_clip])
 
-
     def load_playlist(self):
         self.clips = []
         for filename in os.scandir('../loops/'):
