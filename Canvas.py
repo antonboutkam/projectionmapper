@@ -111,23 +111,23 @@ class Canvas:
                 width = bottom_x - top_x
                 height = bottom_y - top_y
                 if width < 3 or height < 3:
-                    print('to small' , width, height)
+                    # print('to small' , width, height)
                     continue
-                print('width', width, 'height', height)
+                # print('width', width, 'height', height)
                 gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
                 video_scale_fit = gpu_video_scale_fit.download()
                 self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
                 video_positioned = np.zeros_like(current_frame)
 
-                print("mask shape", current_mask.shape)
-                print("video positioning shape", video_positioned.shape)
-                print("video scale fit shape", video_scale_fit.shape)
-                print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
-                print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ', video_scale_fit.shape,
-                      ')')
+                # print("mask shape", current_mask.shape)
+                # print("video positioning shape", video_positioned.shape)
+                # print("video scale fit shape", video_scale_fit.shape)
+                # print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
+                # print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ', video_scale_fit.shape,
+                #     ')')
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
                 self.monitor.add("Video positioned", video_positioned)
-                mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], video_positioned, mask_applied)
+                mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], mask_color, video_positioned)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
