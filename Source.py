@@ -1,27 +1,28 @@
 import cv2
 import numpy as np
+import os
 
 class Source:
     vidcap = None
     try_count = None
-    clips = [
-        # 'littleboxes.mp4',
-        # 'network.mp4',
-        'mocircshii.mov',
-        'twirlers.mov',
-        'spinning.mp4',
-        'glytchghost.mov',
-        'twisted hall.mov',
-        'twirlers.mov'
-        # 'plugs slower.mov'
-    ]
-    current_clip = 0
+    clips = None
+    current_clip = None
     gui = None
 
     def start(self, gui):
-        # self.vidcap = cv2.VideoCapture('../loops/littleboxes.mp4')
-        self.vidcap = cv2.VideoCapture('../loops/' + self.clips[self.current_clip])
         self.gui = gui
+        self.load_playlist()
+        self.current_clip = 0
+        self.try_count = 0
+        self.vidcap = cv2.VideoCapture('../loops/' + self.clips[self.current_clip])
+
+
+    def load_playlist(self):
+        self.clips = []
+        for filename in os.scandir('../loops/'):
+            if filename.is_file():
+                self.clips.append(filename.path)
+                print("Add " + filename.path + " to the playlist")
 
     def frame(self):
         if self.gui.video_source == 0:
@@ -34,14 +35,32 @@ class Source:
         while not success:
             success, image = self.vidcap.read()
             self.try_count = self.try_count + 1
-            if self.try_count > 5:
-                self.try_count = 0
+            if self.try_count > 2:
                 self.current_clip = self.current_clip + 1
                 if self.current_clip == len(self.clips):
-                    self.current_clip = 0
-                self.start(self.gui)
+                    self.start(self.gui)
+
             if success:
-                return cv2.resize(self.adjust_brightness(image, self.gui.video_source_brightness),(768, 1024))
+                image = self.make_square(image)
+                image = self.adjust_brightness(image, self.gui.video_source_brightness)
+                return image
+
+    def make_square(self, image):
+        shape = image.shape
+        h = shape[1]
+        w = shape[2]
+        smallest = None
+        if h > w:
+            wh = w
+            y = h / 2 - wh / 2
+            return self.crop(image, 0, y, wh, wh)
+        else:
+            wh = h
+            x = w / 2 - wh / 2
+            return self.crop(image, y, 0, wh, wh)
+
+    def crop(self, image, x, y, w, h):
+        return image[int(y):int(y + h), int(x):int(x + w)]
 
     def adjust_brightness(self, image, value):
         value = 127 - value
