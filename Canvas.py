@@ -75,7 +75,7 @@ class Canvas:
             gpu_mask_color = gpu_mask
 
         video_source = self.source.frame()
-        self.monitor.add("Video source", video_source)
+        self.monitor.add("Video source " + str(self.gui.video_source), video_source)
 
         gpu_video_source = cv2.cuda_GpuMat()
         gpu_video_source.upload(video_source)

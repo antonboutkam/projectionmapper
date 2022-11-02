@@ -40,7 +40,8 @@ class Source:
                     self.start(self.gui)
 
             if success:
-                image = self.make_square(image)
+                # image = self.make_square(image)
+                image = cv2.resize(image, (768, 1024))
                 image = self.adjust_brightness(image, self.gui.video_source_brightness)
                 return image
 
