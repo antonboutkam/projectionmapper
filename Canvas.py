@@ -201,7 +201,7 @@ class Canvas:
             self.monitor.add_gpu("GPU mask BGR", gpu_mask_bgr)
 
             base_mask_bgr = gpu_mask_bgr.download()
-            contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             blank_mask = np.zeros_like(base_mask_bgr)
 
             for index, contour in enumerate(contours[self.gui.draw_contour_min:self.gui.draw_contour_min]):

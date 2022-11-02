@@ -39,7 +39,7 @@ class PreProcessor:
             monitor.add("PreProc Dilate", eroded)
 
         if gui.blur_enable:
-            blurred = cv2.cuda.blur(gpu_output.download(), (gui.blur1, gui.blur2))
+            blurred = cv2.blur(gpu_output.download(), (gui.blur1, gui.blur2))
             gpu_output.upload(blurred)
             monitor.add("PreProc Blur", blurred)
 
