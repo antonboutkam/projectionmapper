@@ -68,7 +68,7 @@ class Canvas:
 
         gpu_pre_processed_mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
         pre_processed_mask = gpu_pre_processed_mask.download()
-        self.monitor.add("Preprocessed result", gpu_pre_processed_mask)
+        self.monitor.add_gpu("Preprocessed result", gpu_pre_processed_mask)
 
         if len(pre_processed_mask.shape) == 2:
             gpu_full_mask_color = cv2.cuda.cvtColor(gpu_pre_processed_mask, cv2.COLOR_GRAY2RGB)
