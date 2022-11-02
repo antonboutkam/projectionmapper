@@ -117,12 +117,13 @@ class Canvas:
                 video_scale_fit = gpu_video_scale_fit.download()
                 self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
                 video_positioned = np.zeros_like(current_frame)
-                # print("mask shape", mask.shape)
-                # print("video positioning shape", video_positioning.shape)
-                # print("video scale fit shape", video_scale_fit.shape)
-                # print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
-                # print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ',
-                # video_scale_fit.shape, ')')
+
+                print("mask shape", current_mask.shape)
+                print("video positioning shape", video_positioned.shape)
+                print("video scale fit shape", video_scale_fit.shape)
+                print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
+                print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ', video_scale_fit.shape,
+                      ')')
                 video_positioned[top_y-half_safe_margin:bottom_y+half_safe_margin, top_x-half_safe_margin:bottom_x+half_safe_margin] = video_scale_fit
                 self.monitor.add("Video positioned", video_positioned)
                 mask_applied = np.where(current_mask[:, :] == [0, 0, 0], mask_applied, video_positioned)
