@@ -94,7 +94,9 @@ class Canvas:
             (y, x) = np.where(mask == 255)
             (top_y, top_x) = (np.min(y), np.min(x))
             (bottom_y, bottom_x) = (np.max(y), np.max(x))
-            gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (bottom_y - top_y, bottom_x - top_x))
+            width = bottom_x - top_x
+            height = bottom_y - top_y
+            gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
             video_scale_fit = gpu_video_scale_fit.download()
             mask_applied = np.zeros([mask.shape[0], mask.shape[1], 3], dtype=np.uint8)
             print("mask shape", mask.shape)
@@ -110,7 +112,7 @@ class Canvas:
         # print('mask applied shape', mask_applied.shape)
         self.monitor.add("Canvas mask applied", mask_applied)
 
-        # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)
+        # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)222s
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
         # top_y = self.top_y+offset_y
