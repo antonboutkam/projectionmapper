@@ -197,8 +197,8 @@ class Canvas:
     def extract_mask_list(self, gpu_mask):
         mask_list = []
         if self.gui.find_contour_enable:
-            base_mask = gpu_mask.download()
-            base_mask_bgr = cv2.cuda.cvtColor(base_mask, cv2.COLOR_RGB2GRAY)
+            gpu_mask_bgr = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_RGB2GRAY)
+            base_mask_bgr = gpu_mask_bgr.download()
             contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             blank_mask = np.zeros_like(base_mask_bgr)
 
