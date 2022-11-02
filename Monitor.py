@@ -6,9 +6,9 @@ import math
 
 class Monitor:
     frames = []
-    desired_size = (300, 200)
-    desired_ratio = 300 / 200  # 1,3
-    column_count = 4
+    desired_size = (200, 150)
+    desired_ratio = 200 / 150  # 1,3
+    column_count = 5
     gui = False
 
     def start(self, gui):

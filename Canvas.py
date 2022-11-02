@@ -201,15 +201,19 @@ class Canvas:
             self.monitor.add_gpu("GPU mask BGR", gpu_mask_bgr)
 
             base_mask_bgr = gpu_mask_bgr.download()
+            print("Seeking contours ")
             contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            print("Found: " + str(len(contours)) + ' contours')
             blank_mask = np.zeros_like(base_mask_bgr)
-
-            for index, contour in enumerate(contours[self.gui.draw_contour_min:self.gui.draw_contour_min]):
+            print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
+            for index, contour in enumerate(contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
+                print("Drawing: " + str(len(index)) + ' contour')
                 drawn_mask = cv2.drawContours(blank_mask, contour, -1, 255, -1)
                 self.monitor.add("Drawn contour " + str(index), drawn_mask)
                 gpu_drawn_mask = cv2.cuda_GpuMat()
                 gpu_drawn_mask.upload(drawn_mask)
                 mask_list.append(gpu_drawn_mask)
         else:
+            print("Find contours disabled")
             mask_list.append(gpu_mask)
         return mask_list
