@@ -103,7 +103,7 @@ class Canvas:
 
                 if len(current_mask.shape) == 3:
                     (y, x, c) = np.where(current_mask == 255)
-                else
+                else:
                     (y, x) = np.where(current_mask == 255)
 
                 (top_y, top_x) = (np.min(y), np.min(x))
