@@ -127,7 +127,7 @@ class Canvas:
                       ')')
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
                 self.monitor.add("Video positioned", video_positioned)
-                mask_applied = np.where(current_mask[:, :] == [0, 0, 0], mask_applied, video_positioned)
+                mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], mask_applied, video_positioned)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
