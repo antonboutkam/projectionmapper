@@ -66,101 +66,109 @@ class Canvas:
         projection_area_cam_perspective = self._get_input(current_frame)
         self.monitor.add("Canvas cam perspective", projection_area_cam_perspective)
 
-        gpu_mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
-        mask = gpu_mask.download()
-        self.monitor.add_gpu("Canvas mask", gpu_mask)
-        if len(mask.shape) == 2:
-            gpu_mask_color = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_GRAY2RGB)
+        gpu_pre_processed_mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
+        pre_processed_mask = gpu_pre_processed_mask.download()
+        self.monitor.add("Preprocessed result", gpu_pre_processed_mask)
+
+        if len(pre_processed_mask.shape) == 2:
+            gpu_full_mask_color = cv2.cuda.cvtColor(gpu_pre_processed_mask, cv2.COLOR_GRAY2RGB)
         else:
-            gpu_mask_color = gpu_mask
+            gpu_full_mask_color = gpu_pre_processed_mask
+
+        gpu_mask_list_color = self.extract_mask_list(gpu_full_mask_color)
 
         video_source = self.source.frame()
         self.monitor.add("Video source " + str(self.gui.video_source), video_source)
-
         gpu_video_source = cv2.cuda_GpuMat()
         gpu_video_source.upload(video_source)
 
         if video_source.shape[2] == 1:
             gpu_video_source = cv2.cuda.cvtColor(gpu_video_source, cv2.COLOR_GRAY2RGB)
+        mask_color = gpu_full_mask_color.download()
 
-        mask_color = gpu_mask_color.download()
-        if self.gui.video_size_mode == 0:
-            gpu_video_mask_size = cv2.cuda.resize(gpu_video_source, (mask.shape[1], mask.shape[0]))
-            mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, gpu_video_mask_size.download())
-        elif self.gui.video_size_mode == 1:
-            # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-            # Calculate image moments of the detected contour
-            # M = cv2.moments(contours[0])
-            # cont_center_x = round(M['m10'] / M['m00'])
-            # cont_center_y = round(M['m01'] / M['m00'])
-            (y, x) = np.where(mask == 255)
-            (top_y, top_x) = (np.min(y), np.min(x))
-            (bottom_y, bottom_x) = (np.max(y), np.max(x))
-            width = bottom_x - top_x
-            height = bottom_y - top_y
-            gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
-            video_scale_fit = gpu_video_scale_fit.download()
-            self.monitor.add("video scaled to fit", video_scale_fit)
-            video_positioning = np.zeros([mask.shape[0], mask.shape[1], 3], dtype=np.uint8)
-            print("mask shape", mask.shape)
-            print("video positioning shape", video_positioning.shape)
-            print("video scale fit shape", video_scale_fit.shape)
-            print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
-            print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ', video_scale_fit.shape, ')')
-            video_positioning[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-            self.monitor.add("Video positioned", video_positioning)
-            mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioning)
+        mask_applied = np.zeros_like(mask_color)
 
-        # print('mask color shape', mask_color.shape)
-        # print('video source mask size shape', video_source_mask_size.shape)
+        for index, gpu_mask in enumerate(gpu_mask_list_color):
+            self.monitor.add("Mask index: " + str(index) + ", src: " + str(self.gui.video_source), video_source)
+            if self.gui.video_size_mode == 0:
+                gpu_video_mask_size = cv2.cuda.resize(gpu_video_source, (current_frame.shape[1], current_frame.shape[0]))
+                mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, gpu_video_mask_size.download())
+            elif self.gui.video_size_mode == 1:
+                # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+                # Calculate image moments of the detected contour
+                # M = cv2.moments(contours[0])
+                # cont_center_x = round(M['m10'] / M['m00'])
+                # cont_center_y = round(M['m01'] / M['m00'])
+                current_mask = gpu_mask.download()
+                (y, x) = np.where(current_mask == 255)
+                (top_y, top_x) = (np.min(y), np.min(x))
+                (bottom_y, bottom_x) = (np.max(y), np.max(x))
+                width = bottom_x - top_x
+                height = bottom_y - top_y
+                gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
+                video_scale_fit = gpu_video_scale_fit.download()
+                self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
+                video_positioned = np.zeros_like(current_frame)
+                # print("mask shape", mask.shape)
+                # print("video positioning shape", video_positioning.shape)
+                # print("video scale fit shape", video_scale_fit.shape)
+                # print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
+                # print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ',
+                # video_scale_fit.shape, ')')
+                video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
+                self.monitor.add("Video positioned", video_positioned)
+                mask_applied = np.where(current_mask[:, :] == [0, 0, 0], mask_applied, video_positioned)
 
-        # print('mask applied shape', mask_applied.shape)
-        self.monitor.add("Canvas mask applied", mask_applied)
+            # print('mask color shape', mask_color.shape)
+            # print('video source mask size shape', video_source_mask_size.shape)
 
-        # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)222s
-        offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
-        offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
-        # top_y = self.top_y+offset_y
-        # bottom_y = self.bottom_y+offset_y + 1
-        # top_x = self.top_x+offset_x
-        # bottom_x = self.bottom_x+offset_x + 1
+            # print('mask applied shape', mask_applied.shape)
+            self.monitor.add("Canvas mask applied", mask_applied)
 
-        # print('topy', top_y)
-        # print('bottomy', bottom_y)
-        # print('topx', top_x)
-        # print('bottomx', bottom_x)
-        # print('mask shape', mask_applied)
-        full_canvas = np.zeros_like(current_frame)
-        # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
+            # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)222s
+            offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
+            offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
+            # top_y = self.top_y+offset_y
+            # bottom_y = self.bottom_y+offset_y + 1
+            # top_x = self.top_x+offset_x
+            # bottom_x = self.bottom_x+offset_x + 1
 
-        h = mask.shape[0]
-        w = mask.shape[1]
+            # print('topy', top_y)
+            # print('bottomy', bottom_y)
+            # print('topx', top_x)
+            # print('bottomx', bottom_x)
+            # print('mask shape', mask_applied)
+            full_canvas = np.zeros_like(current_frame)
+            # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
-        if offset_y > 0:
-            src_top_y = 0
-            src_bottom_y = h - offset_y
-            dest_top_y = offset_y
-            dest_bottom_y = h
-        else:
-            src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewel plus 20
-            src_bottom_y = h
-            dest_top_y = 0
-            dest_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
+            h = mask.shape[0]
+            w = mask.shape[1]
 
-        if offset_x > 0:
-            src_top_x = 0
-            src_bottom_x = w - offset_x
-            dest_top_x = offset_x
-            dest_bottom_x = w
-        else:
-            src_top_x = 0 - offset_x
-            src_bottom_x = w
-            dest_top_x = 0
-            dest_bottom_x = w + offset_x
+            if offset_y > 0:
+                src_top_y = 0
+                src_bottom_y = h - offset_y
+                dest_top_y = offset_y
+                dest_bottom_y = h
+            else:
+                src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewel plus 20
+                src_bottom_y = h
+                dest_top_y = 0
+                dest_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
+
+            if offset_x > 0:
+                src_top_x = 0
+                src_bottom_x = w - offset_x
+                dest_top_x = offset_x
+                dest_bottom_x = w
+            else:
+                src_top_x = 0 - offset_x
+                src_bottom_x = w
+                dest_top_x = 0
+                dest_bottom_x = w + offset_x
 
 
-        full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
-                                                                          src_top_x:src_bottom_x]
+            full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
+                                                                              src_top_x:src_bottom_x]
         # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
         # full_canvas[-10:300, 0:400] = mask_applied[0:290, 0:400]
 
@@ -186,3 +194,18 @@ class Canvas:
         # self.monitor.add("Out", out)
         self.monitor.display()
         projector.draw(full_canvas)
+
+    def extract_mask_list(self, gpu_mask):
+        mask_list = []
+        if self.gui.find_contour_enable:
+            base_mask = gpu_mask.download()
+            contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            blank_mask = np.zeros_like(base_mask)
+            for contour in contours[self.gui.draw_contour_min:self.gui.draw_contour_min]:
+                drawn_mask = cv2.drawContours(blank_mask, contour, -1, 255, -1)
+                gpu_drawn_mask = cv2.cuda_GpuMat()
+                gpu_drawn_mask.upload(drawn_mask)
+                mask_list.append(gpu_drawn_mask)
+        else:
+            mask_list.append(gpu_mask)
+        return mask_list

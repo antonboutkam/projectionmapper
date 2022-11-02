@@ -48,22 +48,6 @@ class PreProcessor:
             ret, gpu_output = cv2.cuda.threshold(gpu_output, gui.threshold, 255, cv2.THRESH_BINARY)
             monitor.add_gpu("PreProc Threshold", gpu_output)
 
-        if gui.find_contour_enable:
-            contours, hierarchy = cv2.findContours(gpu_output.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-            hull_list = []
-            for contour in contours[gui.draw_contour_min:gui.draw_contour_min]:
-                hull = cv2.convexHull(contour)
-                hull_list.append(hull)
-
-            drawing = np.zeros((output.shape[0], output.shape[1], 3), dtype=np.uint8)
-            for i in range(len(hull_list)):
-                color = (rng.randint(0, 256), rng.randint(0, 256), rng.randint(0, 256))
-                cv2.drawContours(drawing, hull_list[i], i, color)
-
-            monitor.add("Hulls", drawing)
-            gpu_output = cv2.cuda_GpuMat()
-            gpu_output.upload(drawing)
-
         monitor.add_gpu("PreProc Result", gpu_output)
 
         if False:
