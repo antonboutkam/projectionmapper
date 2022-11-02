@@ -141,8 +141,8 @@ class Canvas:
             full_canvas = np.zeros_like(current_frame)
             # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
-            h = mask.shape[0]
-            w = mask.shape[1]
+            h = pre_processed_mask.shape[0]
+            w = pre_processed_mask.shape[1]
 
             if offset_y > 0:
                 src_top_y = 0
@@ -165,7 +165,6 @@ class Canvas:
                 src_bottom_x = w
                 dest_top_x = 0
                 dest_bottom_x = w + offset_x
-
 
             full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
                                                                               src_top_x:src_bottom_x]
