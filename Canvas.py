@@ -111,7 +111,8 @@ class Canvas:
                 width = bottom_x - top_x
                 height = bottom_y - top_y
                 print('width', width, 'height', height)
-                gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width + 10, height + 10))
+                safe_margin = 5
+                gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width + safe_margin, height + safe_margin))
                 video_scale_fit = gpu_video_scale_fit.download()
                 self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
                 video_positioned = np.zeros_like(current_frame)
@@ -123,7 +124,7 @@ class Canvas:
                 # video_scale_fit.shape, ')')
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
                 self.monitor.add("Video positioned", video_positioned)
-                mask_applied = np.where(current_mask[:, :] == [0, 0, 0], mask_applied, video_positioned)
+                mask_applied = np.where(current_mask[:, :] == [0, 0, 0], mask_applied + safe_margin, video_positioned + safe_margin)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
