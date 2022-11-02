@@ -100,12 +100,18 @@ class Canvas:
                 # cont_center_x = round(M['m10'] / M['m00'])
                 # cont_center_y = round(M['m01'] / M['m00'])
                 current_mask = gpu_mask.download()
-                (y, x) = np.where(current_mask == 255)
+
+                if len(current_mask.shape) == 3:
+                    (y, x, c) = np.where(current_mask == 255)
+                else
+                    (y, x) = np.where(current_mask == 255)
+
                 (top_y, top_x) = (np.min(y), np.min(x))
                 (bottom_y, bottom_x) = (np.max(y), np.max(x))
                 width = bottom_x - top_x
                 height = bottom_y - top_y
-                gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
+                print('width', width, 'height', height)
+                gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width + 10, height + 10))
                 video_scale_fit = gpu_video_scale_fit.download()
                 self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
                 video_positioned = np.zeros_like(current_frame)
