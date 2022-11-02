@@ -207,7 +207,7 @@ class Canvas:
             blank_mask = np.zeros_like(base_mask_bgr)
             print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
             for index, contour in enumerate(contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
-                print("Drawing: " + str(len(index)) + ' contour')
+                print("Drawing: " + str(index) + ' contour')
                 drawn_mask = cv2.drawContours(blank_mask, contour, -1, 255, -1)
                 self.monitor.add("Drawn contour " + str(index), drawn_mask)
                 gpu_drawn_mask = cv2.cuda_GpuMat()
