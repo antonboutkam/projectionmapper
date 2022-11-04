@@ -5,7 +5,7 @@ class Cam(object):
     width = 1280
     height = 720
     # gphoto2 - -stdout - -capture - movie | gst - launch - 0.10 fdsrc ! decodebin2 name = dec ! queue ! ffmpegcolorspace ! v4l2sink device = /dev/video2
-    vid = cv2.VideoCapture(1)
+    vid = cv2.VideoCapture(0)
     last_frame = None
     # vid = cv2.VideoCapture(2)
 
