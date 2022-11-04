@@ -216,7 +216,7 @@ class Canvas:
                 contour = component[0]
                 hierarchy = component[1]
 
-                if hierarchy[3] < 0 or contour[3] == -1:
+                if hierarchy[3] < 0 or hierarchy[3] == -1:
                     # these are the outermost parent components
                     # print("Drawing: " + str(index) + ' contour')
                     poly_contour = cv2.approxPolyDP(contour, 0.01 * cv2.arcLength(contour, True), True)
