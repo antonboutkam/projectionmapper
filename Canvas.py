@@ -212,16 +212,17 @@ class Canvas:
             blank_mask = np.zeros_like(base_mask_bgr)
             # print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
             for index, contour in enumerate(sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
-                # print("Drawing: " + str(index) + ' contour')
-                polyContour = cv2.approxPolyDP(contour,0.01*cv2.arcLength(contour,True),True)
-                hull = cv2.convexHull(polyContour)
-                drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
-                drawn_mask = cv2.drawContours(drawn_mask, contour, -1, (255, 0, 0), 2)
+                # Only using the outer contours
+                if contour[3] == -1:
+                    # print("Drawing: " + str(index) + ' contour')
+                    poly_contour = cv2.approxPolyDP(contour, 0.01 * cv2.arcLength(contour, True), True)
+                    hull = cv2.convexHull(poly_contour)
+                    drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
 
-                # self.monitor.add("Drawn contour " + str(index), drawn_mask)
-                gpu_drawn_mask = cv2.cuda_GpuMat()
-                gpu_drawn_mask.upload(drawn_mask)
-                mask_list.append(gpu_drawn_mask)
+                    # self.monitor.add("Drawn contour " + str(index), drawn_mask)
+                    gpu_drawn_mask = cv2.cuda_GpuMat()
+                    gpu_drawn_mask.upload(drawn_mask)
+                    mask_list.append(gpu_drawn_mask)
         else:
             # print("Find contours disabled")
             mask_list.append(gpu_mask)
