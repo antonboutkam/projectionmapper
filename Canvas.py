@@ -118,13 +118,6 @@ class Canvas:
                 video_scale_fit = gpu_video_scale_fit.download()
                 self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
                 video_positioned = np.zeros_like(current_frame)
-
-                # print("mask shape", current_mask.shape)
-                # print("video positioning shape", video_positioned.shape)
-                # print("video scale fit shape", video_scale_fit.shape)
-                # print('top_y', top_y, 'bottom_y', bottom_y, 'top_x', top_x, 'bottom_X', bottom_x)
-                # print('mask_applied[', top_y, ':', bottom_y, ', ', top_x, ':', bottom_x, '] = ', video_scale_fit.shape,
-                #     ')')
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
                 self.monitor.add("Video positioned", video_positioned)
                 mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], mask_applied, video_positioned)
@@ -212,7 +205,7 @@ class Canvas:
 
             base_mask_bgr = gpu_mask_bgr.download()
             print("Seeking contours ")
-            contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
             sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
             print("Found: " + str(len(contours)) + ' contours')
@@ -223,6 +216,7 @@ class Canvas:
                 polyContour = cv2.approxPolyDP(contour,0.01*cv2.arcLength(contour,True),True)
                 hull = cv2.convexHull(polyContour)
                 drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
+                drawn_mask = cv2.drawContours(drawn_mask, contour, -1, (255, 0, 0), 2)
 
                 self.monitor.add("Drawn contour " + str(index), drawn_mask)
                 gpu_drawn_mask = cv2.cuda_GpuMat()
