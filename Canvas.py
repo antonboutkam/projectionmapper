@@ -213,13 +213,13 @@ class Canvas:
             # print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
 
             for component in zip(contours, hierarchy):
-                contour = component[0]
-                hierarchy = component[1]
-                print(hierarchy)
-                if hierarchy[3] < 0 or hierarchy[3] == -1:
+                curr_contour = component[0]
+                curr_hierarchy = component[1]
+                print(curr_hierarchy)
+                if curr_hierarchy[3] < 0 or curr_hierarchy[3] == -1:
                     # these are the outermost parent components
                     # print("Drawing: " + str(index) + ' contour')
-                    poly_contour = cv2.approxPolyDP(contour, 0.01 * cv2.arcLength(contour, True), True)
+                    poly_contour = cv2.approxPolyDP(curr_contour, 0.01 * cv2.arcLength(curr_contour, True), True)
                     hull = cv2.convexHull(poly_contour)
                     drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
 
