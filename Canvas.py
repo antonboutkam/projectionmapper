@@ -121,7 +121,7 @@ class Canvas:
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
                 self.monitor.add("Video positioned", video_positioned)
         if self.gui.video_size_mode == 1:
-            mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], mask_color, video_positioned)
+            mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_applied, video_positioned)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
@@ -208,7 +208,7 @@ class Canvas:
             # print("Seeking contours ")
             contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
             sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-            contours = contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
+            contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
 
             blank_mask = np.zeros_like(base_mask_bgr)
             # print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
