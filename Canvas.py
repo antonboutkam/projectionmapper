@@ -66,7 +66,7 @@ class Canvas:
         projection_area_cam_perspective = self._get_input(current_frame)
         self.monitor.add("Canvas cam perspective", projection_area_cam_perspective)
 
-        gpu_pre_processed_mask = self.pre_processor.process(projection_area_cam_perspective.copy(), self.gui, self.monitor)
+        gpu_pre_processed_mask = self.pre_processor.process(projection_area_cam_perspective, self.gui, self.monitor)
         pre_processed_mask = gpu_pre_processed_mask.download()
         self.monitor.add_gpu("Preprocessed result", gpu_pre_processed_mask)
 
@@ -75,7 +75,7 @@ class Canvas:
         else:
             gpu_full_mask_color = gpu_pre_processed_mask
 
-        gpu_mask_list_color = self.extract_mask_list(gpu_full_mask_color)
+        gpu_mask_list_color = self.extract_mask_list(gpu_full_mask_color, projection_area_cam_perspective)
 
         video_source = self.source.frame()
         self.monitor.add("Video source " + str(self.gui.video_source), video_source)
@@ -199,7 +199,7 @@ class Canvas:
         self.monitor.display()
         projector.draw(full_canvas)
 
-    def extract_mask_list(self, gpu_mask):
+    def extract_mask_list(self, gpu_mask, current_frame):
         mask_list = []
         if self.gui.find_contour_enable == 1:
             gpu_mask_bgr = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_RGB2GRAY)
@@ -210,8 +210,10 @@ class Canvas:
             contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
             contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
-            contours_found = cv2.drawContours(contours, contours, -1, (255, 0, 0), 1)
-            self.monitor.add("Cont " + str(self.gui.draw_contour_min) + ":" + str(self.gui.draw_contour_max), contours_found)
+            all_contours = cv2.drawContours(current_frame, contours, -1, (255, 0, 0), 1)
+            str_min = str(self.gui.draw_contour_min)
+            str_max = str(self.gui.draw_contour_max)
+            self.monitor.add("Cont " + str_min + ":" + str_max, all_contours)
 
             blank_mask = np.zeros_like(base_mask_bgr)
             if len(contours) > 0:
