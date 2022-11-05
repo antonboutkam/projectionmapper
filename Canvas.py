@@ -85,7 +85,7 @@ class Canvas:
         if video_source.shape[2] == 1:
             gpu_video_source = cv2.cuda.cvtColor(gpu_video_source, cv2.COLOR_GRAY2RGB)
         mask_color = gpu_full_mask_color.download()
-
+        video_positioned = np.zeros_like(current_frame)
         mask_applied = np.zeros_like(mask_color)
 
         for index, gpu_mask in enumerate(gpu_mask_list_color):
@@ -117,10 +117,11 @@ class Canvas:
                 gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
                 video_scale_fit = gpu_video_scale_fit.download()
                 self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
-                video_positioned = np.zeros_like(current_frame)
+
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
                 self.monitor.add("Video positioned", video_positioned)
-                mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], mask_applied, video_positioned)
+        if self.gui.video_size_mode == 1:
+            mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], mask_color, video_positioned)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
