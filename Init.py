@@ -77,7 +77,7 @@ class Init:
 
             width = bottom_x - top_x
             height = bottom_y - top_y
-            aspect_ratio = height / width
+            aspect_ratio = width / height
             monitor = Monitor()
             monitor.start(gui, aspect_ratio)
 
