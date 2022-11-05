@@ -186,7 +186,8 @@ class Canvas:
             for i in zip(contours, hierarchy):
                 contour = i[0]
                 relations = i[1]
-                if relations[3] == -1:
+                print(relations);
+                if relations[2] == -1:
                     root_contours.append(contour)
 
             if len(root_contours) == 0:
