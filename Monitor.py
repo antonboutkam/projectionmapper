@@ -15,7 +15,7 @@ class Monitor:
     def start(self, gui, aspect_ratio):
         self.gui = gui
         self.desired_ratio = aspect_ratio
-        height = math.ceil(self.desired_width * aspect_ratio)
+        height = math.ceil(self.desired_width / aspect_ratio)
         self.desired_size = (self.desired_width, height)
 
     def add_gpu(self, title, frame):
@@ -27,7 +27,7 @@ class Monitor:
         if not self.gui.main_show_monitor:
             return None
         print("Add to monitor: " + title + " ", frame.shape)
-        print("Desired", self.desired_size);
+        print("Desired", self.desired_size)
         curr_w = frame.shape[0]
         curr_h = frame.shape[1]
         curr_r = curr_w / curr_h
