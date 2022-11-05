@@ -26,7 +26,8 @@ class Monitor:
     def add(self, title, frame):
         if not self.gui.main_show_monitor:
             return None
-        # print("Start shape", frame.shape)
+        print("Add to monitor: " + title + " ", frame.shape)
+        print("Desired", self.desired_size);
         curr_w = frame.shape[0]
         curr_h = frame.shape[1]
         curr_r = curr_w / curr_h
