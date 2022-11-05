@@ -6,10 +6,10 @@ import math
 
 class Monitor:
     frames = []
-    desired_width = 200
+    desired_width = 300
     desired_size = None
     desired_ratio = None
-    column_count = 5
+    column_count = 4
     gui = False
 
     def start(self, gui, aspect_ratio):
