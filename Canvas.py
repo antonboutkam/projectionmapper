@@ -175,18 +175,26 @@ class Canvas:
     def extract_mask_list(self, gpu_mask, current_frame):
         mask_list = []
         if self.gui.find_contour_enable == 1:
-
+            root_contours = []
             self.monitor.add_gpu("Extract Input", gpu_mask)
             base_mask = gpu_mask.download()
             # print("Seeking contours ")
             contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-            contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
+            # sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
+            # contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
 
+            for i in zip(contours, hierarchy):
+                contour = i[0]
+                relations = i[1]
+                if relations[3] == -1:
+                    root_contours.append(contour)
+
+            if len(root_contours) == 0:
+                mask_list.append(gpu_mask)
             str_min = str(self.gui.draw_contour_min)
             str_max = str(self.gui.draw_contour_max)
-            all_contours = cv2.drawContours(current_frame, contours, -1, (255, 0, 0), 3)
-            self.monitor.add("Cont " + str_min + ":" + str_max, all_contours)
+            all_contours_img = cv2.drawContours(current_frame, root_contours, -1, (255, 0, 0), 3)
+            self.monitor.add("Cont " + str_min + ":" + str_max + ":" + str(root_contours), all_contours_img)
 
 
             # if len(contours) > 0:
@@ -199,7 +207,7 @@ class Canvas:
             #            biggest_area = area;
             #            biggest = con;
             blank_mask = np.zeros_like(base_mask)
-            for index, contour in enumerate(contours):
+            for index, contour in enumerate(root_contours):
                 poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
                 hull = cv2.convexHull(poly_contour)
                 drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
