@@ -18,8 +18,7 @@ gui = Gui()
 gui.init(cam)
 gui.show()
 init = Init()
-monitor = Monitor()
-monitor.start(gui)
+
 current_calibration_threshold = gui.calibration_threshold
 current_calibration_luminosity = gui.calibration_luminosity
 
@@ -35,7 +34,7 @@ while (True):
         startTime = time.time()
 
     if not init.initialized:
-        init.run(runningTime, gui, projector, cam, monitor)
+        init.run(runningTime, gui, projector, cam)
     else:
         canvas = init.canvas
         canvas.play(projector)

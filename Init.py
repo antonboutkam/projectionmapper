@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from Canvas import Canvas
+from Monitor import Monitor
 
 
 class Init:
@@ -10,7 +11,7 @@ class Init:
     contours_ = None
     canvas = None
 
-    def run(self, running_time, gui, projector, cam, monitor):
+    def run(self, running_time, gui, projector, cam):
 
         print("runnning time", running_time)
         if running_time < 2:
@@ -73,6 +74,12 @@ class Init:
             (bottom_y, bottom_x) = (np.max(y), np.max(x))
             # print(top_y, ':', (bottom_y + 1), ', ', top_x, ':', (bottom_x + 1))
             mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
+
+            width = bottom_x - top_x
+            height = bottom_y - top_y
+            aspect_ratio = height / width
+            monitor = Monitor()
+            monitor.start(gui, aspect_ratio)
 
             # Show the output image
             if gui.calibration_show_input_source:

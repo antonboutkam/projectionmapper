@@ -6,13 +6,17 @@ import math
 
 class Monitor:
     frames = []
-    desired_size = (200, 150)
-    desired_ratio = 200 / 150  # 1,3
+    desired_width = 200
+    desired_size = None
+    desired_ratio = None
     column_count = 5
     gui = False
 
-    def start(self, gui):
+    def start(self, gui, aspect_ratio):
         self.gui = gui
+        self.desired_ratio = aspect_ratio
+        height = self.desired_width * aspect_ratio
+        self.desired_size = (self.desired_width, height)
 
     def add_gpu(self, title, frame):
         if not self.gui.main_show_monitor:
