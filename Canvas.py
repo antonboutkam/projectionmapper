@@ -177,43 +177,8 @@ class Canvas:
             # print("Seeking contours ")
             all_contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
             all_contours_img = cv2.drawContours(current_frame, all_contours, -1, (0, 0, 255), 3)
-            # sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-            # contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
+            self.monitor.add("All contours", all_contours_img)
 
-            for index, i in enumerate(zip(contours, hierarchy)):
-                contour = i[0]
-                relations = i[1][0]
-
-                if relations[3] == -1:
-                    root_contours.append(contour)
-                    root_contour_idx.append(index)
-
-            if len(root_contours) == 0:
-                mask_list.append(gpu_mask)
-
-            if len(root_contours) == 1:
-                root_contour = index
-                for i in zip(contours, hierarchy):
-                    contour = i[0]
-                    relations = i[1][0]
-                    if relations[3] == root_contour:
-                        root_contours.append(contour)
-
-            str_min = str(self.gui.draw_contour_min)
-            str_max = str(self.gui.draw_contour_max)
-            all_contours_img = cv2.drawContours(all_contours_img, root_contours, -1, (255, 0, 0), 3)
-            self.monitor.add("Cont " + str_min + ":" + str_max + ":" + str(len(root_contours))  , all_contours_img)
-
-
-            # if len(contours) > 0:
-            #    # find the biggest contour
-            #    biggest = None;
-            #    biggest_area = -1;
-            #    for con in contours:
-            #        area = cv2.contourArea(con);
-            #        if biggest_area < area:
-            #            biggest_area = area;
-            #            biggest = con;
             blank_mask = np.zeros_like(base_mask)
             for index, contour in enumerate(all_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
                 poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
