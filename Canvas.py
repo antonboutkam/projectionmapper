@@ -116,10 +116,10 @@ class Canvas:
                 # print('width', width, 'height', height)
                 gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
                 video_scale_fit = gpu_video_scale_fit.download()
-                self.monitor.add("video scaled to fit " + str(index), video_scale_fit)
+                self.monitor.add_gpu("VScal2Fit " + str(index), video_scale_fit)
 
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-                self.monitor.add("Video positioned", video_positioned)
+                self.monitor.add("VideoPos", video_positioned)
 
         if self.gui.video_size_mode == 1:
             mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioned)
