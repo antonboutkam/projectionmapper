@@ -61,13 +61,12 @@ class Canvas:
         gpu_pre_processed_mask = self.pre_processor.process(projection_area_cam_perspective, self.gui, self.monitor)
         pre_processed_mask = gpu_pre_processed_mask.download()
 
-        gpu_mask_list_color = self.extract_mask_list(gpu_pre_processed_mask, projection_area_cam_perspective)
+        mask_list = self.extract_mask_list(gpu_pre_processed_mask, projection_area_cam_perspective)
 
         if len(pre_processed_mask.shape) == 2:
             gpu_full_mask_color = cv2.cuda.cvtColor(gpu_pre_processed_mask, cv2.COLOR_GRAY2RGB)
         else:
             gpu_full_mask_color = gpu_pre_processed_mask
-
 
         video_source = self.source.frame()
         self.monitor.add("Source " + str(self.gui.video_source), video_source)
@@ -80,9 +79,9 @@ class Canvas:
         video_positioned = np.zeros_like(current_frame)
         mask_applied = np.zeros_like(mask_color)
 
-        for index, gpu_mask in enumerate(gpu_mask_list_color):
+        for index, current_mask in enumerate(mask_list):
             if self.gui.video_size_mode == 0:
-                gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
+                gpu_video_mask_size = cv2.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
                 mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, gpu_video_mask_size.download())
             elif self.gui.video_size_mode == 1:
@@ -91,12 +90,8 @@ class Canvas:
                 # M = cv2.moments(contours[0])
                 # cont_center_x = round(M['m10'] / M['m00'])
                 # cont_center_y = round(M['m01'] / M['m00'])
-                current_mask = gpu_mask.download()
 
-                if len(current_mask.shape) == 3:
-                    (y, x, c) = np.where(current_mask == 255)
-                else:
-                    (y, x) = np.where(current_mask == 255)
+                (y, x) = np.where(current_mask == 255)
 
                 (top_y, top_x) = (np.min(y), np.min(x))
                 (bottom_y, bottom_x) = (np.max(y), np.max(x))
@@ -109,10 +104,9 @@ class Canvas:
                 gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
                 video_scale_fit = gpu_video_scale_fit.download()
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
-
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
 
-        mask_count = len(gpu_mask_list_color)
+        mask_count = len(mask_list)
         self.monitor.add(str(mask_count) + " clip merge", video_positioned)
         if self.gui.video_size_mode == 1:
             mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioned)
@@ -186,7 +180,7 @@ class Canvas:
             for i in zip(contours, hierarchy):
                 contour = i[0]
                 relations = i[1][0]
-                
+
                 if relations[3] == -1:
                     root_contours.append(contour)
 
@@ -214,10 +208,8 @@ class Canvas:
                 drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
                 # area = cv2.contourArea(contour)
                 self.monitor.add("Contour " + str(index), drawn_mask)
-                gpu_drawn_mask = cv2.cuda_GpuMat()
-                gpu_drawn_mask.upload(drawn_mask)
-                mask_list.append(gpu_drawn_mask)
+                mask_list.append(drawn_mask)
         else:
             # print("Find contours disabled")
-            mask_list.append(gpu_mask)
+            mask_list.append(gpu_mask.download())
         return mask_list
