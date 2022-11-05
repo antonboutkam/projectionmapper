@@ -4,8 +4,9 @@ import cv2
 class Cam(object):
     width = 1280
     height = 720
+    video_channel = 0
     # gphoto2 - -stdout - -capture - movie | gst - launch - 0.10 fdsrc ! decodebin2 name = dec ! queue ! ffmpegcolorspace ! v4l2sink device = /dev/video2
-    vid = cv2.VideoCapture(0)
+    vid = cv2.VideoCapture(video_channel)
     last_frame = None
     # vid = cv2.VideoCapture(2)
 
@@ -39,6 +40,12 @@ class Cam(object):
             ret, frame = self.vid.read()
             if not ret and self.last_frame is None:
                 print('wait cam')
+                self.video_channel = self.video_channel + 1
+                if self.video_channel > 3:
+                    self.video_channel = 0
+                print('try channel' + str(self.video_channel))
+                self.vid = cv2.VideoCapture(self.video_channel)
+                self.start()
                 continue
             elif not ret:
                 print('cam fail')
