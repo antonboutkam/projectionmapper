@@ -32,28 +32,31 @@ class Monitor:
         curr_h = frame.shape[0]
         curr_r = curr_w / curr_h
 
+        desired_width = self.desired_size[0]
+        desired_height = self.desired_size[1]
+
         if curr_r == self.desired_ratio:
-            resized_frame = cv2.resize(frame, (self.desired_size[0], self.desired_size[1]))
+            resized_frame = cv2.resize(frame, (desired_width, desired_height))
         elif curr_r < self.desired_ratio:
-            resize_width = self.desired_size[0]
-            resize_factor = self.desired_size[0] / curr_w
+            resize_width = desired_width
+            resize_factor = desired_width / curr_w
             # print("resize factor 1", resize_factor)
             resize_height = math.ceil(curr_h * resize_factor)
             dsize = (resize_width, resize_height)
             # print("Resize 1", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
-            # print("Crop 1 ", self.desired_size[0], ":", self.desired_size[1])
-            resized_frame = intermediate_frame[0:self.desired_size[1], 0:self.desired_size[0]]
+            # print("Crop 1 ", desired_width, ":", desired_height)
+            resized_frame = intermediate_frame[0:desired_height, 0:desired_width]
         elif curr_r > self.desired_ratio:
-            resize_height = self.desired_size[1]
-            resize_factor = self.desired_size[1] / curr_h
+            resize_height = desired_height
+            resize_factor = desired_height / curr_h
             # print("resize factor 2", resize_factor)
             resize_width = math.ceil(curr_w * resize_factor)
             dsize = (resize_width, resize_height)
             # print("Resize 2", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
-            # print("Crop 2 ", self.desired_size[0], ":", self.desired_size[1])
-            resized_frame = intermediate_frame[0:self.desired_size[1], 0:self.desired_size[0]]
+            # print("Crop 2 ", desired_width, ":", desired_height)
+            resized_frame = intermediate_frame[0:desired_height, 0:desired_width]
         else:
             raise Exception("Cannot resize, this situation should never occur")
 
