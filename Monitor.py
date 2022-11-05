@@ -6,7 +6,7 @@ import math
 
 class Monitor:
     frames = []
-    desired_width = 300
+    desired_width = 200
     desired_size = None
     desired_ratio = None
     column_count = 4
