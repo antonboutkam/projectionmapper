@@ -81,7 +81,7 @@ class Canvas:
 
         for index, current_mask in enumerate(mask_list):
             if self.gui.video_size_mode == 0:
-                gpu_video_mask_size = cv2.resize(gpu_video_source,
+                gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
                 mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, gpu_video_mask_size.download())
             elif self.gui.video_size_mode == 1:
