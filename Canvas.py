@@ -207,32 +207,27 @@ class Canvas:
             base_mask_bgr = gpu_mask_bgr.download()
             # print("Seeking contours ")
             contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-            # sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-            hierarchy = hierarchy[0]
-            # print("Found: " + str(len(contours)) + ' contours')
+            sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
+            contours = contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
+
             blank_mask = np.zeros_like(base_mask_bgr)
             # print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
 
             if len(contours) > 0:
                 first_skipped = False
-                for component in zip(contours, hierarchy):
+                for contour in contours:
                     if not first_skipped:
                         first_skipped = True
                         continue
-                    curr_contour = component[0]
-                    curr_hierarchy = component[1]
-                    print(curr_hierarchy)
-                    if curr_hierarchy[3] < 0 or curr_hierarchy[3] == -1:
-                        # these are the outermost parent components
-                        # print("Drawing: " + str(index) + ' contour')
-                        poly_contour = cv2.approxPolyDP(curr_contour, 0.01 * cv2.arcLength(curr_contour, True), True)
-                        hull = cv2.convexHull(poly_contour)
-                        drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
 
-                        # self.monitor.add("Drawn contour " + str(index), drawn_mask)
-                        gpu_drawn_mask = cv2.cuda_GpuMat()
-                        gpu_drawn_mask.upload(drawn_mask)
-                        mask_list.append(gpu_drawn_mask)
+                    poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
+                    hull = cv2.convexHull(poly_contour)
+                    drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
+
+                    # self.monitor.add("Drawn contour " + str(index), drawn_mask)
+                    gpu_drawn_mask = cv2.cuda_GpuMat()
+                    gpu_drawn_mask.upload(drawn_mask)
+                    mask_list.append(gpu_drawn_mask)
 
         else:
             # print("Find contours disabled")
