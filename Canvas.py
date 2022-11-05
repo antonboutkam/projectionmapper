@@ -176,6 +176,7 @@ class Canvas:
             base_mask = gpu_mask.download()
             # print("Seeking contours ")
             contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            all_contours_img = cv2.drawContours(current_frame, root_contours, -1, (0, 255, 0), 3)
             # sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
             # contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
 
@@ -200,7 +201,7 @@ class Canvas:
 
             str_min = str(self.gui.draw_contour_min)
             str_max = str(self.gui.draw_contour_max)
-            all_contours_img = cv2.drawContours(current_frame, root_contours, -1, (255, 0, 0), 3)
+            all_contours_img = cv2.drawContours(all_contours_img, root_contours, -1, (255, 0, 0), 3)
             self.monitor.add("Cont " + str_min + ":" + str_max + ":" + str(len(root_contours))  , all_contours_img)
 
 
