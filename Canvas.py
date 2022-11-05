@@ -207,13 +207,13 @@ class Canvas:
 
             base_mask_bgr = gpu_mask_bgr.download()
             # print("Seeking contours ")
-            contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+            contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
             contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
+            contours_found = cv2.drawContours(contours, contours, -1, (255, 0, 0), 1)
+            self.monitor.add("Cont " + str(self.gui.draw_contour_min) + ":" + str(self.gui.draw_contour_max), contours_found)
 
             blank_mask = np.zeros_like(base_mask_bgr)
-            # print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
-
             if len(contours) > 0:
                 first_skipped = False
                 for contour in contours:
