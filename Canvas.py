@@ -214,7 +214,11 @@ class Canvas:
             # print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
 
             if len(contours) > 0:
+                first_skipped = False
                 for component in zip(contours, hierarchy):
+                    if not first_skipped:
+                        first_skipped = True
+                        continue
                     curr_contour = component[0]
                     curr_hierarchy = component[1]
                     print(curr_hierarchy)
