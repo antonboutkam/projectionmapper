@@ -113,7 +113,7 @@ class Canvas:
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
 
         mask_count = len(gpu_mask_list_color)
-        self.monitor.add(mask_count + " clip merge", video_positioned)
+        self.monitor.add(str(mask_count) + " clip merge", video_positioned)
         if self.gui.video_size_mode == 1:
             mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioned)
 
