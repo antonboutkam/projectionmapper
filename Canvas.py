@@ -207,7 +207,7 @@ class Canvas:
             # print("Seeking contours ")
             contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
             # sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-
+            hierarchy = hierarchy[0]
             # print("Found: " + str(len(contours)) + ' contours')
             blank_mask = np.zeros_like(base_mask_bgr)
             # print("Desired contours: ", self.gui.draw_contour_min , " to ", self.gui.draw_contour_min)
