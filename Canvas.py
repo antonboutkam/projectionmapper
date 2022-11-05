@@ -40,14 +40,6 @@ class Canvas:
         out = picture[self.top_y:self.bottom_y + 1, self.top_x:self.bottom_x + 1]
         return out
 
-    def show_large(self, frame_name, frame):
-        width, height = frame.shape[:2]
-        new_width = (width * 1)
-        new_height = (height * 1)
-        # print("Width ", width, ", height ", height, "New Width ", new_width, ", new height ", new_height)
-        large = cv2.resize(frame, (new_width, new_height))
-        cv2.imshow(frame_name, large)
-
     def _get_input(self, current_frame):
         if self.gui.input_source == 0:
             # print("Using current frame as input")
@@ -64,21 +56,21 @@ class Canvas:
 
         current_frame = self.capture()
         projection_area_cam_perspective = self._get_input(current_frame)
-        self.monitor.add("Canvas cam perspective", projection_area_cam_perspective)
+        self.monitor.add("Input", projection_area_cam_perspective)
 
         gpu_pre_processed_mask = self.pre_processor.process(projection_area_cam_perspective, self.gui, self.monitor)
         pre_processed_mask = gpu_pre_processed_mask.download()
-        self.monitor.add_gpu("Preprocessed result", gpu_pre_processed_mask)
+
+        gpu_mask_list_color = self.extract_mask_list(gpu_pre_processed_mask, projection_area_cam_perspective)
 
         if len(pre_processed_mask.shape) == 2:
             gpu_full_mask_color = cv2.cuda.cvtColor(gpu_pre_processed_mask, cv2.COLOR_GRAY2RGB)
         else:
             gpu_full_mask_color = gpu_pre_processed_mask
 
-        gpu_mask_list_color = self.extract_mask_list(gpu_full_mask_color, projection_area_cam_perspective)
 
         video_source = self.source.frame()
-        self.monitor.add("Video source " + str(self.gui.video_source), video_source)
+        self.monitor.add("Source " + str(self.gui.video_source), video_source)
         gpu_video_source = cv2.cuda_GpuMat()
         gpu_video_source.upload(video_source)
 
@@ -89,9 +81,9 @@ class Canvas:
         mask_applied = np.zeros_like(mask_color)
 
         for index, gpu_mask in enumerate(gpu_mask_list_color):
-            self.monitor.add("Mask index: " + str(index) + ", src: " + str(self.gui.video_source), video_source)
             if self.gui.video_size_mode == 0:
-                gpu_video_mask_size = cv2.cuda.resize(gpu_video_source, (current_frame.shape[1], current_frame.shape[0]))
+                gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
+                                                      (current_frame.shape[1], current_frame.shape[0]))
                 mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, gpu_video_mask_size.download())
             elif self.gui.video_size_mode == 1:
                 # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -119,8 +111,9 @@ class Canvas:
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
 
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-                self.monitor.add("VideoPos", video_positioned)
 
+        mask_count = len(gpu_mask_list_color)
+        self.monitor.add(mask_count + " clip merge", video_positioned)
         if self.gui.video_size_mode == 1:
             mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioned)
 
@@ -128,23 +121,12 @@ class Canvas:
         # print('video source mask size shape', video_source_mask_size.shape)
 
         # print('mask applied shape', mask_applied.shape)
-        self.monitor.add("Canvas mask applied", mask_applied)
+        self.monitor.add("Clips masked", mask_applied)
 
-        # full_canvas = np.zeros([mask.shape[1], mask.shape[0], 3], dtype=np.uint8)222s
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
-        # top_y = self.top_y+offset_y
-        # bottom_y = self.bottom_y+offset_y + 1
-        # top_x = self.top_x+offset_x
-        # bottom_x = self.bottom_x+offset_x + 1
 
-        # print('topy', top_y)
-        # print('bottomy', bottom_y)
-        # print('topx', top_x)
-        # print('bottomx', bottom_x)
-        # print('mask shape', mask_applied)
         full_canvas = np.zeros_like(current_frame)
-        # mask_cutout = self._white_frame[top_y:bottom_y + 1, top_x:bottom_x + 1]
 
         h = pre_processed_mask.shape[0]
         w = pre_processed_mask.shape[1]
@@ -152,29 +134,27 @@ class Canvas:
         if offset_y > 0:
             src_top_y = 0
             src_bottom_y = h - offset_y
-            dest_top_y = offset_y
-            dest_bottom_y = h
+            dst_top_y = offset_y
+            dst_bottom_y = h
         else:
             src_top_y = 0 - offset_y  # offset_y is negatief, als offset_y -20 is dan is het min min 20 oftewel plus 20
             src_bottom_y = h
-            dest_top_y = 0
-            dest_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
+            dst_top_y = 0
+            dst_bottom_y = h + offset_y  # offset_y is dus negatief, gaan andere kant op
 
         if offset_x > 0:
             src_top_x = 0
             src_bottom_x = w - offset_x
-            dest_top_x = offset_x
-            dest_bottom_x = w
+            dst_top_x = offset_x
+            dst_bottom_x = w
         else:
             src_top_x = 0 - offset_x
             src_bottom_x = w
-            dest_top_x = 0
-            dest_bottom_x = w + offset_x
+            dst_top_x = 0
+            dst_bottom_x = w + offset_x
 
-        full_canvas[dest_top_y:dest_bottom_y, dest_top_x:dest_bottom_x] = mask_applied[src_top_y:src_bottom_y,
-                                                                          src_top_x:src_bottom_x]
-        # full_canvas[10:300, 0:400] = mask_applied[0:290, 0:400]
-        # full_canvas[-10:300, 0:400] = mask_applied[0:290, 0:400]
+        mask_applied_offsets = mask_applied[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
+        full_canvas[dst_top_y:dst_bottom_y, dst_top_x:dst_bottom_x] = mask_applied_offsets
 
         if self.gui.replace_black:
             # Find all black pixels
@@ -186,52 +166,48 @@ class Canvas:
             # set those pixels to whatever value is configured
             full_canvas[black_pixels] = [self.gui.replace_black, self.gui.replace_black, self.gui.replace_black]
 
-        # out = picture[self.top_y:self.bottom_y + 1, self.top_x:self.bottom_x + 1]
-        # mask_resized = cv2.resize(mask, (768, 1024))
-        # mask_resized_color = cv2.cvtColor(mask_resized, cv2.COLOR_GRAY2RGB)
-
         self.monitor.add("Result", full_canvas)
         full_canvas = cv2.resize(full_canvas, (projector.screen_res[0], projector.screen_res[1]))
-        self.monitor.add("Result resized", full_canvas)
-        #        out = np.where(input_source_rect[:, :] == [0, 0, 0], input_source_rect, mask)
-        # out = np.where(mask_resized_color[:, :] == [0, 0, 0], mask_resized_color, input_source_rect)
-        # self.monitor.add("Out", out)
+        self.monitor.add("Final result", full_canvas)
         self.monitor.display()
         projector.draw(full_canvas)
 
     def extract_mask_list(self, gpu_mask, current_frame):
         mask_list = []
         if self.gui.find_contour_enable == 1:
-            gpu_mask_bgr = cv2.cuda.cvtColor(gpu_mask, cv2.COLOR_RGB2GRAY)
-            self.monitor.add_gpu("GPU mask BGR", gpu_mask_bgr)
 
-            base_mask_bgr = gpu_mask_bgr.download()
+            self.monitor.add_gpu("Extract Input", gpu_mask)
+            base_mask = gpu_mask.download()
             # print("Seeking contours ")
-            contours, hierarchy = cv2.findContours(base_mask_bgr, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
             contours = sorted_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]
-            all_contours = cv2.drawContours(current_frame, contours, -1, (255, 0, 0), 1)
+
             str_min = str(self.gui.draw_contour_min)
             str_max = str(self.gui.draw_contour_max)
+            all_contours = cv2.drawContours(current_frame, contours, -1, (255, 0, 0), 3)
             self.monitor.add("Cont " + str_min + ":" + str_max, all_contours)
 
-            blank_mask = np.zeros_like(base_mask_bgr)
-            if len(contours) > 0:
-                first_skipped = False
-                for contour in contours:
-                    if not first_skipped:
-                        first_skipped = True
-                        continue
 
-                    poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
-                    hull = cv2.convexHull(poly_contour)
-                    drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
-
-                    # self.monitor.add("Drawn contour " + str(index), drawn_mask)
-                    gpu_drawn_mask = cv2.cuda_GpuMat()
-                    gpu_drawn_mask.upload(drawn_mask)
-                    mask_list.append(gpu_drawn_mask)
-
+            # if len(contours) > 0:
+            #    # find the biggest contour
+            #    biggest = None;
+            #    biggest_area = -1;
+            #    for con in contours:
+            #        area = cv2.contourArea(con);
+            #        if biggest_area < area:
+            #            biggest_area = area;
+            #            biggest = con;
+            blank_mask = np.zeros_like(base_mask)
+            for index, contour in enumerate(contours):
+                poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
+                hull = cv2.convexHull(poly_contour)
+                drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
+                # area = cv2.contourArea(contour)
+                self.monitor.add("Contour " + str(index), drawn_mask)
+                gpu_drawn_mask = cv2.cuda_GpuMat()
+                gpu_drawn_mask.upload(drawn_mask)
+                mask_list.append(gpu_drawn_mask)
         else:
             # print("Find contours disabled")
             mask_list.append(gpu_mask)

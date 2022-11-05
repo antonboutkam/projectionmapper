@@ -134,7 +134,7 @@ class Monitor:
             horizontal_move = horizontal_move + w
             index = index + 1
 
-        cv2.imshow("Monitpr", preview_container)
+        cv2.imshow("Monitor", preview_container)
         frame_count = 0
         self.frames = []
 
