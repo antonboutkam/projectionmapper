@@ -189,7 +189,7 @@ class Canvas:
             str_min = str(self.gui.draw_contour_min)
             str_max = str(self.gui.draw_contour_max)
             all_contours_img = cv2.drawContours(current_frame, root_contours, -1, (255, 0, 0), 3)
-            self.monitor.add("Cont " + str_min + ":" + str_max + ":" + str(root_contours), all_contours_img)
+            self.monitor.add("Cont " + str_min + ":" + str_max + ":" + len(root_contours), all_contours_img)
 
 
             # if len(contours) > 0:
@@ -202,7 +202,7 @@ class Canvas:
             #            biggest_area = area;
             #            biggest = con;
             blank_mask = np.zeros_like(base_mask)
-            for index, contour in enumerate(root_contours):
+            for index, contour in enumerate(root_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
                 poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
                 hull = cv2.convexHull(poly_contour)
                 drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
