@@ -181,9 +181,9 @@ class Canvas:
 
             blank_mask = np.zeros_like(base_mask)
             for index, contour in enumerate(all_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
-                poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
-                hull = cv2.convexHull(poly_contour)
-                drawn_mask = cv2.drawContours(blank_mask, hull, -1, 255, -1)
+                # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
+                # hull = cv2.convexHull(poly_contour)
+                drawn_mask = cv2.drawContours(blank_mask, contour, -1, 255, -1)
                 # area = cv2.contourArea(contour)
                 self.monitor.add("Contour " + str(index), drawn_mask)
                 mask_list.append(drawn_mask)
