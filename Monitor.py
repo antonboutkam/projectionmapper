@@ -28,8 +28,8 @@ class Monitor:
             return None
         print("Add to monitor: " + title + " ", frame.shape)
         print("Desired", self.desired_size)
-        curr_w = frame.shape[0]
-        curr_h = frame.shape[1]
+        curr_w = frame.shape[1]
+        curr_h = frame.shape[0]
         curr_r = curr_w / curr_h
 
         if curr_r == self.desired_ratio:
