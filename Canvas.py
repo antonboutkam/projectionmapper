@@ -189,7 +189,7 @@ class Canvas:
             str_min = str(self.gui.draw_contour_min)
             str_max = str(self.gui.draw_contour_max)
             all_contours_img = cv2.drawContours(current_frame, root_contours, -1, (255, 0, 0), 3)
-            self.monitor.add("Cont " + str_min + ":" + str_max + ":" + len(root_contours), all_contours_img)
+            self.monitor.add("Cont " + str_min + ":" + str_max + ":" + str(len(root_contours))  , all_contours_img)
 
 
             # if len(contours) > 0:
