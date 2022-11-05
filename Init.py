@@ -85,6 +85,8 @@ class Init:
             # Show the output image
             if gui.calibration_show_input_source:
                 monitor.add("Source", white_fullcolor)
+                cv2.imshow("Source", white_fullcolor)
+
 
             # cv2.imshow("WhiteBGR", white_bgr)
             if gui.calibration_show_threshold:
@@ -92,6 +94,8 @@ class Init:
 
             if gui.calibration_show_project_cutout:
                 monitor.add("Cutout", mask_cutout)
+                cv2.imshow("Cutout", white_fullcolor)
+
 
             self.canvas = Canvas()
             # print("INit canvas")
