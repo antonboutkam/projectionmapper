@@ -43,7 +43,7 @@ class Monitor:
             resize_factor = desired_width / curr_w
             # print("resize factor 1", resize_factor)
             resize_height = math.ceil(curr_h * resize_factor)
-            dsize = (resize_width, resize_height)
+            dsize = (resize_height, resize_width)
             # print("Resize 1", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
             # print("Crop 1 ", desired_width, ":", desired_height)
@@ -53,7 +53,7 @@ class Monitor:
             resize_factor = desired_height / curr_h
             # print("resize factor 2", resize_factor)
             resize_width = math.ceil(curr_w * resize_factor)
-            dsize = (resize_width, resize_height)
+            dsize = (resize_height, resize_width)
             # print("Resize 2", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
             # print("Crop 2 ", desired_width, ":", desired_height)

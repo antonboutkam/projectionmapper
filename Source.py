@@ -13,7 +13,6 @@ class Source:
         self.gui = gui
         self.load_playlist()
         self.current_clip = 0
-        self.try_count = 0
         self.vidcap = cv2.VideoCapture(self.clips[self.current_clip])
 
     def load_playlist(self):
@@ -30,14 +29,14 @@ class Source:
             return white_image
 
         success = False
-        self.try_count = 0
+        try_count = 0
         while not success:
             success, image = self.vidcap.read()
-            self.try_count = self.try_count + 1
-            if self.try_count > 10:
+            try_count = try_count + 1
+            if try_count > 10:
                 self.current_clip = self.current_clip + 1
                 if self.current_clip == len(self.clips):
-                    self.start(self.gui)
+                    self.current_clip = 0
 
             if success:
                 # image = self.make_square(image)
