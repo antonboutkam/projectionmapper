@@ -132,7 +132,7 @@ class Monitor:
             if len(frame.shape) == 2:
                 frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
-            print("Add: ", index, " fc:", self.frames, " cc:", self.column_count, " image: ", y, ":", h, ",", x, ":", w)
+            print("Add: ", index, " fc:", len(self.frames), " cc:", self.column_count, " image: ", y, ":", h, ",", x, ":", w)
 
             if (index % self.column_count) == 0 and index != 0:
                 horizontal_move = 0
