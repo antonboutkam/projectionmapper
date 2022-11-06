@@ -21,6 +21,7 @@ class PreProcessor:
         monitor.add_gpu("GRAY", gpu_output)
 
         if gui.enable_dilate:
+            print("kernel x,y:", gui.dilate_kernel_y, ", ", gui.dilate_kernel_x)
             dilate_kernel = np.ones((gui.dilate_kernel_y, gui.dilate_kernel_x), np.uint8)
             dilated = cv2.dilate(gpu_output.download(), dilate_kernel, iterations=2)
             gpu_output.upload(dilated)
