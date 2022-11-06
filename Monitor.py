@@ -125,14 +125,14 @@ class Monitor:
             if len(frame.shape) == 2:
                 frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
-            # print("Add ", index, "cc", self.column_count, " image ", y, ":", h, ",", x, ":", w)
+            print("Add ", index, "cc", self.column_count, " image ", y, ":", h, ",", x, ":", w)
 
             if (index % self.column_count) == 0 and index != 0:
                 horizontal_move = 0
                 vertical_move = vertical_move + h
-            # print("Index:", index, "Horizontal", (w + horizontal_move), "vertical: ", (h + vertical_move))
-            # print("Frame shape", frame.shape)
-            # print((y + vertical_move), ':', (h + vertical_move), ',', (x + horizontal_move), ':', (w + horizontal_move))
+            print("Index:", index, "Horizontal", (w + horizontal_move), "vertical: ", (h + vertical_move))
+            print("Frame shape", frame.shape)
+            print((y + vertical_move), ':', (h + vertical_move), ',', (x + horizontal_move), ':', (w + horizontal_move))
 
             # l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
             preview_container[vertical_move: vertical_move + h, horizontal_move: horizontal_move + w] = frame
