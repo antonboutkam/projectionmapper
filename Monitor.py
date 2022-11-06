@@ -132,7 +132,7 @@ class Monitor:
             if len(frame.shape) == 2:
                 frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
-            print("Add ", index, "cc", self.column_count, " image ", y, ":", h, ",", x, ":", w)
+            print("Add: ", index, " fc:", self.frames, " cc:", self.column_count, " image: ", y, ":", h, ",", x, ":", w)
 
             if (index % self.column_count) == 0 and index != 0:
                 horizontal_move = 0
@@ -146,9 +146,9 @@ class Monitor:
             horizontal_move = horizontal_move + w
             index = index + 1
 
+        self.frames.clear()
         cv2.imshow("Monitor", preview_container)
-        frame_count = 0
-        self.frames = []
+
 
 if __name__ == "__main__":
     monitor = Monitor()
