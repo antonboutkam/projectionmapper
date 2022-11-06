@@ -37,14 +37,19 @@ class Monitor:
         desired_width = self.desired_size[0]
         desired_height = self.desired_size[1]
 
+        print("curr_r:", curr_r, " curr_w: ", curr_w, " curr_h: ", curr_h)
+        print("desired_width:", desired_width, " desired_height: ", desired_height)
+
         if curr_r == self.desired_ratio:
             resized_frame = cv2.resize(frame, (desired_width, desired_height))
+            print("resize method 1:", (desired_width, desired_height))
         elif curr_r < self.desired_ratio:
             resize_width = desired_width
             resize_factor = desired_width / curr_w
             # print("resize factor 1", resize_factor)
             resize_height = math.ceil(curr_h * resize_factor)
             dsize = (resize_height, resize_width)
+            print("resize method 2:", dsize)
             # print("Resize 1", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
             # print("Crop 1 ", desired_width, ":", desired_height)
@@ -55,6 +60,7 @@ class Monitor:
             # print("resize factor 2", resize_factor)
             resize_width = math.ceil(curr_w * resize_factor)
             dsize = (resize_height, resize_width)
+            print("resize method 3:", dsize)
             # print("Resize 2", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
             # print("Crop 2 ", desired_width, ":", desired_height)
@@ -101,13 +107,13 @@ class Monitor:
         # return False
         x = 0
         y = 0
-        total_width = self.desired_size[0] * self.column_count
+        total_width = (self.desired_size[0] * self.column_count) + 1
         total_height = self.desired_size[1]
         frame_count = len(self.frames)
         # print("Frame count ", len(self.frames), "Column count", self.column_count)
         if frame_count > self.column_count:
             row_count = math.ceil(frame_count / self.column_count)
-            total_height = self.desired_size[1] * row_count
+            total_height = (self.desired_size[1] * row_count) + 1
 
         shape = [total_height, total_width]
         # print("Preview container shape ", shape)
