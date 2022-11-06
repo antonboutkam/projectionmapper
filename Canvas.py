@@ -107,7 +107,7 @@ class Canvas:
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
 
         mask_count = len(mask_list)
-        self.monitor.add(str(mask_count) + " clip merge", video_positioned)
+        # self.monitor.add(str(mask_count) + " clip merge", video_positioned)
         if self.gui.video_size_mode == 1:
             mask_applied = np.where(mask_color[:, :] == [0, 0, 0], mask_color, video_positioned)
 
@@ -185,7 +185,7 @@ class Canvas:
                 hull = cv2.convexHull(contour)
                 drawn_mask = cv2.drawContours(blank_mask, contour, -1, 255, -1)
                 # area = cv2.contourArea(contour)
-                self.monitor.add("Contour " + str(index), drawn_mask)
+                # self.monitor.add("Contour " + str(index), drawn_mask)
                 mask_list.append(drawn_mask)
         else:
             # print("Find contours disabled")
