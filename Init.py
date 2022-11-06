@@ -36,11 +36,11 @@ class Init:
             if gui.calibration_find_contour_method == 0:
                 method = cv2.RETR_TREE
             elif gui.calibration_find_contour_method == 1:
-                method = cv2.CV_RETR_EXTERNAL
+                method = cv2.RETR_EXTERNAL
             elif gui.calibration_find_contour_method == 2:
-                method = cv2.CV_RETR_LIST
+                method = cv2.RETR_LIST
             elif gui.calibration_find_contour_method == 2:
-                method = cv2.CV_RETR_CCOMP
+                method = cv2.RETR_CCOMP
 
             contours, hierarchy = cv2.findContours(thresh, method, cv2.CHAIN_APPROX_SIMPLE)
             contour_count = len(contours)
