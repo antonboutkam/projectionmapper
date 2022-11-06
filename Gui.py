@@ -26,6 +26,7 @@ class Gui:
     calibration_manual_max_y = 100
 
     calibration_recalibrate = False
+    calibration_find_contour_method = 0
     calibration_threshold = 90
     calibration_manual_mode = 0
     calibration_luminosity = 127
@@ -95,15 +96,16 @@ class Gui:
             cv2.namedWindow(self.window_calibration)
             cv2.createTrackbar("Calibration threshold", self.window_calibration, self.calibration_threshold, 255, self.trackbar_change)
             cv2.createTrackbar("Calibration luminosity", self.window_calibration, self.calibration_luminosity, 255, self.trackbar_change)
+            cv2.createTrackbar("Find contour method", self.window_calibration, self.calibration_find_contour_method, 3,
+                               self.trackbar_change)
+
             cv2.createTrackbar("Calibration manual mode", self.window_calibration, self.calibration_manual_mode, 1,self.trackbar_change)
             cv2.createTrackbar("Calibration convex hull", self.window_calibration, self.calibration_convex_hull, 1, self.trackbar_change)
 
-            cv2.createTrackbar("Cam cut min X", self.window_calibration, self.calibration_manual_min_x, 1, self.trackbar_change)
-            cv2.createTrackbar("Cam cut max X", self.window_calibration, self.calibration_manual_max_x, 1, self.trackbar_change)
-            cv2.createTrackbar("Cam cut min Y", self.window_calibration, self.calibration_manual_min_y, 1, self.trackbar_change)
-            cv2.createTrackbar("Cam cut max Y", self.window_calibration, self.calibration_manual_max_y, 1, self.trackbar_change)
-
-            cv2.createTrackbar("Input source", self.window_calibration, self.input_source, 2, self.trackbar_change)
+            # cv2.createTrackbar("Cam cut min X", self.window_calibration, self.calibration_manual_min_x, 1, self.trackbar_change)
+            # cv2.createTrackbar("Cam cut max X", self.window_calibration, self.calibration_manual_max_x, 1, self.trackbar_change)
+            # cv2.createTrackbar("Cam cut min Y", self.window_calibration, self.calibration_manual_min_y, 1, self.trackbar_change)
+            # cv2.createTrackbar("Cam cut max Y", self.window_calibration, self.calibration_manual_max_y, 1, self.trackbar_change)
 
             cv2.createTrackbar("Show cutout", self.window_calibration, self.calibration_show_project_cutout, 1, self.trackbar_change)
             cv2.createTrackbar("Show threshold", self.window_calibration, self.calibration_show_threshold, 1, self.trackbar_change)
@@ -194,40 +196,27 @@ class Gui:
                 self.calibration_recalibrate = True
             self.calibration_luminosity = tmp
 
+            tmp = cv2.getTrackbarPos("Find contour method", self.window_calibration)
+            if tmp != self.calibration_find_contour_method:
+                self.calibration_recalibrate = True
+            self.calibration_find_contour_method = tmp
+
+
+
             tmp = cv2.getTrackbarPos("Calibration manual mode", self.window_calibration)
             if tmp != self.calibration_manual_mode:
                 self.calibration_recalibrate = True
             self.calibration_manual_mode = tmp
 
-            tmp = cv2.getTrackbarPos("Cam cut min X", self.window_calibration)
-            if tmp != self.calibration_manual_min_x:
-                self.calibration_recalibrate = True
-            self.calibration_manual_min_x = tmp
-
-            tmp = cv2.getTrackbarPos("Cam cut max X", self.window_calibration)
-            if tmp != self.calibration_manual_max_x:
-                self.calibration_recalibrate = True
-            self.calibration_manual_max_x = tmp
-
-            tmp = cv2.getTrackbarPos("Cam cut min Y", self.window_calibration)
-            if tmp != self.calibration_manual_min_y:
-                self.calibration_recalibrate = True
-            self.calibration_manual_min_y = tmp
-
-            tmp = cv2.getTrackbarPos("Cam cut max Y", self.window_calibration)
-            if tmp != self.calibration_manual_max_y:
-                self.calibration_recalibrate = True
-            self.calibration_manual_max_y = tmp
+            # self.calibration_manual_min_xtmp = cv2.getTrackbarPos("Cam cut min X", self.window_calibration)
+            # self.calibration_manual_max_x = cv2.getTrackbarPos("Cam cut max X", self.window_calibration)
+            # self.calibration_manual_min_y = cv2.getTrackbarPos("Cam cut min Y", self.window_calibration)
+            # tmp = cv2.getTrackbarPos("Cam cut max Y", self.window_calibration)
 
             tmp = cv2.getTrackbarPos("Calibration convex hull", self.window_calibration)
             if tmp != self.calibration_convex_hull:
                 self.calibration_recalibrate = True
             self.calibration_convex_hull = tmp
-
-            tmp = cv2.getTrackbarPos("Input source", self.window_calibration)
-            if tmp != self.input_source:
-                self.calibration_recalibrate = True
-            self.input_source = tmp
 
             tmp = cv2.getTrackbarPos("Show input source", self.window_calibration)
             if tmp != self.calibration_show_input_source:

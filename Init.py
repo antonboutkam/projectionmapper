@@ -32,8 +32,17 @@ class Init:
 #            white_bgr = cv2.GaussianBlur(white_bgr, (5, 5), 0)
             print("start thresh")
             ret, thresh = cv2.threshold(white_bgr, gui.calibration_threshold, 255, cv2.THRESH_BINARY)
-            print("start comt")
-            contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+            if gui.calibration_find_contour_method == 0:
+                method = cv2.RETR_TREE
+            elif gui.calibration_find_contour_method == 1:
+                method = cv2.CV_RETR_EXTERNAL
+            elif gui.calibration_find_contour_method == 2:
+                method = cv2.CV_RETR_LIST
+            elif gui.calibration_find_contour_method == 2:
+                method = cv2.CV_RETR_CCOMP
+
+            contours, hierarchy = cv2.findContours(thresh, method, cv2.CHAIN_APPROX_SIMPLE)
             contour_count = len(contours)
             print("Found ", contour_count, "  during init state")
 
