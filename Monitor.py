@@ -24,6 +24,7 @@ class Monitor:
         self.add(title, frame.download())
 
     def add(self, title, frame):
+        print(title)
         if not self.gui.main_show_monitor:
             return None
         # print("Add to monitor: " + title + " ", frame.shape)
