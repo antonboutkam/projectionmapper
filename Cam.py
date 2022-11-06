@@ -8,9 +8,10 @@ class Cam(object):
     # gphoto2 - -stdout - -capture - movie | gst - launch - 0.10 fdsrc ! decodebin2 name = dec ! queue ! ffmpegcolorspace ! v4l2sink device = /dev/video2
     vid = cv2.VideoCapture(video_channel)
     last_frame = None
+    gui = None
     # vid = cv2.VideoCapture(2)
 
-    def start(self):
+    def start(self, gui):
         print('x')
         # self.vid = cv2.VideoCapture(3)
         self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
@@ -51,6 +52,8 @@ class Cam(object):
                 # print('cam fail')
                 return self.last_frame
             else:
-                self.last_frame = cv2.flip(frame, 1)
+                if self.gui.main_vertical_flip_cam:
+                    frame = cv2.flip(frame, 1)
+                self.last_frame = frame
                 return frame
 

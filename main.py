@@ -13,9 +13,9 @@ startTime = time.time()
 projector = Projector()
 restart_init = False
 cam = Cam()
-cam.start()
 gui = Gui()
 gui.init(cam)
+cam.start(gui)
 gui.show()
 init = Init()
 
