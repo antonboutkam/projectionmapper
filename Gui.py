@@ -264,24 +264,18 @@ class Gui:
             self.canny1 = cv2.getTrackbarPos("Canny 1", self.window_object_tracing)
             self.canny2 = cv2.getTrackbarPos("Canny 2", self.window_object_tracing)
         if cv2.getWindowProperty(self.window_preprocessing, cv2.WND_PROP_VISIBLE):
-            if self.blur_enable:
+            if self.main_show_preprocessing == 1:
                 self.blur1 = cv2.getTrackbarPos("Blur 1", self.window_preprocessing) + 1
                 self.blur2 = cv2.getTrackbarPos("Blur 2", self.window_preprocessing) + 1
-            self.blur_enable = cv2.getTrackbarPos("Blur enable", self.window_preprocessing)
-
-            if self.enable_dilate:
+                self.blur_enable = cv2.getTrackbarPos("Blur enable", self.window_preprocessing)
                 self.dilate_kernel_x = cv2.getTrackbarPos("Dilate kernel x", self.window_preprocessing)
                 self.dilate_kernel_y = cv2.getTrackbarPos("Dilate kernel y", self.window_preprocessing)
-            self.enable_dilate = cv2.getTrackbarPos("Enable dilate", self.window_preprocessing)
-
-            if self.enable_erode:
+                self.enable_dilate = cv2.getTrackbarPos("Enable dilate", self.window_preprocessing)
                 self.erode_kernel_x = cv2.getTrackbarPos("Erode kernel x", self.window_preprocessing)
                 self.erode_kernel_y = cv2.getTrackbarPos("Erode kernel y", self.window_preprocessing)
-            self.enable_erode = cv2.getTrackbarPos("Enable erode", self.window_preprocessing)
-
-            if self.enable_remove_color:
+                self.enable_erode = cv2.getTrackbarPos("Enable erode", self.window_preprocessing)
                 self.color_to_remove = cv2.getTrackbarPos("RGB (0,1,2) to remove", self.window_preprocessing)
-            self.enable_remove_color = cv2.getTrackbarPos("Color remove enable", self.window_preprocessing)
+                self.enable_remove_color = cv2.getTrackbarPos("Color remove enable", self.window_preprocessing)
         if cv2.getWindowProperty(self.window_output, cv2.WND_PROP_VISIBLE):
             self.video_source = cv2.getTrackbarPos("Video source", self.window_output)
             self.video_source_brightness = cv2.getTrackbarPos("Video brightness", self.window_output)
