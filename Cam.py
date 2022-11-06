@@ -16,6 +16,7 @@ class Cam(object):
         # self.vid = cv2.VideoCapture(3)
         self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+        self.gui = gui
         # fourcc = cv2.VideoWriter_fourcc(*'XVID')
         # codec = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
         # self.vid.set(6, codec)
