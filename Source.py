@@ -34,7 +34,7 @@ class Source:
         while not success:
             success, image = self.vidcap.read()
             self.try_count = self.try_count + 1
-            if self.try_count > 2:
+            if self.try_count > 10:
                 self.current_clip = self.current_clip + 1
                 if self.current_clip == len(self.clips):
                     self.start(self.gui)
