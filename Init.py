@@ -81,7 +81,7 @@ class Init:
             monitor = Monitor()
             monitor.start(gui, aspect_ratio)
 
-            print("aspect ratio: " + str(aspect_ratio))
+            # print("aspect ratio: " + str(aspect_ratio))
             # Show the output image
             if gui.calibration_show_input_source:
                 monitor.add("Source", white_fullcolor)

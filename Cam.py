@@ -43,12 +43,12 @@ class Cam(object):
                 self.video_channel = self.video_channel + 1
                 if self.video_channel > 3:
                     self.video_channel = 0
-                print('try channel' + str(self.video_channel))
+                # print('try channel' + str(self.video_channel))
                 self.vid = cv2.VideoCapture(self.video_channel)
                 self.start()
                 continue
             elif not ret:
-                print('cam fail')
+                # print('cam fail')
                 return self.last_frame
             else:
                 self.last_frame = cv2.flip(frame, 1)
