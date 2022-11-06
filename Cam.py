@@ -46,7 +46,7 @@ class Cam(object):
                     self.video_channel = 0
                 # print('try channel' + str(self.video_channel))
                 self.vid = cv2.VideoCapture(self.video_channel)
-                self.start()
+                self.start(self.gui)
                 continue
             elif not ret:
                 # print('cam fail')
