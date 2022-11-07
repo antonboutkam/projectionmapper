@@ -37,8 +37,10 @@ class Source:
             if fail_count > 5:
                 fail_count = 0
                 self.current_clip = self.current_clip + 1
-            if self.current_clip == len(self.clips):
-                self.current_clip = 0
+                if self.current_clip == len(self.clips):
+                    self.current_clip = 0
+                self.vidcap = cv2.VideoCapture(self.clips[self.current_clip])
+
 
         if success:
             # image = self.make_square(image)
