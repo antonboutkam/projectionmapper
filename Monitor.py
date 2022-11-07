@@ -24,7 +24,7 @@ class Monitor:
         self.add(title, frame.download())
 
     def add(self, title, frame):
-        print(title)
+        # print(title)
         if not self.gui.main_show_monitor:
             return None
         # print("Add to monitor: " + title + " ", frame.shape)
@@ -37,19 +37,19 @@ class Monitor:
         desired_width = self.desired_size[0]
         desired_height = self.desired_size[1]
 
-        print("curr_r:", curr_r, " curr_w: ", curr_w, " curr_h: ", curr_h)
-        print("desired_width:", desired_width, " desired_height: ", desired_height)
+        # print("curr_r:", curr_r, " curr_w: ", curr_w, " curr_h: ", curr_h)
+        # print("desired_width:", desired_width, " desired_height: ", desired_height)
 
         if curr_r == self.desired_ratio:
             resized_frame = cv2.resize(frame, (desired_width, desired_height))
-            print("resize method 1:", (desired_width, desired_height))
+            # print("resize method 1:", (desired_width, desired_height))
         elif curr_r < self.desired_ratio:
             resize_width = desired_width
             resize_factor = desired_width / curr_w
             # print("resize factor 1", resize_factor)
             resize_height = math.ceil(curr_h * resize_factor)
             dsize = (resize_height, resize_width)
-            print("resize method 2:", dsize)
+            # print("resize method 2:", dsize)
             # print("Resize 1", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
             # print("Crop 1 ", desired_width, ":", desired_height)
@@ -60,7 +60,7 @@ class Monitor:
             # print("resize factor 2", resize_factor)
             resize_width = math.ceil(curr_w * resize_factor)
             dsize = (resize_height, resize_width)
-            print("resize method 3:", dsize)
+            # print("resize method 3:", dsize)
             # print("Resize 2", dsize)
             intermediate_frame = cv2.resize(frame, dsize)
             # print("Crop 2 ", desired_width, ":", desired_height)
@@ -132,14 +132,14 @@ class Monitor:
             if len(frame.shape) == 2:
                 frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
-            print("Add: ", index, " fc:", len(self.frames), " cc:", self.column_count, " image: ", y, ":", h, ",", x, ":", w)
+            # print("Add: ", index, " fc:", len(self.frames), " cc:", self.column_count, " image: ", y, ":", h, ",", x, ":", w)
 
             if (index % self.column_count) == 0 and index != 0:
                 horizontal_move = 0
                 vertical_move = vertical_move + h
-            print("Index:", index, "Horizontal", (w + horizontal_move), "vertical: ", (h + vertical_move))
-            print("Frame shape", frame.shape)
-            print((y + vertical_move), ':', (h + vertical_move), ',', (x + horizontal_move), ':', (w + horizontal_move))
+            # print("Index:", index, "Horizontal", (w + horizontal_move), "vertical: ", (h + vertical_move))
+            # print("Frame shape", frame.shape)
+            # print((y + vertical_move), ':', (h + vertical_move), ',', (x + horizontal_move), ':', (w + horizontal_move))
 
             # l_img[y_offset:y_offset+s_img.shape[0], x_offset:x_offset+s_img.shape[1]] = s_img
             preview_container[vertical_move: vertical_move + h, horizontal_move: horizontal_move + w] = frame
