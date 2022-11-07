@@ -41,6 +41,7 @@ class Cam(object):
         while True:
             ret, frame = self.vid.read()
             if not ret and self.last_frame is None:
+                print('wait cam')
                 self.video_channel = self.video_channel + 1
                 if self.video_channel > 3:
                     self.video_channel = 0
