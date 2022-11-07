@@ -12,7 +12,7 @@ class Cam(object):
     # vid = cv2.VideoCapture(2)
 
     def start(self, gui):
-        print('x')
+#        print('x')
         # self.vid = cv2.VideoCapture(3)
         self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
@@ -41,7 +41,7 @@ class Cam(object):
         while True:
             ret, frame = self.vid.read()
             if not ret and self.last_frame is None:
-                print('wait cam')
+		print('wait cam')
                 self.video_channel = self.video_channel + 1
                 if self.video_channel > 3:
                     self.video_channel = 0

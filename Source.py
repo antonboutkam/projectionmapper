@@ -41,7 +41,6 @@ class Source:
                     self.current_clip = 0
                 self.vidcap = cv2.VideoCapture(self.clips[self.current_clip])
 
-
         if success:
             # image = self.make_square(image)
             image = cv2.resize(image, (768, 1024))

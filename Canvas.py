@@ -183,7 +183,9 @@ class Canvas:
             for index, contour in enumerate(all_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
                 # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
                 hull = cv2.convexHull(contour)
-                drawn_mask = cv2.drawContours(blank_mask, contour, -1, 255, -1)
+                drawn_mask = blank_mask.copy()
+                cv2.fillConvexPoly(drawn_mask, hull, 255)
+
                 # area = cv2.contourArea(contour)
                 # self.monitor.add("Contour " + str(index), drawn_mask)
                 mask_list.append(drawn_mask)
