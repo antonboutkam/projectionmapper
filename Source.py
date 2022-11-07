@@ -32,17 +32,16 @@ class Source:
         try_count = 0
         while not success:
             success, image = self.vidcap.read()
-            try_count = try_count + 1
-            if try_count > 10:
-                self.current_clip = self.current_clip + 1
-                if self.current_clip == len(self.clips):
-                    self.current_clip = 0
+            self.current_clip = self.current_clip + 1
+            if self.current_clip == len(self.clips) - 1:
+                self.current_clip = 0
+                self.load_playlist()
 
-            if success:
-                # image = self.make_square(image)
-                image = cv2.resize(image, (768, 1024))
-                image = self.adjust_brightness(image, self.gui.video_source_brightness)
-                return image
+        if success:
+            # image = self.make_square(image)
+            image = cv2.resize(image, (768, 1024))
+            image = self.adjust_brightness(image, self.gui.video_source_brightness)
+            return image
 
     def make_square(self, image):
         shape = image.shape
