@@ -29,13 +29,16 @@ class Source:
             return white_image
 
         success = False
-        try_count = 0
+        fail_count = 0
         while not success:
             success, image = self.vidcap.read()
-            self.current_clip = self.current_clip + 1
-            if self.current_clip == len(self.clips) - 1:
+            if not success:
+                fail_count = fail_count + 1
+            if fail_count > 5:
+                fail_count = 0
+                self.current_clip = self.current_clip + 1
+            if self.current_clip == len(self.clips):
                 self.current_clip = 0
-                self.load_playlist()
 
         if success:
             # image = self.make_square(image)
