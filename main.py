@@ -12,8 +12,8 @@ import cv2
 # noProjectionSurfaceWindow()
 startTime = time.time()
 projector = Projector()
-user_interface = UserInterface()
-user_interface.start()
+# user_interface = UserInterface()
+# user_interface.start()
 restart_init = False
 cam = Cam()
 gui = Gui()
