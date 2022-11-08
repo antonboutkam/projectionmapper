@@ -157,7 +157,7 @@ class Gui:
             cv2.createTrackbar("Approx poly", self.window_object_tracing, self.approx_poly, 1, self.trackbar_change)
             cv2.createTrackbar("Approx poly precision", self.window_object_tracing, self.approx_poly_precision, 100, self.trackbar_change)
             cv2.createTrackbar("Simplify contour", self.window_object_tracing, self.simplify_contour, 1,self.trackbar_change)
-            cv2.createTrackbar("Simplify contour dist", self.window_object_tracing, self.simplify_contour_dist, 200,self.trackbar_change)
+            cv2.createTrackbar("Simplify contour dist", self.window_object_tracing, self.simplify_contour_dist, 500,self.trackbar_change)
 
 
         else:
