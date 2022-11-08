@@ -26,7 +26,6 @@ class Gui:
     cut_top = 15
     cut_bottom = 285
 
-
     calibration_recalibrate = False
     calibration_find_contour_method = 0
     calibration_threshold = 90
@@ -80,6 +79,9 @@ class Gui:
     video_source_brightness = 127
     approx_poly = 0
     approx_poly_precision = 1
+    simplify_contour = 1
+    simplify_contour_dist = 20
+
     hull = 0
 
     def init(self, cam):
@@ -154,6 +156,8 @@ class Gui:
             cv2.createTrackbar("Hull", self.window_object_tracing, self.hull, 1, self.trackbar_change)
             cv2.createTrackbar("Approx poly", self.window_object_tracing, self.approx_poly, 1, self.trackbar_change)
             cv2.createTrackbar("Approx poly precision", self.window_object_tracing, self.approx_poly_precision, 100, self.trackbar_change)
+            cv2.createTrackbar("Simplify contour", self.window_object_tracing, self.simplify_contour, 1,self.trackbar_change)
+            cv2.createTrackbar("Simplify contour dist", self.window_object_tracing, self.simplify_contour_dist, 200,self.trackbar_change)
 
 
         else:
@@ -280,6 +284,8 @@ class Gui:
             self.find_contour_enable = cv2.getTrackbarPos("Contour enable", self.window_object_tracing)
             self.approx_poly = cv2.getTrackbarPos("Approx poly", self.window_object_tracing)
             self.approx_poly_precision = cv2.getTrackbarPos("Approx poly precision", self.window_object_tracing)
+            self.simplify_contour = cv2.getTrackbarPos("Simplify contour", self.window_object_tracing)
+            self.simplify_contour_dist = cv2.getTrackbarPos("Simplify contour dist", self.window_object_tracing)
             self.hull = cv2.getTrackbarPos("Hull", self.window_object_tracing)
 
             self.draw_contour_min = cv2.getTrackbarPos("Draw contour min", self.window_object_tracing)
