@@ -204,6 +204,7 @@ class Canvas:
 
             blank_mask = np.zeros_like(base_mask)
             blank_mask_rgb = cv2.cvtColor(blank_mask, cv2.COLOR_GRAY2RGB)
+            self.simple_contours = []
             for index, contour in enumerate(all_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
                 # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
                 draw_mask = blank_mask.copy()
@@ -239,7 +240,6 @@ class Canvas:
             # print("Find contours disabled")
             mask_list.append(gpu_mask.download())
         return mask_list
-
 
     def simplify_contour(self, contour):
         n = contour.ravel()
