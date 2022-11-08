@@ -183,6 +183,7 @@ class Canvas:
             all_contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
             all_contours_img = cv2.drawContours(current_frame, all_contours, -1, (0, 0, 255), 3)
             self.monitor.add("All contours", all_contours_img)
+            all_contours = sorted(all_contours, key=cv2.contourArea, reverse=True)
 
             blank_mask = np.zeros_like(base_mask)
             blank_mask_rgb = cv2.cvtColor(blank_mask, cv2.COLOR_GRAY2RGB)
