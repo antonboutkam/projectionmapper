@@ -15,7 +15,7 @@ class Art:
         prev_x = None
         prev_y = None
         while True:
-            if i == len(contour):
+            if i >= len(contour):
                 break
             for j in n:
                 if i < start:
