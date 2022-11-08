@@ -257,7 +257,7 @@ class Canvas:
                 if prev_y is None:
                     prev_y = y
 
-                dist = math.pow(x - prev_x, 2) + math.pow(y - prev_y, 2)
+                dist = math.sqrt(math.pow(x - prev_x, 2) + math.pow(y - prev_y, 2))
                 if dist > self.gui.simplify_contour_dist:
                     simple_contour.append([x, y])
             i = i + 1
