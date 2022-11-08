@@ -57,8 +57,8 @@ class Cam(object):
             else:
                 if self.gui.main_vertical_flip_cam:
                     frame = cv2.flip(frame, 0)
-
-                self.last_frame = self.area_of_interest(frame)
+                frame = self.area_of_interest(frame)
+                self.last_frame = frame
                 return frame
 
     def area_of_interest(self, frame):
