@@ -189,14 +189,20 @@ class Canvas:
                 # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
                 drawn_mask = blank_mask.copy()
 
+                preview = base_mask.copy()
                 if self.gui.approx_poly:
                     contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/1000 * cv2.arcLength(contour, True), True)
                     file.append('approxPolyDP-' + str(index) + '.txt', contour)
+                    cv2.drawContours(preview, [contour], -1, (0, 0, 255), 2)
 
                 if self.gui.hull:
                     contour = cv2.convexHull(contour)
                     file.append('convexHull-' + str(index) + '.txt', contour)
+                    convex_hull = base_mask.copy()
+                    cv2.drawContours(preview, [contour], -1, (0, 255, 0), 2)
+                    self.monitor.add('convexHull-' + str(index), convex_hull)
 
+                self.monitor.add("Poly+Hull " + str(index), preview)
                 cv2.fillConvexPoly(contour, contour, 255)
 
                 # area = cv2.contourArea(contour)

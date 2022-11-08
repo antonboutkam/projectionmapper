@@ -47,7 +47,7 @@ class Gui:
     max_offset_y = 800
     find_contour_enable = 0
     draw_contour_min = 0
-    draw_contour_max = 6
+    draw_contour_max = 3
 
     contour_r = 255
     contour_g = 0
