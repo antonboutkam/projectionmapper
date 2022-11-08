@@ -219,7 +219,8 @@ class Canvas:
                 cv2.fillConvexPoly(draw_mask, contour, 255)
                 self.monitor.add("Draw mask" + str(index), draw_mask)
 
-                contour = self.simplify_contour(self, contour)
+                if self.gui.simplify_contour:
+                    contour = self.simplify_contour(self, contour)
 
                 cv2.fillConvexPoly(draw_mask, contour, 255)
                 self.monitor.add("Simple mask" + str(index), draw_mask)
@@ -250,7 +251,7 @@ class Canvas:
                     prev_y = y
 
                 dist = math.pow(x - prev_x, 2) + math.pow(y - prev_y, 2)
-                if dist > 20:
+                if dist > self.gui.simplify_contour_dist:
                     simple_contour.append([x, y])
 
         return np.array(simple_contour).reshape((-1, 1, 2)).astype(np.int32)
