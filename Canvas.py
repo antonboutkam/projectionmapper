@@ -79,7 +79,6 @@ class Canvas:
             gpu_video_source = cv2.cuda.cvtColor(gpu_video_source, cv2.COLOR_GRAY2RGB)
         mask_color = gpu_full_mask_color.download()
         video_positioned = np.zeros_like(current_frame)
-        mask_applied_rgb = np.zeros_like(mask_color)
         mask_applied = np.zeros_like(mask_list[0])
         mask_applied_rev = mask_applied.copy()
         black_mask_rgb = np.zeros_like(mask_color)
@@ -109,11 +108,13 @@ class Canvas:
             current_mask_rgb = cv2.cvtColor(current_mask, cv2.COLOR_GRAY2RGB)
             mask_applied = np.where(current_mask[:, :] == [0, 0, 0], current_mask, mask_applied)
             mask_applied_rev = np.where(current_mask[:, :] == [0, 0, 0], mask_applied_rev, current_mask)
-            self.monitor.add("MSK_MRG" + str(index), mask_applied_rgb)
+            self.monitor.add("MSK_MG" + str(index), mask_applied)
+            self.monitor.add("MSK_RMG" + str(index), mask_applied_rev)
 
         self.monitor.add("VID_POS", video_positioned)
-        self.monitor.add("MSK_COM", mask_applied_rgb)
-
+        self.monitor.add("MSK_CB", mask_applied)
+        self.monitor.add("MSK_RCB", mask_applied_rev)
+        mask_applied_rgb =  cv2.cvtColor(mask_applied, cv2.COLOR_GRAY2RGB)
         video_masked = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
         video_masked_rev = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
 
