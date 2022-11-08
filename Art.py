@@ -14,26 +14,21 @@ class Art:
         lines = []
         prev_x = None
         prev_y = None
-        while True:
-            if i >= len(contour):
-                break
-            for j in n:
-                if i < start:
-                    i = i + 1
-                    continue
-                if (i % step) == 0:
-                    x = n[i % len(contour)]
-                    y = n[(i + 1) % len(contour)]
 
-                    if prev_x is None:
-                        prev_x = x
-                        prev_y = y
-                        continue
-                    else:
-                        cv2.line(canvas, (prev_y, prev_x), (y, x), (0, 255, 0), thickness)
-                        cv2.line(canvas, (prev_x, prev_y), (x, y), (0, 0, 255), thickness)
-                        prev_x = x
-                        prev_y = y
-                i = i + 1
+        for j in n:
+            if (i % step) == 0:
+                x = n[i % len(contour)]
+                y = n[(i + 1) % len(contour)]
+
+                if prev_x is None:
+                    prev_x = x
+                    prev_y = y
+                    continue
+                else:
+                    cv2.line(canvas, (prev_y, prev_x), (y, x), (0, 255, 0), thickness)
+                    cv2.line(canvas, (prev_x, prev_y), (x, y), (0, 0, 255), thickness)
+                    prev_x = x
+                    prev_y = y
+            i = i + 1
 
         return canvas
