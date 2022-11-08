@@ -132,6 +132,10 @@ class Canvas:
         self.monitor.add("VID_MASKED", video_masked)
         self.monitor.add("VID_MASKED_REV", video_masked_rev)
 
+        if len(self.simple_contours) > 0:
+            art = Art()
+            art.draw_coolness(video_masked, self.simple_contours)
+
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
 
@@ -164,10 +168,6 @@ class Canvas:
 
         mask_applied_offsets = video_masked[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
         full_canvas[dst_top_y:dst_bottom_y, dst_top_x:dst_bottom_x] = mask_applied_offsets
-
-        if len(self.simple_contours) > 0:
-            art = Art()
-            art.draw_coolness(full_canvas, self.simple_contours)
 
         if self.gui.replace_black:
             # Find all black pixels
