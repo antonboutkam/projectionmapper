@@ -31,6 +31,16 @@ class Init:
             print("calibrate 2")
 #            white_bgr = cv2.GaussianBlur(white_bgr, (5, 5), 0)
             print("start thresh")
+            if gui.cut_left > 0 or gui.cut_right > 0 or gui.cut_top > 0 or gui.cut_bottom > 0:
+                black_bgr = np.zeros_like(white_bgr)
+                s = black_bgr.shape() # 1024x768
+                t_l = gui.cut_top
+                b_l = s[0] - gui.cut_bottom
+                t_r = gui.cut_top
+                b_r = gui.cut_top
+                black_bgr[t_l:b_l, t_r:b_r] = white_bgr[t_l:b_l, t_r:b_r]
+                white_bgr = black_bgr
+
             ret, thresh = cv2.threshold(white_bgr, gui.calibration_threshold, 255, cv2.THRESH_BINARY)
 
             if gui.calibration_find_contour_method == 0:
