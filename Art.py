@@ -30,7 +30,7 @@ class Art:
                         prev_y = y
                         continue
                     else:
-                        cv2.line(canvas, (prev_x, prev_y), (x, y), color, thickness)
+                        cv2.line(canvas, (prev_y, prev_x), (y, x), color, thickness)
                         prev_x = x
                         prev_y = y
                 i = i + 1
