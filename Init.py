@@ -23,11 +23,7 @@ class Init:
             print("wait black")
             projector.black()
         else:
-            print("calibrate 1")    
-            # cv2.imshow("White", self._white_frame)
-            if gui.cut_left > 0 or gui.cut_right > 0 or gui.cut_top > 0 or gui.cut_bottom > 0:
-                self._white_frame = self.strip_image(self._white_frame, gui)
-
+            print("calibrate 1")
             white_fullcolor = np.copy(self._white_frame)
             print("source shape: ", white_fullcolor.shape)
             white_bgr = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
@@ -108,21 +104,8 @@ class Init:
                 monitor.add("Cutout", mask_cutout)
                 cv2.imshow("Cutout", white_fullcolor)
 
-
             self.canvas = Canvas()
             # print("INit canvas")
             print("Initialization complete")
             self.canvas.init(top_y, bottom_y, top_x, bottom_x, mask_cutout, gui, cam, monitor)
             self.initialized = True
-
-    def strip_image(self, white_bgr, gui):
-        black_bgr = np.zeros_like(white_bgr)
-        s = black_bgr.shape
-
-        y_t = gui.cut_top
-        y_b = s[0] - gui.cut_bottom
-        x_l = gui.cut_left
-        x_r = s[1] - gui.cut_right
-
-        black_bgr[y_t:y_b, x_l:x_r] = white_bgr[y_t:y_b, x_l:x_r]
-        return black_bgr

@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 
+
 class Cam(object):
     width = 1280
     height = 720
@@ -9,10 +10,11 @@ class Cam(object):
     vid = cv2.VideoCapture(video_channel)
     last_frame = None
     gui = None
+
     # vid = cv2.VideoCapture(2)
 
     def start(self, gui):
-#        print('x')
+        #        print('x')
         # self.vid = cv2.VideoCapture(3)
         self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
@@ -58,3 +60,16 @@ class Cam(object):
                 self.last_frame = frame
                 return frame
 
+    def strip_image(self, frame):
+        if self.gui.cut_left > 0 or self.gui.cut_right > 0 or self.gui.cut_top > 0 or self.gui.cut_bottom > 0:
+            frame_black = np.zeros_like(frame)
+            s = frame_black.shape
+
+            y_t = self.gui.cut_top
+            y_b = s[0] - self.gui.cut_bottom
+            x_l = self.gui.cut_left
+            x_r = s[1] - self.gui.cut_right
+
+            frame_black[y_t:y_b, x_l:x_r] = frame[y_t:y_b, x_l:x_r]
+            return frame_black
+        return frame
