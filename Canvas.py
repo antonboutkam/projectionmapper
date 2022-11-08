@@ -83,7 +83,7 @@ class Canvas:
             mask_applied = np.zeros_like(mask_list[0])
         else:
             print("No masks found")
-            mask_applied = np.zeros_like(pre_processed_mask[0])
+            mask_applied = np.zeros_like(pre_processed_mask)
 
         mask_applied_rev = mask_applied.copy()
         black_mask_rgb = np.zeros_like(mask_color)
