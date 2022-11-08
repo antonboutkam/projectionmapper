@@ -85,12 +85,17 @@ class Canvas:
         for index, current_mask in enumerate(mask_list):
             current_mask_rgb = cv2.cvtColor(current_mask, cv2.COLOR_GRAY2RGB)
             if self.gui.video_size_mode == 0:
-                self.monitor.add("CM", current_mask)
+                self.monitor.add("MASK", current_mask)
                 gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
-                self.monitor.add("MB", black_mask_rgb)
-                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], black_mask_rgb, gpu_video_mask_size.download())
-                self.monitor.add("MA", current_mask)
+                video = gpu_video_mask_size.download()
+
+                self.monitor.add("VID", video)
+                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask_rgb, video)
+                mask_applied_rgb_rev = np.where(current_mask[:, :] == [0, 0, 0], video, current_mask_rgb)
+                self.monitor.add("MASK_VID", mask_applied_rgb)
+                self.monitor.add("MASK_VID_REV", mask_applied_rgb_rev)
+
             elif self.gui.video_size_mode == 1:
                 # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
                 # Calculate image moments of the detected contour
@@ -112,7 +117,7 @@ class Canvas:
                 video_scale_fit = gpu_video_scale_fit.download()
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], black_mask_rgb, current_mask_rgb)
+                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], black_mask_rgb, video_positioned)
 
         self.monitor.add("Video positioned", video_positioned)
         self.monitor.add("Mask combined", mask_applied_rgb)
