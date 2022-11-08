@@ -179,6 +179,7 @@ class Canvas:
 
             self.monitor.add_gpu("Extract Input", gpu_mask)
             base_mask = gpu_mask.download()
+            base_mask_rgb = cv2.cvtColor(base_mask, cv2.COLOR_GRAY2RGB)
             # print("Seeking contours ")
             all_contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
             all_contours_img = cv2.drawContours(current_frame, all_contours, -1, (0, 0, 255), 3)
@@ -189,7 +190,7 @@ class Canvas:
                 # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
                 drawn_mask = blank_mask.copy()
 
-                preview = base_mask.copy()
+                preview = base_mask_rgb.copy()
                 if self.gui.approx_poly:
 
                     contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/100 * cv2.arcLength(contour, True), True)
