@@ -88,7 +88,7 @@ class Canvas:
 
                 gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
-                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask_rgb, gpu_video_mask_size.download())
+                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], black_mask_rgb, gpu_video_mask_size.download())
             elif self.gui.video_size_mode == 1:
                 # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
                 # Calculate image moments of the detected contour
@@ -111,6 +111,9 @@ class Canvas:
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
                 mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], black_mask_rgb, current_mask_rgb)
+
+        self.monitor.add("Video positioned", video_positioned)
+        self.monitor.add("Mask combined", mask_applied_rgb)
 
         if self.gui.video_size_mode == 1:
             mask_applied_rgb = np.where(mask_applied_rgb[:, :] == [0, 0, 0], black_mask_rgb, video_positioned)
