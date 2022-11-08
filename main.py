@@ -2,6 +2,7 @@ import numpy as np
 import time
 from Init import Init
 from Cam import Cam
+from UserInterface import UserInterface
 from Monitor import Monitor
 from Gui import Gui
 from Projector import Projector
@@ -11,6 +12,8 @@ import cv2
 # noProjectionSurfaceWindow()
 startTime = time.time()
 projector = Projector()
+user_interface = UserInterface()
+user_interface.start()
 restart_init = False
 cam = Cam()
 gui = Gui()

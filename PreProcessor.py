@@ -20,12 +20,12 @@ class PreProcessor:
         gpu_output = cv2.cuda.cvtColor(gpu_output, cv2.COLOR_BGR2GRAY)
         monitor.add_gpu("GRAY", gpu_output)
 
-        if gui.enable_dilate:
+#        if gui.enable_dilate:
 #            print("kernel x,y:", gui.dilate_kernel_y, ", ", gui.dilate_kernel_x)
-            dilate_kernel = np.ones((gui.dilate_kernel_y, gui.dilate_kernel_x), np.uint8)
-            dilated = cv2.dilate(gpu_output.download(), dilate_kernel, iterations=2)
-            gpu_output.upload(dilated)
-            monitor.add("Eroded", dilated)
+#            dilate_kernel = np.ones((gui.dilate_kernel_y, gui.dilate_kernel_x), np.uint8)
+#            dilated = cv2.dilate(gpu_output.download(), dilate_kernel, iterations=2)
+#           gpu_output.upload(dilated)
+#          monitor.add("Eroded", dilated)
 
         if gui.enable_erode:
             erode_kernel = np.ones((gui.erode_kernel_y, gui.erode_kernel_x), np.uint8)
