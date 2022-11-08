@@ -5,7 +5,7 @@ class Art:
     def draw_coolness(self, canvas, contours):
         for contour in contours:
             canvas = self.draw_skip_lines(canvas, contour, 2, (0, 255, 0), 1)
-            canvas = self.draw_skip_lines(canvas, contour, 3, (255, 0, 0), 1)
+            # canvas = self.draw_skip_lines(canvas, contour, 3, (255, 0, 0), 1)
         return canvas
 
     def draw_skip_lines(self, canvas, contour, step, color, thickness):
