@@ -23,7 +23,7 @@ class Art:
                     continue
                 if (i % step) == 0:
                     x = n[i % len(contour)]
-                    y = n[i + 1 % len(contour)]
+                    y = n[(i + 1) % len(contour)]
 
                     if prev_x is None:
                         prev_x = x
