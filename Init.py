@@ -32,14 +32,7 @@ class Init:
 #            white_bgr = cv2.GaussianBlur(white_bgr, (5, 5), 0)
             print("start thresh")
             if gui.cut_left > 0 or gui.cut_right > 0 or gui.cut_top > 0 or gui.cut_bottom > 0:
-                black_bgr = np.zeros_like(white_bgr)
-                s = black_bgr.shape
-                t_l = gui.cut_top
-                b_l = s[0] - gui.cut_bottom
-                t_r = gui.cut_top
-                b_r = gui.cut_top
-                black_bgr[t_l:b_l, t_r:b_r] = white_bgr[t_l:b_l, t_r:b_r]
-                white_bgr = black_bgr
+                white_bgr = self.strip_image(white_bgr, gui)
 
             ret, thresh = cv2.threshold(white_bgr, gui.calibration_threshold, 255, cv2.THRESH_BINARY)
 
@@ -121,3 +114,15 @@ class Init:
             print("Initialization complete")
             self.canvas.init(top_y, bottom_y, top_x, bottom_x, mask_cutout, gui, cam, monitor)
             self.initialized = True
+
+    def strip_image(self, white_bgr, gui):
+        black_bgr = np.zeros_like(white_bgr)
+        s = black_bgr.shape
+
+        y_t = gui.cut_top
+        y_b = s[0] - gui.cut_bottom
+        x_l = gui.cut_left
+        x_r = s[1] - gui.cut_right
+
+        black_bgr[y_t:y_b, x_l:x_r] = white_bgr[y_t:y_b, x_l:x_r]
+        return black_bgr
