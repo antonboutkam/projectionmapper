@@ -57,10 +57,11 @@ class Cam(object):
             else:
                 if self.gui.main_vertical_flip_cam:
                     frame = cv2.flip(frame, 0)
-                self.last_frame = frame
+
+                self.last_frame = self.area_of_interest(frame)
                 return frame
 
-    def strip_image(self, frame):
+    def area_of_interest(self, frame):
         if self.gui.cut_left > 0 or self.gui.cut_right > 0 or self.gui.cut_top > 0 or self.gui.cut_bottom > 0:
             frame_black = np.zeros_like(frame)
             s = frame_black.shape
