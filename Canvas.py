@@ -191,7 +191,7 @@ class Canvas:
 
                 if self.gui.approx_poly:
                     contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/1000 * cv2.arcLength(contour, True), True)
-                    file.append('approxPolyDp-' + str(index) + '.txt', contour)
+                    file.append('approxPolyDP-' + str(index) + '.txt', contour)
 
                 if self.gui.hull:
                     contour = cv2.convexHull(contour)
