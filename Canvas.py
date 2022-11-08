@@ -196,19 +196,19 @@ class Canvas:
                 # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
                 draw_mask = blank_mask.copy()
 
-                if self.gui.approx_poly:
-                    contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/100 * cv2.arcLength(contour, True), True)
-                    file.append('approxPolyDP-' + str(index) + '.txt', contour)
-                    preview = blank_mask_rgb.copy()
-                    cv2.drawContours(preview, [contour], -1, (0, 0, 255), 2)
-                    self.monitor.add('approxPolyDP-' + str(index), preview)
-
                 if self.gui.hull:
                     contour = cv2.convexHull(contour)
                     file.append('convexHull-' + str(index) + '.txt', contour)
                     preview = blank_mask_rgb.copy()
                     cv2.drawContours(preview, [contour], -1, (0, 255, 0), 2)
                     self.monitor.add('convexHull-' + str(index), preview)
+
+                if self.gui.approx_poly:
+                    contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/100 * cv2.arcLength(contour, True), True)
+                    file.append('approxPolyDP-' + str(index) + '.txt', contour)
+                    preview = blank_mask_rgb.copy()
+                    cv2.drawContours(preview, [contour], -1, (0, 0, 255), 2)
+                    self.monitor.add('approxPolyDP-' + str(index), preview)
 
                 cv2.fillConvexPoly(draw_mask, contour, 255)
                 self.monitor.add("Draw mask" + str(index), draw_mask)
