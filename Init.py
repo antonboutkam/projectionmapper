@@ -33,7 +33,7 @@ class Init:
             print("start thresh")
             if gui.cut_left > 0 or gui.cut_right > 0 or gui.cut_top > 0 or gui.cut_bottom > 0:
                 black_bgr = np.zeros_like(white_bgr)
-                s = black_bgr.shape() # 1024x768
+                s = black_bgr.shape
                 t_l = gui.cut_top
                 b_l = s[0] - gui.cut_bottom
                 t_r = gui.cut_top
