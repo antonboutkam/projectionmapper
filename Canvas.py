@@ -191,7 +191,8 @@ class Canvas:
 
                 preview = base_mask.copy()
                 if self.gui.approx_poly:
-                    contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/1000 * cv2.arcLength(contour, True), True)
+
+                    contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/100 * cv2.arcLength(contour, True), True)
                     file.append('approxPolyDP-' + str(index) + '.txt', contour)
                     cv2.drawContours(preview, [contour], -1, (0, 0, 255), 2)
 
