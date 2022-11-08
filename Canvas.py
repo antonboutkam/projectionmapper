@@ -220,7 +220,7 @@ class Canvas:
                 self.monitor.add("Draw mask" + str(index), draw_mask)
 
                 if self.gui.simplify_contour:
-                    contour = self.simplify_contour(self, contour)
+                    contour = self.simplify_contour(contour)
 
                 cv2.fillConvexPoly(draw_mask, contour, 255)
                 self.monitor.add("Simple mask" + str(index), draw_mask)
