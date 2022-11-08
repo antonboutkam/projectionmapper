@@ -23,8 +23,9 @@ class Gui:
 
     cut_left = 408
     cut_right = 284
-    cut_bottom = 15
-    cut_top = 285
+    cut_top = 15
+    cut_bottom = 285
+
 
     calibration_recalibrate = False
     calibration_find_contour_method = 0
