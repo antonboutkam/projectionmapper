@@ -79,7 +79,12 @@ class Canvas:
             gpu_video_source = cv2.cuda.cvtColor(gpu_video_source, cv2.COLOR_GRAY2RGB)
         mask_color = gpu_full_mask_color.download()
         video_positioned = np.zeros_like(current_frame)
-        mask_applied = np.zeros_like(mask_list[0])
+        if len(mask_list) > 0:
+            mask_applied = np.zeros_like(mask_list[0])
+        else:
+            print("No masks found")
+            mask_applied = np.zeros_like(pre_processed_mask[0])
+
         mask_applied_rev = mask_applied.copy()
         black_mask_rgb = np.zeros_like(mask_color)
         video_positioned = black_mask_rgb.copy()
