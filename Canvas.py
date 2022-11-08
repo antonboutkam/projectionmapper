@@ -2,6 +2,7 @@ from Cam import Cam
 from Source import Source
 from File import File
 from PreProcessor import PreProcessor
+from Art import Art
 from Monitor import Monitor
 import cv2
 import numpy as np
@@ -21,6 +22,7 @@ class Canvas:
     monitor = None
     source = None
     resized_source_videos = None
+    simple_contours = []
 
     def init(self, top_y, bottom_y, top_x, bottom_x, initial_frame, gui, cam, monitor):
         self.top_y = top_y
@@ -163,6 +165,10 @@ class Canvas:
         mask_applied_offsets = video_masked[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
         full_canvas[dst_top_y:dst_bottom_y, dst_top_x:dst_bottom_x] = mask_applied_offsets
 
+        if len(self.simple_contours) > 0:
+            art = Art()
+            art.draw_coolness(full_canvas, self.simple_contours)
+
         if self.gui.replace_black:
             # Find all black pixels
             black_pixels = np.where(
@@ -234,6 +240,7 @@ class Canvas:
             mask_list.append(gpu_mask.download())
         return mask_list
 
+
     def simplify_contour(self, contour):
         n = contour.ravel()
         i = 0
@@ -253,5 +260,8 @@ class Canvas:
                 dist = math.pow(x - prev_x, 2) + math.pow(y - prev_y, 2)
                 if dist > self.gui.simplify_contour_dist:
                     simple_contour.append([x, y])
+            i = i + 1
 
-        return np.array(simple_contour).reshape((-1, 1, 2)).astype(np.int32)
+        contour = np.array(simple_contour).reshape((-1, 1, 2)).astype(np.int32)
+        self.simple_contours.append(contour)
+        return contour
