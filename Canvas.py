@@ -80,6 +80,8 @@ class Canvas:
         mask_color = gpu_full_mask_color.download()
         video_positioned = np.zeros_like(current_frame)
         mask_applied_rgb = np.zeros_like(mask_color)
+        mask_applied = np.zeros_like(mask_list[0])
+        mask_applied_rev = mask_applied.copy()
         black_mask_rgb = np.zeros_like(mask_color)
         video_positioned = black_mask_rgb.copy()
         self.resized_source_videos = []
@@ -103,13 +105,14 @@ class Canvas:
                 video_scale_fit = gpu_video_scale_fit.download()
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-            self.monitor.add("VID_POS", video_positioned)
-            current_mask_rgb = cv2.cvtColor(current_mask, cv2.COLOR_GRAY2RGB)
-            mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask_rgb, mask_applied_rgb)
-            self.monitor.add("MASK_VID", mask_applied_rgb)
 
-        self.monitor.add("Video positioned", video_positioned)
-        self.monitor.add("Mask combined", mask_applied_rgb)
+            current_mask_rgb = cv2.cvtColor(current_mask, cv2.COLOR_GRAY2RGB)
+            mask_applied = np.where(current_mask[:, :] == [0, 0, 0], current_mask, mask_applied)
+            mask_applied_rev = np.where(current_mask[:, :] == [0, 0, 0], mask_applied_rev, current_mask)
+            self.monitor.add("MSK_MRG" + str(index), mask_applied_rgb)
+
+        self.monitor.add("VID_POS", video_positioned)
+        self.monitor.add("MSK_COM", mask_applied_rgb)
 
         video_masked = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
         video_masked_rev = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
