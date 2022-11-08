@@ -2,9 +2,10 @@ import cv2
 
 
 class Art:
-    def draw_coolness(self, canvas, contour):
-        canvas = self.draw_skip_lines(canvas, contour, 2, (0, 255, 0), 3, 0)
-        canvas = self.draw_skip_lines(canvas, contour, 2, (255, 0, 0), 3, 1)
+    def draw_coolness(self, canvas, contours):
+        for contour in contours:
+            canvas = self.draw_skip_lines(canvas, contour, 2, (0, 255, 0), 3, 0)
+            canvas = self.draw_skip_lines(canvas, contour, 2, (255, 0, 0), 3, 1)
         return canvas
 
     def draw_skip_lines(self, canvas, contour, step, color, thickness, start):
