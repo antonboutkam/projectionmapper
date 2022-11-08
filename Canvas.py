@@ -115,8 +115,8 @@ class Canvas:
         self.monitor.add("MSK_CB", mask_applied)
         self.monitor.add("MSK_RCB", mask_applied_rev)
         mask_applied_rgb =  cv2.cvtColor(mask_applied, cv2.COLOR_GRAY2RGB)
-        video_masked = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
         video_masked_rev = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
+        video_masked = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
