@@ -5,7 +5,6 @@ from PreProcessor import PreProcessor
 from Monitor import Monitor
 import cv2
 import numpy as np
-import cupy as cp
 import math
 
 
@@ -104,6 +103,7 @@ class Canvas:
                 if width < 3 or height < 3:
                     # print('to small' , width, height)
                     continue
+
                 # print('width', width, 'height', height)
                 gpu_video_scale_fit = cv2.cuda.resize(gpu_video_source, (width, height))
                 video_scale_fit = gpu_video_scale_fit.download()
@@ -219,6 +219,12 @@ class Canvas:
                 cv2.fillConvexPoly(draw_mask, contour, 255)
                 self.monitor.add("Draw mask" + str(index), draw_mask)
 
+                contour = self.simplify_contour(self, contour)
+
+                cv2.fillConvexPoly(draw_mask, contour, 255)
+                self.monitor.add("Simple mask" + str(index), draw_mask)
+
+
                 # area = cv2.contourArea(contour)
                 # self.monitor.add("Contour " + str(index), drawn_mask)
                 mask_list.append(draw_mask)
@@ -226,3 +232,25 @@ class Canvas:
             # print("Find contours disabled")
             mask_list.append(gpu_mask.download())
         return mask_list
+
+    def simplify_contour(self, contour):
+        n = contour.ravel()
+        i = 0
+        prev_x = None
+        prev_y = None
+        simple_contour = []
+        for j in n:
+            if (i % 2) == 0:
+                x = n[i]
+                y = n[i + 1]
+
+                if prev_x is None:
+                    prev_x = x
+                if prev_y is None:
+                    prev_y = y
+
+                dist = math.pow(x - prev_x, 2) + math.pow(y - prev_y, 2)
+                if dist > 20:
+                    simple_contour.append([x, y])
+
+        return np.array(simple_contour).reshape((-1, 1, 2)).astype(np.int32)
