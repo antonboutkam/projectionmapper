@@ -111,13 +111,15 @@ class Canvas:
         self.monitor.add("Video positioned", video_positioned)
         self.monitor.add("Mask combined", mask_applied_rgb)
 
-        video_masked = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, black_mask_rgb)
+        video_masked = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
+        video_masked_rev = np.where(mask_applied_rgb[:, :] == [0, 0, 0], video_positioned, mask_applied_rgb)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
 
         # print('mask applied shape', mask_applied.shape)
         self.monitor.add("VID_MASKED", video_masked)
+        self.monitor.add("VID_MASKED_REV", video_masked_rev)
 
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
