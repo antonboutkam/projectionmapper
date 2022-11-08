@@ -22,8 +22,8 @@ class Art:
                     i = i + 1
                     continue
                 if (i % step) == 0:
-                    x = n[i]
-                    y = n[i + 1]
+                    x = n[i % len(contour)]
+                    y = n[i + 1 % len(contour)]
 
                     if prev_x is None:
                         prev_x = x
