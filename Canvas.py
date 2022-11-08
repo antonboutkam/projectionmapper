@@ -179,37 +179,37 @@ class Canvas:
 
             self.monitor.add_gpu("Extract Input", gpu_mask)
             base_mask = gpu_mask.download()
-            base_mask_rgb = cv2.cvtColor(base_mask, cv2.COLOR_GRAY2RGB)
             # print("Seeking contours ")
             all_contours, hierarchy = cv2.findContours(base_mask, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
             all_contours_img = cv2.drawContours(current_frame, all_contours, -1, (0, 0, 255), 3)
             self.monitor.add("All contours", all_contours_img)
 
             blank_mask = np.zeros_like(base_mask)
+            blank_mask_rgb = cv2.cvtColor(blank_mask, cv2.COLOR_GRAY2RGB)
             for index, contour in enumerate(all_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
                 # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
-                drawn_mask = blank_mask.copy()
+                draw_mask = blank_mask.copy()
 
-                preview = base_mask_rgb.copy()
                 if self.gui.approx_poly:
-
                     contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/100 * cv2.arcLength(contour, True), True)
                     file.append('approxPolyDP-' + str(index) + '.txt', contour)
+                    preview = blank_mask_rgb.copy()
                     cv2.drawContours(preview, [contour], -1, (0, 0, 255), 2)
+                    self.monitor.add('approxPolyDP-' + str(index), preview)
 
                 if self.gui.hull:
                     contour = cv2.convexHull(contour)
                     file.append('convexHull-' + str(index) + '.txt', contour)
-                    convex_hull = base_mask.copy()
+                    preview = blank_mask_rgb.copy()
                     cv2.drawContours(preview, [contour], -1, (0, 255, 0), 2)
-                    self.monitor.add('convexHull-' + str(index), convex_hull)
+                    self.monitor.add('convexHull-' + str(index), preview)
 
-                self.monitor.add("Poly+Hull " + str(index), preview)
-                cv2.fillConvexPoly(contour, contour, 255)
+                cv2.fillConvexPoly(draw_mask, contour, 255)
+                self.monitor.add("Draw mask" + str(index), draw_mask)
 
                 # area = cv2.contourArea(contour)
                 # self.monitor.add("Contour " + str(index), drawn_mask)
-                mask_list.append(drawn_mask)
+                mask_list.append(draw_mask)
         else:
             # print("Find contours disabled")
             mask_list.append(gpu_mask.download())
