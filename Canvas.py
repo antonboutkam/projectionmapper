@@ -1,5 +1,6 @@
 from Cam import Cam
 from Source import Source
+from File import File
 from PreProcessor import PreProcessor
 from Monitor import Monitor
 import cv2
@@ -20,6 +21,7 @@ class Canvas:
     projector = None
     monitor = None
     source = None
+    resized_source_videos = None
 
     def init(self, top_y, bottom_y, top_x, bottom_x, initial_frame, gui, cam, monitor):
         self.top_y = top_y
@@ -78,7 +80,7 @@ class Canvas:
         mask_color = gpu_full_mask_color.download()
         video_positioned = np.zeros_like(current_frame)
         mask_applied = np.zeros_like(mask_color)
-
+        self.resized_source_videos = []
         for index, current_mask in enumerate(mask_list):
             if self.gui.video_size_mode == 0:
                 gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
@@ -167,6 +169,9 @@ class Canvas:
         projector.draw(full_canvas)
 
     def extract_mask_list(self, gpu_mask, current_frame):
+        file = File()
+        file.start(self.gui)
+
         mask_list = []
         if self.gui.find_contour_enable == 1:
             root_contours = []
@@ -182,9 +187,17 @@ class Canvas:
             blank_mask = np.zeros_like(base_mask)
             for index, contour in enumerate(all_contours[self.gui.draw_contour_min:self.gui.draw_contour_max]):
                 # poly_contour = cv2.approxPolyDP(contour, 0.3 * cv2.arcLength(contour, True), True)
-                hull = cv2.convexHull(contour)
                 drawn_mask = blank_mask.copy()
-                cv2.fillConvexPoly(drawn_mask, hull, 255)
+
+                if self.gui.approx_poly:
+                    contour = cv2.approxPolyDP(contour, self.gui.approx_poly_precision/1000 * cv2.arcLength(contour, True), True)
+                    file.append('approxPolyDp-' + str(index) + '.txt', contour)
+
+                if self.gui.hull:
+                    contour = cv2.convexHull(contour)
+                    file.append('convexHull-' + str(index) + '.txt', contour)
+
+                cv2.fillConvexPoly(contour, contour, 255)
 
                 # area = cv2.contourArea(contour)
                 # self.monitor.add("Contour " + str(index), drawn_mask)

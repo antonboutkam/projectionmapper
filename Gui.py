@@ -10,6 +10,7 @@ class Gui:
     window_object_tracing = 'Object tracing config'
 
     main_vertical_flip_cam = 0
+    main_log_stuff = 1
     main_show_calibration = 1
     main_show_preprocessing = 0
     main_show_monitor = 1
@@ -76,6 +77,9 @@ class Gui:
     video_size_mode = 0
     video_source = 0
     video_source_brightness = 127
+    approx_poly = 0
+    approx_poly_precision = 1
+    hull = 0
 
     def init(self, cam):
         self.calibration_manual_max_x = cam.width
@@ -84,6 +88,7 @@ class Gui:
     def main_config(self):
         cv2.namedWindow(self.window_main)
         cv2.createTrackbar("Vertical flip cam", self.window_main, self.main_vertical_flip_cam, 1, self.trackbar_change)
+        cv2.createTrackbar("Log stuff", self.window_main, self.main_log_stuff, 1, self.trackbar_change)
 
         cv2.createTrackbar("Show calibration", self.window_main, self.main_show_calibration, 1, self.trackbar_change)
         cv2.createTrackbar("Show preprocessing", self.window_main, self.main_show_preprocessing, 1, self.trackbar_change)
@@ -141,6 +146,9 @@ class Gui:
             cv2.createTrackbar("Canny 2", self.window_object_tracing, self.canny2, 255, self.trackbar_change)
 
             cv2.createTrackbar("Contour enable", self.window_object_tracing, self.find_contour_enable, 1, self.trackbar_change)
+            cv2.createTrackbar("Approx poli", self.window_object_tracing, self.approx_poly, 1, self.trackbar_change)
+            cv2.createTrackbar("Approx poli precision", self.window_object_tracing, self.approx_poly_precision, 100, self.trackbar_change)
+            cv2.createTrackbar("Hull", self.window_object_tracing, self.hull, 1, self.trackbar_change)
             cv2.createTrackbar("Draw contour min", self.window_object_tracing, self.draw_contour_min, 40,self.trackbar_change)
             cv2.createTrackbar("Draw contour max", self.window_object_tracing, self.draw_contour_max, 40,self.trackbar_change)
         else:
@@ -181,6 +189,8 @@ class Gui:
         if cv2.getWindowProperty(self.window_main, cv2.WND_PROP_VISIBLE):
 
             self.main_vertical_flip_cam = cv2.getTrackbarPos("Vertical flip cam", self.window_main)
+            self.main_log_stuff = cv2.getTrackbarPos("Log stuff", self.window_main)
+
             self.main_show_calibration = cv2.getTrackbarPos("Show calibration", self.window_main)
             self.main_show_preprocessing = cv2.getTrackbarPos("Show preprocessing", self.window_main)
             self.main_show_monitor = cv2.getTrackbarPos("Show monitor", self.window_main)
@@ -247,6 +257,10 @@ class Gui:
             self.threshold = cv2.getTrackbarPos("Threshold", self.window_object_tracing)
             self.threshold_mode = cv2.getTrackbarPos("Threshold mode", self.window_object_tracing)
             self.find_contour_enable = cv2.getTrackbarPos("Contour enable", self.window_object_tracing)
+            self.approx_poly = cv2.getTrackbarPos("Approx poly", self.window_object_tracing)
+            self.approx_poly_precision = cv2.getTrackbarPos("Approx poly precision", self.window_object_tracing)
+            self.hull = cv2.getTrackbarPos("Hull", self.window_object_tracing)
+
             self.draw_contour_min = cv2.getTrackbarPos("Draw contour min", self.window_object_tracing)
             self.draw_contour_max = cv2.getTrackbarPos("Draw contour max", self.window_object_tracing)
             self.canny_enable = cv2.getTrackbarPos("Canny enable", self.window_object_tracing)
