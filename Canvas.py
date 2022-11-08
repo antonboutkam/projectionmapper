@@ -84,23 +84,13 @@ class Canvas:
         video_positioned = black_mask_rgb.copy()
         self.resized_source_videos = []
         for index, current_mask in enumerate(mask_list):
-            current_mask_rgb = cv2.cvtColor(current_mask, cv2.COLOR_GRAY2RGB)
-            if self.gui.video_size_mode == 0:
-
             if self.gui.video_size_mode == 0:
                 self.monitor.add("MASK", current_mask)
                 gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
                 video_positioned = gpu_video_mask_size.download()
             elif self.gui.video_size_mode == 1:
-                # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-                # Calculate image moments of the detected contour
-                # M = cv2.moments(contours[0])
-                # cont_center_x = round(M['m10'] / M['m00'])
-                # cont_center_y = round(M['m01'] / M['m00'])
-
                 (y, x) = np.where(current_mask == 255)
-
                 (top_y, top_x) = (np.min(y), np.min(x))
                 (bottom_y, bottom_x) = (np.max(y), np.max(x))
                 width = bottom_x - top_x
