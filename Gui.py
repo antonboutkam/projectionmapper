@@ -146,8 +146,8 @@ class Gui:
             cv2.createTrackbar("Canny 2", self.window_object_tracing, self.canny2, 255, self.trackbar_change)
 
             cv2.createTrackbar("Contour enable", self.window_object_tracing, self.find_contour_enable, 1, self.trackbar_change)
-            cv2.createTrackbar("Approx poli", self.window_object_tracing, self.approx_poly, 1, self.trackbar_change)
-            cv2.createTrackbar("Approx poli precision", self.window_object_tracing, self.approx_poly_precision, 100, self.trackbar_change)
+            cv2.createTrackbar("Approx poly", self.window_object_tracing, self.approx_poly, 1, self.trackbar_change)
+            cv2.createTrackbar("Approx poly precision", self.window_object_tracing, self.approx_poly_precision, 100, self.trackbar_change)
             cv2.createTrackbar("Hull", self.window_object_tracing, self.hull, 1, self.trackbar_change)
             cv2.createTrackbar("Draw contour min", self.window_object_tracing, self.draw_contour_min, 40,self.trackbar_change)
             cv2.createTrackbar("Draw contour max", self.window_object_tracing, self.draw_contour_max, 40,self.trackbar_change)
