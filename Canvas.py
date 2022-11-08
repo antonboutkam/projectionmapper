@@ -104,20 +104,20 @@ class Canvas:
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
             self.monitor.add("VID_POS", video_positioned)
-            mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask, mask_applied_rgb)
+            current_mask_rgb = cv2.cuda.cvtColor(gpu_pre_processed_mask, cv2.COLOR_GRAY2RGB)
+            mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask_rgb, mask_applied_rgb)
             self.monitor.add("MASK_VID", mask_applied_rgb)
 
         self.monitor.add("Video positioned", video_positioned)
         self.monitor.add("Mask combined", mask_applied_rgb)
 
-        if self.gui.video_size_mode == 1:
-            mask_applied_rgb = np.where(mask_applied_rgb[:, :] == [0, 0, 0], black_mask_rgb, video_positioned)
+        video_masked = np.where(mask_applied_rgb[:, :] == [0, 0, 0], black_mask_rgb, video_positioned)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
 
         # print('mask applied shape', mask_applied.shape)
-        self.monitor.add("Clips masked", mask_applied_rgb)
+        self.monitor.add("VID_MASKED", video_masked)
 
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
@@ -149,7 +149,7 @@ class Canvas:
             dst_top_x = 0
             dst_bottom_x = w + offset_x
 
-        mask_applied_offsets = mask_applied_rgb[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
+        mask_applied_offsets = video_masked[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
         full_canvas[dst_top_y:dst_bottom_y, dst_top_x:dst_bottom_x] = mask_applied_offsets
 
         if self.gui.replace_black:
