@@ -104,7 +104,7 @@ class Canvas:
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
             self.monitor.add("VID_POS", video_positioned)
-            current_mask_rgb = cv2.cvtColor(gpu_pre_processed_mask, cv2.COLOR_GRAY2RGB)
+            current_mask_rgb = cv2.cvtColor(current_mask, cv2.COLOR_GRAY2RGB)
             mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask_rgb, mask_applied_rgb)
             self.monitor.add("MASK_VID", mask_applied_rgb)
 
