@@ -21,10 +21,10 @@ class Gui:
     threshold = 193
     threshold_mode = 0
 
-    cut_left = 0
-    cut_right = 0
-    cut_bottom = 0
-    cut_top = 0
+    cut_left = 408
+    cut_right = 284
+    cut_bottom = 15
+    cut_top = 285
 
     calibration_recalibrate = False
     calibration_find_contour_method = 0
@@ -38,8 +38,8 @@ class Gui:
     calibration_convex_hull = 0
     contour_thickness = 1
 
-    offset_x = 400
-    offset_y = 400
+    offset_x = 367
+    offset_y = 398
 
     replace_black = 0
 
