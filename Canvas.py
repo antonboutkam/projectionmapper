@@ -91,10 +91,8 @@ class Canvas:
                 video = gpu_video_mask_size.download()
 
                 self.monitor.add("VID", video)
-                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask_rgb, video)
-                mask_applied_rgb_rev = np.where(current_mask[:, :] == [0, 0, 0], video, current_mask_rgb)
+                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], video, current_mask_rgb)
                 self.monitor.add("MASK_VID", mask_applied_rgb)
-                self.monitor.add("MASK_VID_REV", mask_applied_rgb_rev)
 
             elif self.gui.video_size_mode == 1:
                 # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -117,7 +115,7 @@ class Canvas:
                 video_scale_fit = gpu_video_scale_fit.download()
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], black_mask_rgb, video_positioned)
+                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask, mask_applied_rgb)
 
         self.monitor.add("Video positioned", video_positioned)
         self.monitor.add("Mask combined", mask_applied_rgb)
