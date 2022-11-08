@@ -82,6 +82,7 @@ class Gui:
     hull = 0
 
     def init(self, cam):
+        print("init")
 
     def main_config(self):
         cv2.namedWindow(self.window_main)
