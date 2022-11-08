@@ -25,8 +25,7 @@ class Art:
                     prev_y = y
                     continue
                 else:
-                    cv2.line(canvas, (prev_y, prev_x), (y, x), (0, 255, 0), thickness)
-                    cv2.line(canvas, (prev_x, prev_y), (x, y), (0, 0, 255), thickness)
+                    cv2.line(canvas, (prev_x, prev_y), (x, y), color, thickness)
                     prev_x = x
                     prev_y = y
             i = i + 1
