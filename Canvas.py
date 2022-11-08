@@ -79,15 +79,16 @@ class Canvas:
             gpu_video_source = cv2.cuda.cvtColor(gpu_video_source, cv2.COLOR_GRAY2RGB)
         mask_color = gpu_full_mask_color.download()
         video_positioned = np.zeros_like(current_frame)
-        mask_applied = np.zeros_like(mask_color)
-        black_mask = np.zeros_like(mask_color)
+        mask_applied_rgb = np.zeros_like(mask_color)
+        black_mask_rgb = np.zeros_like(mask_color)
         self.resized_source_videos = []
         for index, current_mask in enumerate(mask_list):
+            current_mask_rgb = cv2.cvtColor(current_mask, cv2.COLOR_GRAY2RGB)
             if self.gui.video_size_mode == 0:
 
                 gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
-                mask_applied = np.where(current_mask[:, :] == [0, 0, 0], current_mask, gpu_video_mask_size.download())
+                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], current_mask_rgb, gpu_video_mask_size.download())
             elif self.gui.video_size_mode == 1:
                 # im, contours, hierarchy = cv2.findContours(gpu_mask.download(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
                 # Calculate image moments of the detected contour
@@ -109,16 +110,16 @@ class Canvas:
                 video_scale_fit = gpu_video_scale_fit.download()
                 # self.monitor.add("VScal2Fit " + str(index), video_scale_fit)
                 video_positioned[top_y:bottom_y, top_x:bottom_x] = video_scale_fit
-                mask_applied = np.where(current_mask[:, :] == [0, 0, 0], black_mask, current_mask)
+                mask_applied_rgb = np.where(current_mask[:, :] == [0, 0, 0], black_mask_rgb, current_mask_rgb)
 
         if self.gui.video_size_mode == 1:
-            mask_applied = np.where(mask_applied[:, :] == [0, 0, 0], black_mask, video_positioned)
+            mask_applied_rgb = np.where(mask_applied_rgb[:, :] == [0, 0, 0], black_mask_rgb, video_positioned)
 
         # print('mask color shape', mask_color.shape)
         # print('video source mask size shape', video_source_mask_size.shape)
 
         # print('mask applied shape', mask_applied.shape)
-        self.monitor.add("Clips masked", mask_applied)
+        self.monitor.add("Clips masked", mask_applied_rgb)
 
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
@@ -150,7 +151,7 @@ class Canvas:
             dst_top_x = 0
             dst_bottom_x = w + offset_x
 
-        mask_applied_offsets = mask_applied[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
+        mask_applied_offsets = mask_applied_rgb[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
         full_canvas[dst_top_y:dst_bottom_y, dst_top_x:dst_bottom_x] = mask_applied_offsets
 
         if self.gui.replace_black:
