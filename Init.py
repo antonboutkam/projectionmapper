@@ -26,14 +26,15 @@ class Init:
             print("calibrate 1")
             # cv2.imshow("White", self._white_frame)
             white_fullcolor = np.copy(self._white_frame)
+
+            if gui.cut_left > 0 or gui.cut_right > 0 or gui.cut_top > 0 or gui.cut_bottom > 0:
+                white_fullcolor = self.strip_image(white_fullcolor, gui)
+
             print("source shape: ", white_fullcolor.shape)
             white_bgr = cv2.cvtColor(self._white_frame, cv2.COLOR_BGR2GRAY)
             print("calibrate 2")
 #            white_bgr = cv2.GaussianBlur(white_bgr, (5, 5), 0)
             print("start thresh")
-            if gui.cut_left > 0 or gui.cut_right > 0 or gui.cut_top > 0 or gui.cut_bottom > 0:
-                white_bgr = self.strip_image(white_bgr, gui)
-
             ret, thresh = cv2.threshold(white_bgr, gui.calibration_threshold, 255, cv2.THRESH_BINARY)
 
             if gui.calibration_find_contour_method == 0:
