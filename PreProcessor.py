@@ -51,12 +51,18 @@ class PreProcessor:
         if gui.threshold_enable:
             if gui.threshold_mode == 0:
                 ret, gpu_output = cv2.cuda.threshold(gpu_output, gui.threshold, 255, cv2.THRESH_BINARY)
+                monitor.add_gpu("Threshold", gpu_output)
             elif gui.threshold_mode == 1:
-                ret, gpu_output = cv2.cuda.threshold(gpu_output, gui.threshold, 255,
+                cpu_output = gpu_output.download()
+                ret, cpu_output = cv2.threshold(cpu_output, gui.threshold, 255,
                                                      cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                monitor.add("Threshold", cpu_output)
+                gpu_output.upload(cpu_output)
             elif gui.threshold_mode == 2:
-                ret, gpu_output = cv2.cuda.threshold(gpu_output, gui.threshold, 255, cv2.THRESH_TOZERO)
-            monitor.add_gpu("Threshold", gpu_output)
+                cpu_output = gpu_output.download()
+                ret, cpu_output = cv2.threshold(cpu_output, gui.threshold, 255, cv2.THRESH_TOZERO)
+                gpu_output.upload(cpu_output)
+                monitor.add("Threshold", cpu_output)
 
         monitor.add_gpu("PreProc Result", gpu_output)
         return gpu_output
