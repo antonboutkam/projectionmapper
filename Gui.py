@@ -154,7 +154,7 @@ class Gui:
             cv2.createTrackbar("Ai - top", self.window_area_of_interest, self.ai_top, 500, self.trackbar_change)
             cv2.createTrackbar("Ai - bottom", self.window_area_of_interest, self.ai_bottom, 500, self.trackbar_change)
         else:
-            cv2.destroyWindow(self.window_output)
+            cv2.destroyWindow(self.main_show_area_interest)
 
     def object_tracing_config(self):
         if self.main_show_object_tracing == 1:
