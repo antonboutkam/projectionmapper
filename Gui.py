@@ -8,6 +8,7 @@ class Gui:
     window_preprocessing = 'Preprocessing config'
     window_output = 'Output config'
     window_object_tracing = 'Object tracing config'
+    window_area_of_interest = 'Area of interest'
 
     main_vertical_flip_cam = 0
     main_log_stuff = 1
@@ -16,6 +17,7 @@ class Gui:
     main_show_monitor = 1
     main_show_output_config = 1
     main_show_object_tracing = 1
+    main_show_area_interest = 1
 
     threshold_enable = 1
     threshold = 193
@@ -33,7 +35,6 @@ class Gui:
     calibration_luminosity = 127
     calibration_show_project_cutout = 1
     calibration_show_threshold = 0
-    calibration_show_input_source = 1
     calibration_show_found_contours = 1
     calibration_convex_hull = 0
     contour_thickness = 1
@@ -57,6 +58,11 @@ class Gui:
     blur1 = 5
     blur2 = 5
 
+    ai_left = 0
+    ai_right = 0
+    ai_top = 0
+    ai_bottom = 0
+
     enable_dilate = 0
     dilate_kernel_x = 5
     dilate_kernel_y = 5
@@ -65,8 +71,10 @@ class Gui:
     erode_kernel_x = 5
     erode_kernel_y = 5
 
-    enable_remove_color = 0
-    color_to_remove = 0
+    remove_red = 0
+    remove_green = 0
+    remove_blue = 0
+
     mask_scale = 90
     canny_enable = 0
 
@@ -117,8 +125,6 @@ class Gui:
             cv2.createTrackbar("Show cutout", self.window_calibration, self.calibration_show_project_cutout, 1, self.trackbar_change)
             cv2.createTrackbar("Show threshold", self.window_calibration, self.calibration_show_threshold, 1, self.trackbar_change)
 
-            cv2.createTrackbar("Show input source", self.window_calibration, self.calibration_show_input_source, 1, self.trackbar_change)
-
             cv2.createTrackbar("Show found contours", self.window_calibration, self.calibration_show_found_contours, 1,self.trackbar_change)
             cv2.createTrackbar("Preview contour thickness", self.window_calibration, self.contour_thickness, 6, self.trackbar_change)
         else:
@@ -128,7 +134,7 @@ class Gui:
         if self.main_show_output_config == 1:
             cv2.namedWindow(self.window_output)
             cv2.createTrackbar("Video source", self.window_output, self.video_source, 1, self.trackbar_change)
-            cv2.createTrackbar("Video size mode", self.window_output, self.video_size_mode, 1, self.trackbar_change)
+            cv2.createTrackbar("Video size mode", self.window_output, self.video_size_mode, 2, self.trackbar_change)
             cv2.createTrackbar("Video brightness", self.window_output, self.video_source_brightness, 255, self.trackbar_change)
             cv2.createTrackbar("Offset X", self.window_output, self.offset_x, self.max_offset_x, self.trackbar_change)
             cv2.createTrackbar("Offset Y", self.window_output, self.offset_y, self.max_offset_y, self.trackbar_change)
@@ -137,12 +143,21 @@ class Gui:
         else:
             cv2.destroyWindow(self.window_output)
 
+    def area_of_interest_config(self):
+        if self.main_show_area_interest == 1:
+            cv2.createTrackbar("Ai - left", self.window_area_of_interest, self.ai_left, 500, self.trackbar_change)
+            cv2.createTrackbar("Ai - right", self.window_area_of_interest, self.ai_right, 500, self.trackbar_change)
+            cv2.createTrackbar("Ai - top", self.window_area_of_interest, self.ai_top, 500, self.trackbar_change)
+            cv2.createTrackbar("Ai - bottom", self.window_area_of_interest, self.ai_bottom, 500, self.trackbar_change)
+        else:
+            cv2.destroyWindow(self.window_output)
+
     def object_tracing_config(self):
         if self.main_show_object_tracing == 1:
             cv2.namedWindow(self.window_object_tracing)
             cv2.createTrackbar("Threshold enable", self.window_object_tracing, self.threshold_enable, 1,self.trackbar_change)
             cv2.createTrackbar("Threshold", self.window_object_tracing, self.threshold, 255, self.trackbar_change)
-            cv2.createTrackbar("Threshold mode", self.window_object_tracing, self.threshold_mode, 1, self.trackbar_change)
+            cv2.createTrackbar("Threshold mode", self.window_object_tracing, self.threshold_mode, 2, self.trackbar_change)
             cv2.createTrackbar("Canny enable", self.window_object_tracing, self.canny_enable, 1, self.trackbar_change)
             cv2.createTrackbar("Canny 1", self.window_object_tracing, self.canny1, 255, self.trackbar_change)
             cv2.createTrackbar("Canny 2", self.window_object_tracing, self.canny2, 255, self.trackbar_change)
@@ -158,8 +173,6 @@ class Gui:
             cv2.createTrackbar("Approx poly precision", self.window_object_tracing, self.approx_poly_precision, 100, self.trackbar_change)
             cv2.createTrackbar("Simplify contour", self.window_object_tracing, self.simplify_contour, 1,self.trackbar_change)
             cv2.createTrackbar("Simplify contour dist", self.window_object_tracing, self.simplify_contour_dist, 500,self.trackbar_change)
-
-
         else:
             cv2.destroyWindow(self.window_object_tracing)
 
@@ -172,11 +185,13 @@ class Gui:
             cv2.createTrackbar("Enable erode", self.window_preprocessing, self.enable_erode, 1, self.trackbar_change)
             cv2.createTrackbar("Erode kernel x", self.window_preprocessing, self.erode_kernel_x, 15, self.trackbar_change)
             cv2.createTrackbar("Erode kernel y", self.window_preprocessing, self.erode_kernel_y, 15, self.trackbar_change)
-            cv2.createTrackbar("Blur enable", self.window_preprocessing, self.blur_enable, 1, self.trackbar_change)
+            cv2.createTrackbar("Blur enable", self.window_preprocessing, self.blur_enable, 2, self.trackbar_change)
             cv2.createTrackbar("Blur 1", self.window_preprocessing, self.blur1, 10, self.trackbar_change)
             cv2.createTrackbar("Blur 2", self.window_preprocessing, self.blur2, 10, self.trackbar_change)
-            cv2.createTrackbar("Color remove enable", self.window_preprocessing, self.enable_remove_color, 1, self.trackbar_change)
-            cv2.createTrackbar("RGB (0,1,2) to remove", self.window_preprocessing, self.color_to_remove, 2, self.trackbar_change)
+            cv2.createTrackbar("Remove R", self.window_preprocessing, self.remove_red, 1, self.trackbar_change)
+            cv2.createTrackbar("Remove G", self.window_preprocessing, self.remove_green, 1,
+                               self.trackbar_change)
+            cv2.createTrackbar("Remove B", self.window_preprocessing, self.remove_blue, 1, self.trackbar_change)
         else:
             cv2.destroyWindow(self.window_preprocessing)
 
@@ -247,16 +262,10 @@ class Gui:
                 self.calibration_recalibrate = True
             self.cut_bottom = tmp
 
-
             tmp = cv2.getTrackbarPos("Calibration convex hull", self.window_calibration)
             if tmp != self.calibration_convex_hull:
                 self.calibration_recalibrate = True
             self.calibration_convex_hull = tmp
-
-            tmp = cv2.getTrackbarPos("Show input source", self.window_calibration)
-            if tmp != self.calibration_show_input_source:
-                self.calibration_recalibrate = True
-            self.calibration_show_input_source = tmp
 
             tmp = cv2.getTrackbarPos("Show cutout", self.window_calibration)
             if tmp != self.calibration_show_project_cutout:
@@ -277,6 +286,7 @@ class Gui:
             if tmp != self.contour_thickness:
                 self.calibration_recalibrate = True
             self.contour_thickness = tmp
+
         if cv2.getWindowProperty(self.window_object_tracing, cv2.WND_PROP_VISIBLE):
             self.threshold_enable = cv2.getTrackbarPos("Threshold enable", self.window_object_tracing)
             self.threshold = cv2.getTrackbarPos("Threshold", self.window_object_tracing)
@@ -293,18 +303,28 @@ class Gui:
             self.canny_enable = cv2.getTrackbarPos("Canny enable", self.window_object_tracing)
             self.canny1 = cv2.getTrackbarPos("Canny 1", self.window_object_tracing)
             self.canny2 = cv2.getTrackbarPos("Canny 2", self.window_object_tracing)
+
         if cv2.getWindowProperty(self.window_preprocessing, cv2.WND_PROP_VISIBLE):
             self.blur1 = cv2.getTrackbarPos("Blur 1", self.window_preprocessing) + 1
             self.blur2 = cv2.getTrackbarPos("Blur 2", self.window_preprocessing) + 1
             self.blur_enable = cv2.getTrackbarPos("Blur enable", self.window_preprocessing)
             self.dilate_kernel_x = cv2.getTrackbarPos("Dilate kernel x", self.window_preprocessing)
             self.dilate_kernel_y = cv2.getTrackbarPos("Dilate kernel y", self.window_preprocessing)
+
             self.enable_dilate = cv2.getTrackbarPos("Enable dilate", self.window_preprocessing)
             self.erode_kernel_x = cv2.getTrackbarPos("Erode kernel x", self.window_preprocessing)
             self.erode_kernel_y = cv2.getTrackbarPos("Erode kernel y", self.window_preprocessing)
             self.enable_erode = cv2.getTrackbarPos("Enable erode", self.window_preprocessing)
-            self.color_to_remove = cv2.getTrackbarPos("RGB (0,1,2) to remove", self.window_preprocessing)
-            self.enable_remove_color = cv2.getTrackbarPos("Color remove enable", self.window_preprocessing)
+            self.remove_red = cv2.getTrackbarPos("Remove R", self.window_preprocessing)
+            self.remove_green = cv2.getTrackbarPos("Remove G", self.window_preprocessing)
+            self.remove_blue = cv2.getTrackbarPos("Remove B", self.window_preprocessing)
+
+        if cv2.getWindowProperty(self.window_area_of_interest, cv2.WND_PROP_VISIBLE):
+            self.ai_left = cv2.getTrackbarPos("Ai - left", self.window_area_of_interest)
+            self.ai_right = cv2.getTrackbarPos("Ai - right", self.window_area_of_interest)
+            self.ai_top = cv2.getTrackbarPos("Ai - top", self.window_area_of_interest)
+            self.ai_bottom = cv2.getTrackbarPos("Ai - bottom", self.window_area_of_interest)
+
         if cv2.getWindowProperty(self.window_output, cv2.WND_PROP_VISIBLE):
             self.video_source = cv2.getTrackbarPos("Video source", self.window_output)
             self.video_source_brightness = cv2.getTrackbarPos("Video brightness", self.window_output)

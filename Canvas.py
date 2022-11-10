@@ -90,18 +90,24 @@ class Canvas:
         black_mask_rgb = np.zeros_like(mask_color)
         video_positioned = black_mask_rgb.copy()
         self.resized_source_videos = []
+        scale_locked = False
+        locked_scale = []
         for index, current_mask in enumerate(mask_list):
             if self.gui.video_size_mode == 0:
                 self.monitor.add("MASK", current_mask)
                 gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
                 video_positioned = gpu_video_mask_size.download()
-            elif self.gui.video_size_mode == 1:
-                (y, x) = np.where(current_mask == 255)
-                (top_y, top_x) = (np.min(y), np.min(x))
-                (bottom_y, bottom_x) = (np.max(y), np.max(x))
-                width = bottom_x - top_x
-                height = bottom_y - top_y
+            elif self.gui.video_size_mode > 1:
+                if self.gui.video_size_mode == 1 or scale_locked is False:
+                    (y, x) = np.where(current_mask == 255)
+                    (top_y, top_x) = (np.min(y), np.min(x))
+                    (bottom_y, bottom_x) = (np.max(y), np.max(x))
+                    width = bottom_x - top_x
+                    height = bottom_y - top_y
+                    locked_scale[index] = (y, x, top_y, top_x, bottom_y, bottom_y, width, height)
+                else: # self.gui.video_size_mode == 2 and scale_locked is True:
+                    (y, x, top_y, top_x, bottom_y, bottom_y, width, height) = locked_scale[index]
 
                 if self.gui.main_log_stuff:
                     print("Current mask shape", current_mask.shape)

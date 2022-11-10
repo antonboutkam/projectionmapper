@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from Manipulation import Manipulation
 
 
 class Cam(object):
@@ -57,6 +58,7 @@ class Cam(object):
             else:
                 if self.gui.main_vertical_flip_cam:
                     frame = cv2.flip(frame, 0)
+                    frame = Manipulation.area_of_interest(frame,  self.gui.cut_left, self.gui.cut_right, self.gui.cut_top, self.gui.cut_bottom)
                 frame = self.area_of_interest(frame)
                 self.last_frame = frame
                 return frame
