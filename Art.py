@@ -14,8 +14,10 @@ class Art:
 
             # compute the center of the contour
             M = cv2.moments(contour)
-            c_x = int(M["m10"] / M["m00"])
-            c_y = int(M["m01"] / M["m00"])
+            c_y = c_x = 0
+            if M["m00"] > 0:
+                c_x = int(M["m10"] / M["m00"])
+                c_y = int(M["m01"] / M["m00"])
             self.center_h = self.center_h + 10
             if self.center_h > 255:
                 self.center_h = 0
