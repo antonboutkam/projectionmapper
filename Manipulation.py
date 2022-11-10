@@ -6,7 +6,7 @@ import cv2
 class Manipulation:
 
     @staticmethod
-    def rotate(self, frame, degrees):
+    def rotate(frame, degrees):
         if degrees == 0:
             return frame
         (h, w) = frame.shape[:2]
