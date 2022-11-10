@@ -1,7 +1,19 @@
 import numpy as np
+import cv2
+
 
 
 class Manipulation:
+
+    @staticmethod
+    def rotate(self, frame, degrees):
+        if degrees == 0:
+            return frame
+        (h, w) = frame.shape[:2]
+        (cX, cY) = (w // 2, h // 2)
+        # rotate our image by 45 degrees around the center of the image
+        M = cv2.getRotationMatrix2D((cX, cY), degrees, 1.0)
+        return cv2.warpAffine(frame, M, (w, h))
 
     @staticmethod
     def color_reduction(frame_rgb, red, green, blue):

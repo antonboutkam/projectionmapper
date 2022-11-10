@@ -1,5 +1,6 @@
 from Cam import Cam
 from Source import Source
+from Manipulation import Manipulation
 from File import File
 from PreProcessor import PreProcessor
 from Art import Art
@@ -181,6 +182,9 @@ class Canvas:
 
         mask_applied_offsets = video_masked[src_top_y:src_bottom_y, src_top_x:src_bottom_x]
         full_canvas[dst_top_y:dst_bottom_y, dst_top_x:dst_bottom_x] = mask_applied_offsets
+
+        # Now rotate the image back if needed
+        full_canvas = Manipulation.rotate(full_canvas, 0 - self.gui.calibration_rotate)
 
         if self.gui.replace_black:
             # Find all black pixels

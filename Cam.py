@@ -59,6 +59,7 @@ class Cam(object):
                 if self.gui.main_vertical_flip_cam:
                     frame = cv2.flip(frame, 0)
                     frame = Manipulation.area_of_interest(frame,  self.gui.cut_left, self.gui.cut_right, self.gui.cut_top, self.gui.cut_bottom)
+                    frame = Manipulation.rotate(frame, self.gui.calibration_rotate)
                 frame = self.area_of_interest(frame)
                 self.last_frame = frame
                 return frame

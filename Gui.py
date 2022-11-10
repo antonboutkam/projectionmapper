@@ -31,6 +31,7 @@ class Gui:
     calibration_recalibrate = False
     calibration_find_contour_method = 0
     calibration_threshold = 90
+    calibration_rotate = 0
     calibration_manual_mode = 0
     calibration_luminosity = 127
     calibration_show_project_cutout = 1
@@ -114,6 +115,8 @@ class Gui:
             cv2.createTrackbar("Find contour method", self.window_calibration, self.calibration_find_contour_method, 3,
                                self.trackbar_change)
 
+            cv2.createTrackbar("Calibration rotate", self.window_calibration, self.calibration_rotate, 180,
+                               self.trackbar_change)
             cv2.createTrackbar("Calibration manual mode", self.window_calibration, self.calibration_manual_mode, 1,self.trackbar_change)
             cv2.createTrackbar("Calibration convex hull", self.window_calibration, self.calibration_convex_hull, 1, self.trackbar_change)
 
@@ -235,12 +238,10 @@ class Gui:
                 self.calibration_recalibrate = True
             self.calibration_find_contour_method = tmp
 
-
-
-            tmp = cv2.getTrackbarPos("Calibration manual mode", self.window_calibration)
-            if tmp != self.calibration_manual_mode:
+            tmp = cv2.getTrackbarPos("Calibration rotate", self.window_calibration)
+            if tmp != self.calibration_rotate:
                 self.calibration_recalibrate = True
-            self.calibration_manual_mode = tmp
+            self.calibration_rotate = tmp
 
             tmp = cv2.getTrackbarPos("Cut left", self.window_calibration)
             if tmp != self.cut_left:
