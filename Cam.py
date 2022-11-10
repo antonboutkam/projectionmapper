@@ -61,6 +61,7 @@ class Cam(object):
 
                 frame = Manipulation.rotate(frame, self.gui.calibration_rotate)
                 frame = Manipulation.area_of_interest(frame,  self.gui.cut_left, self.gui.cut_right, self.gui.cut_top, self.gui.cut_bottom)
+                cv2.imshow("Live", frame)
 
                 self.last_frame = frame
                 return frame
