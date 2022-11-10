@@ -58,22 +58,10 @@ class Cam(object):
             else:
                 if self.gui.main_vertical_flip_cam:
                     frame = cv2.flip(frame, 0)
-                    frame = Manipulation.area_of_interest(frame,  self.gui.cut_left, self.gui.cut_right, self.gui.cut_top, self.gui.cut_bottom)
-                    frame = Manipulation.rotate(frame, self.gui.calibration_rotate)
-                frame = self.area_of_interest(frame)
+
+                frame = Manipulation.area_of_interest(frame,  self.gui.cut_left, self.gui.cut_right, self.gui.cut_top, self.gui.cut_bottom)
+                frame = Manipulation.rotate(frame, self.gui.calibration_rotate)
+                
                 self.last_frame = frame
                 return frame
 
-    def area_of_interest(self, frame):
-        if self.gui.cut_left > 0 or self.gui.cut_right > 0 or self.gui.cut_top > 0 or self.gui.cut_bottom > 0:
-            frame_black = np.zeros_like(frame)
-            s = frame_black.shape
-
-            y_t = self.gui.cut_top
-            y_b = s[0] - self.gui.cut_bottom
-            x_l = self.gui.cut_left
-            x_r = s[1] - self.gui.cut_right
-
-            frame_black[y_t:y_b, x_l:x_r] = frame[y_t:y_b, x_l:x_r]
-            return frame_black
-        return frame
