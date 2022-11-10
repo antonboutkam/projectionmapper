@@ -102,6 +102,13 @@ class Canvas:
                 (bottom_y, bottom_x) = (np.max(y), np.max(x))
                 width = bottom_x - top_x
                 height = bottom_y - top_y
+
+                if self.gui.main_log_stuff:
+                    print("Current mask shape", current_mask.shape)
+                    print("Current mask", current_mask)
+                    File.append('{"mask" : ' + str(index) + ', "x" : ' + str(x) + ', "y" : ' + str(y) + '}', 'mask.log')
+                    print("X", x, "y", y)
+
                 if width < 3 or height < 3:
                     # print('to small' , width, height)
                     continue

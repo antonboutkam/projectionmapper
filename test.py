@@ -1,5 +1,7 @@
 import math
 
+
+
 data = [
     [264, 29],
     [204, 61],
@@ -42,3 +44,12 @@ for row in data:
     dist = math.sqrt(math.pow(row[0] - prev_row[0], 2) + math.pow(row[1] - prev_row[1], 2))
     prev_row = row
     print("Distance:", row, prev_row, dist)
+
+conts = 6
+i = 5
+print(i % conts)
+conts = 6
+i = 7
+print(i % conts)
+
+print((6 + 1) % conts)
