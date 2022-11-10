@@ -106,7 +106,7 @@ class Canvas:
                     (bottom_y, bottom_x) = (np.max(y), np.max(x))
                     width = bottom_x - top_x
                     height = bottom_y - top_y
-                    locked_scale[index] = (y, x, top_y, top_x, bottom_y, bottom_y, width, height)
+                    locked_scale.append((y, x, top_y, top_x, bottom_y, bottom_y, width, height))
                 else: # self.gui.video_size_mode == 2 and scale_locked is True:
                     (y, x, top_y, top_x, bottom_y, bottom_y, width, height) = locked_scale[index]
 

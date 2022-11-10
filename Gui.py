@@ -148,6 +148,7 @@ class Gui:
 
     def area_of_interest_config(self):
         if self.main_show_area_interest == 1:
+            cv2.namedWindow(self.window_area_of_interest)
             cv2.createTrackbar("Ai - left", self.window_area_of_interest, self.ai_left, 500, self.trackbar_change)
             cv2.createTrackbar("Ai - right", self.window_area_of_interest, self.ai_right, 500, self.trackbar_change)
             cv2.createTrackbar("Ai - top", self.window_area_of_interest, self.ai_top, 500, self.trackbar_change)
