@@ -27,13 +27,14 @@ class Art:
     def draw_center_lines(self, canvas, contour, center_x, center_y, color, thickness):
         n = contour.ravel()
         i = 0
-
+        it = 0
         for j in n:
-            if (i % 3) == 0:
+            if (i % 2) == 0:
                 x = n[i]
                 y = n[(i + 1)]
-
-                cv2.line(canvas, (center_x, center_y), (x, y), color, thickness)
+                it = it + 1
+                if (it % 5) == 0:
+                    cv2.line(canvas, (center_x, center_y), (x, y), color, thickness)
 
             i = i + 1
 
