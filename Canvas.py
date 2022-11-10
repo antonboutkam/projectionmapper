@@ -24,6 +24,7 @@ class Canvas:
     source = None
     resized_source_videos = None
     simple_contours = []
+    art = None
 
     def init(self, top_y, bottom_y, top_x, bottom_x, initial_frame, gui, cam, monitor):
         self.top_y = top_y
@@ -37,6 +38,7 @@ class Canvas:
         self.monitor = monitor
         self.source = Source()
         self.source.start(gui)
+        self.art = Art()
 
     def capture(self):
         # print("Capture")
@@ -147,8 +149,7 @@ class Canvas:
         self.monitor.add("VID_MASKED_REV", video_masked_rev)
 
         if len(self.simple_contours) > 0:
-            art = Art()
-            art.draw_coolness(video_masked, self.simple_contours)
+            self.art.draw_coolness(video_masked, self.simple_contours)
 
         offset_x = (0 - math.ceil(self.gui.max_offset_x / 2)) + self.gui.offset_x
         offset_y = (0 - math.ceil(self.gui.max_offset_y / 2)) + self.gui.offset_y
