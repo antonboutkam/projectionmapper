@@ -105,6 +105,8 @@ class Canvas:
             elif self.gui.video_size_mode > 1:
                 if self.gui.video_size_mode == 1 or scale_locked is False:
                     (y, x) = np.where(current_mask == 255)
+                    if len(y) == 0 or len(x) == 0:
+                        continue
                     (top_y, top_x) = (np.min(y), np.min(x))
                     (bottom_y, bottom_x) = (np.max(y), np.max(x))
                     width = bottom_x - top_x
