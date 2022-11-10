@@ -91,9 +91,8 @@ class Init:
 
             # print("aspect ratio: " + str(aspect_ratio))
             # Show the output image
-            if gui.calibration_show_input_source:
-                monitor.add("Source", white_fullcolor)
-                cv2.imshow("Source", white_fullcolor)
+            monitor.add("Source", white_fullcolor)
+            cv2.imshow("Source", white_fullcolor)
 
 
             # cv2.imshow("WhiteBGR", white_bgr)
