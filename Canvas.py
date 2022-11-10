@@ -102,7 +102,7 @@ class Canvas:
                 gpu_video_mask_size = cv2.cuda.resize(gpu_video_source,
                                                       (current_frame.shape[1], current_frame.shape[0]))
                 video_positioned = gpu_video_mask_size.download()
-            elif self.gui.video_size_mode > 1:
+            elif self.gui.video_size_mode > 0:
                 if self.gui.video_size_mode == 1 or scale_locked is False:
                     (y, x) = np.where(current_mask == 255)
                     if len(y) == 0 or len(x) == 0:
