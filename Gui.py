@@ -189,7 +189,7 @@ class Gui:
             cv2.createTrackbar("Enable erode", self.window_preprocessing, self.enable_erode, 1, self.trackbar_change)
             cv2.createTrackbar("Erode kernel x", self.window_preprocessing, self.erode_kernel_x, 15, self.trackbar_change)
             cv2.createTrackbar("Erode kernel y", self.window_preprocessing, self.erode_kernel_y, 15, self.trackbar_change)
-            cv2.createTrackbar("Blur enable", self.window_preprocessing, self.blur_enable, 2, self.trackbar_change)
+            cv2.createTrackbar("Blur enable", self.window_preprocessing, self.blur_enable, 6, self.trackbar_change)
             cv2.createTrackbar("Blur 1", self.window_preprocessing, self.blur1, 10, self.trackbar_change)
             cv2.createTrackbar("Blur 2", self.window_preprocessing, self.blur2, 10, self.trackbar_change)
             cv2.createTrackbar("Remove R", self.window_preprocessing, self.remove_red, 1, self.trackbar_change)

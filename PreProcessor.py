@@ -37,7 +37,15 @@ class PreProcessor:
             if gui.blur_enable == 1:
                 cpu_output = cv2.blur(cpu_output, (gui.blur1, gui.blur2))
             elif gui.blur_enable == 2:
-                cpu_output = cv2.GaussianBlur(cpu_output, (gui.blur1, gui.blur2))
+                cpu_output = cv2.GaussianBlur(cpu_output, (gui.blur1, gui.blur2), cv2.BORDER_CONSTANT)
+            elif gui.blur_enable == 3:
+                cpu_output = cv2.GaussianBlur(cpu_output, (gui.blur1, gui.blur2), cv2.BORDER_REPLICATE)
+            elif gui.blur_enable == 4:
+                cpu_output = cv2.GaussianBlur(cpu_output, (gui.blur1, gui.blur2), cv2.BORDER_REFLECT)
+            elif gui.blur_enable == 5:
+                cpu_output = cv2.GaussianBlur(cpu_output, (gui.blur1, gui.blur2), cv2.BORDER_WRAP)
+            elif gui.blur_enable == 6:
+                cpu_output = cv2.GaussianBlur(cpu_output, (gui.blur1, gui.blur2), cv2.BORDER_REFLECT_101)
             monitor.add("Blurred", cpu_output)
 
         if cpu_output_changed:
