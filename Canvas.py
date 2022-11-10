@@ -116,7 +116,6 @@ class Canvas:
                 if self.gui.main_log_stuff:
                     print("Current mask shape", current_mask.shape)
                     print("Current mask", current_mask)
-                    file.append('mask.log', '{"mask" : ' + str(index) + ', "x" : ' + str(x) + ', "y" : ' + str(y) + '}')
                     print("X", x, "y", y)
 
                 if width < 3 or height < 3:
