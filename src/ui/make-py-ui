@@ -1,0 +1,14 @@
+#!/bin/sh
+
+
+echo "Generating user interface"
+pyuic5 ui.ui > Ui.py
+
+echo "PyRcc5 - converting resources"
+pyrcc5 -o Resources.py resources.qrc
+
+echo "Putting user interface file in place"
+mv Ui.py ../Ui.py
+
+echo "Putting Resource file in place"
+mv Resources.py ../Resources.py
