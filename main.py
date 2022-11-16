@@ -1,10 +1,7 @@
-import numpy as np
 import time
 from Init import Init
 from Cam import Cam
-from UserInterface import UserInterface
-from Monitor import Monitor
-from Gui import Gui
+from Ui import Gui
 from Projector import Projector
 import cv2
 
@@ -25,7 +22,10 @@ init = Init()
 current_calibration_threshold = gui.calibration_threshold
 current_calibration_luminosity = gui.calibration_luminosity
 
-while (True):
+
+
+
+while True:
     runningTime = int(time.time() - startTime)
     gui.update()
     # Print("running")
@@ -47,7 +47,6 @@ while (True):
     # desired button of your choice
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
 
 # Destroy all the windows
 cv2.destroyWindow('frame')
